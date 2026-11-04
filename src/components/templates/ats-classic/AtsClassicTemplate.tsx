@@ -1,6 +1,10 @@
 import React from "react";
 import { CVData, SectionKey } from "@/types/cv";
-import { getDocumentLabels, formatThesisAndGrade } from "@/lib/i18n/cv-labels";
+import {
+  getDocumentLabels,
+  formatThesisAndGrade,
+  formatDegreeMajorAndGpa,
+} from "@/lib/i18n/cv-labels";
 import { formatDateRange, formatMonthYear } from "@/lib/dates/date-utils";
 import { normalizeUrl, cleanDisplayUrl } from "@/lib/utils";
 import { ExternalLink } from "lucide-react";
@@ -128,6 +132,12 @@ export function AtsClassicTemplate({ data }: TemplateProps) {
                   item.current,
                   language
                 );
+                const degreeMajorAndGpa = formatDegreeMajorAndGpa(
+                  item.degree,
+                  item.fieldOfStudy,
+                  item.gpa,
+                  language
+                );
                 const thesisAndGrade = formatThesisAndGrade(
                   item.thesisTitle,
                   item.defenseGrade,
@@ -139,7 +149,6 @@ export function AtsClassicTemplate({ data }: TemplateProps) {
                     <div className="flex flex-col sm:flex-row sm:items-baseline justify-between font-sans">
                       <div className="font-bold text-xs sm:text-sm text-black">
                         {item.institution}
-                        {item.gpa?.trim() ? `, ${item.gpa.trim()}` : ""}
                       </div>
                       {dateStr && (
                         <div className="text-[11px] text-gray-600 shrink-0 font-medium ml-2">
@@ -148,11 +157,9 @@ export function AtsClassicTemplate({ data }: TemplateProps) {
                       )}
                     </div>
 
-                    {(item.degree || item.fieldOfStudy) && (
+                    {degreeMajorAndGpa && (
                       <p className="text-xs text-gray-800 italic font-sans">
-                        {item.degree}
-                        {item.degree && item.fieldOfStudy ? ` ${labels.in} ` : ""}
-                        {item.fieldOfStudy}
+                        {degreeMajorAndGpa}
                       </p>
                     )}
 

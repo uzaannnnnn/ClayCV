@@ -70,7 +70,7 @@ export function EducationForm() {
                 {/* Institution */}
                 <Input
                   label="Institution / University *"
-                  placeholder="e.g. Stanford University or Universitas Indonesia"
+                  placeholder="e.g. Stanford University, UC Berkeley"
                   value={item.institution}
                   onChange={(e) =>
                     updateEducation(item.id, { institution: e.target.value })
@@ -81,7 +81,7 @@ export function EducationForm() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                   <Input
                     label="Degree"
-                    placeholder="e.g. Bachelor of Science / Sarjana Komputer"
+                    placeholder="e.g. Bachelor of Science"
                     value={item.degree}
                     onChange={(e) =>
                       updateEducation(item.id, { degree: e.target.value })
@@ -89,7 +89,7 @@ export function EducationForm() {
                   />
                   <Input
                     label="Field of Study"
-                    placeholder="e.g. Computer Science / Teknik Informatika"
+                    placeholder="e.g. Computer Science"
                     value={item.fieldOfStudy}
                     onChange={(e) =>
                       updateEducation(item.id, { fieldOfStudy: e.target.value })
@@ -152,7 +152,7 @@ export function EducationForm() {
                     htmlFor={`current-edu-${item.id}`}
                     className="text-xs font-medium text-[#292735] cursor-pointer select-none"
                   >
-                    I am currently studying here (Present / Sekarang)
+                    I am currently studying here
                   </label>
                 </div>
 
@@ -163,15 +163,15 @@ export function EducationForm() {
                   </p>
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
                     <Input
-                      label="GPA / IPK"
-                      placeholder="e.g. 3.85 / 4.00"
+                      label="GPA"
+                      placeholder="e.g. 3.88 / 4.00"
                       value={item.gpa}
                       onChange={(e) =>
                         updateEducation(item.id, { gpa: e.target.value })
                       }
                     />
                     <Input
-                      label="Defense Grade / Nilai Sidang"
+                      label="DEFENSE GRADE"
                       placeholder="e.g. A or 94/100"
                       value={item.defenseGrade}
                       onChange={(e) =>
@@ -182,7 +182,7 @@ export function EducationForm() {
                     />
                     <div className="sm:col-span-1">
                       <Input
-                        label="Thesis Title / Judul Skripsi"
+                        label="THESIS TITLE"
                         placeholder="e.g. Distributed Consensus"
                         value={item.thesisTitle}
                         onChange={(e) =>

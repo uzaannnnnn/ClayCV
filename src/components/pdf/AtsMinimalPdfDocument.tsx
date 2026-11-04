@@ -1,7 +1,11 @@
 import React from "react";
 import { Document, Page, Text, View, StyleSheet, Link } from "@react-pdf/renderer";
 import { CVData, SectionKey } from "@/types/cv";
-import { getDocumentLabels, formatThesisAndGrade } from "@/lib/i18n/cv-labels";
+import {
+  getDocumentLabels,
+  formatThesisAndGrade,
+  formatDegreeMajorAndGpa,
+} from "@/lib/i18n/cv-labels";
 import { formatDateRange, formatMonthYear } from "@/lib/dates/date-utils";
 import { normalizeUrl, cleanDisplayUrl } from "@/lib/utils";
 import { PdfExternalLinkIcon } from "./PdfExternalLinkIcon";
@@ -222,6 +226,12 @@ export function AtsMinimalPdfDocument({ data }: { data: CVData }) {
                 item.current,
                 language
               );
+              const degreeMajorAndGpa = formatDegreeMajorAndGpa(
+                item.degree,
+                item.fieldOfStudy,
+                item.gpa,
+                language
+              );
               const thesisAndGrade = formatThesisAndGrade(
                 item.thesisTitle,
                 item.defenseGrade,
@@ -231,22 +241,13 @@ export function AtsMinimalPdfDocument({ data }: { data: CVData }) {
               return (
                 <View key={item.id} style={styles.itemBlock} wrap={false}>
                   <View style={styles.itemHeader}>
-                    <Text style={styles.itemTitle}>
-                      {item.institution}
-                      {item.gpa?.trim() ? `, ${item.gpa.trim()}` : ""}
-                    </Text>
+                    <Text style={styles.itemTitle}>{item.institution}</Text>
                     {dateStr ? (
                       <Text style={styles.itemDate}>{dateStr}</Text>
                     ) : null}
                   </View>
-                  {item.degree || item.fieldOfStudy ? (
-                    <Text style={styles.itemLocation}>
-                      {item.degree}
-                      {item.degree && item.fieldOfStudy
-                        ? ` ${labels.in} `
-                        : ""}
-                      {item.fieldOfStudy}
-                    </Text>
+                  {degreeMajorAndGpa ? (
+                    <Text style={styles.itemLocation}>{degreeMajorAndGpa}</Text>
                   ) : null}
 
                   {/* Thesis Title and Defense Grade displayed together */}

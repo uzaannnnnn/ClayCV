@@ -41,7 +41,7 @@ export const CV_LABELS: Record<CVLanguage, DocumentLabels> = {
     present: "Present",
     in: "in",
     thesisTitle: "Thesis",
-    defenseGrade: "Grade",
+    defenseGrade: "Defense Grade",
     gpa: "GPA",
     credentialId: "Credential ID",
     credentialUrl: "Credential URL",
@@ -73,7 +73,7 @@ export const CV_LABELS: Record<CVLanguage, DocumentLabels> = {
     present: "Sekarang",
     in: "dalam",
     thesisTitle: "Judul Skripsi",
-    defenseGrade: "Grade",
+    defenseGrade: "Nilai Sidang",
     gpa: "IPK",
     credentialId: "ID Kredensial",
     credentialUrl: "URL Kredensial",
@@ -112,6 +112,62 @@ export function formatThesisAndGrade(
   }
 
   return parts.length > 0 ? parts.join(", ") : null;
+}
+
+/**
+ * Formats Degree, Field of Study, and GPA into a single line.
+ * Rule: GPA must appear beside the field of study/major, separated by a comma.
+ *
+ * Examples:
+ * - Bachelor of Science in Computer Science, GPA: 3.88/4.00
+ * - Bachelor of Science, GPA: 3.88/4.00
+ * - Computer Science, GPA: 3.88/4.00
+ * - GPA: 3.88/4.00
+ * - Bachelor of Science in Computer Science (when GPA empty)
+ */
+export function formatDegreeMajorAndGpa(
+  degree?: string,
+  fieldOfStudy?: string,
+  gpa?: string,
+  language: CVLanguage = "en"
+): string | null {
+  const labels = getDocumentLabels(language);
+  const trimmedDegree = degree?.trim();
+  const trimmedMajor = fieldOfStudy?.trim();
+  const trimmedGpa = gpa?.trim();
+
+  // 1. Build Degree + Major
+  let degreeMajor = "";
+  if (trimmedDegree && trimmedMajor) {
+    degreeMajor = `${trimmedDegree} ${labels.in} ${trimmedMajor}`;
+  } else if (trimmedDegree) {
+    degreeMajor = trimmedDegree;
+  } else if (trimmedMajor) {
+    degreeMajor = trimmedMajor;
+  }
+
+  // 2. Format GPA if present
+  let formattedGpa = "";
+  if (trimmedGpa) {
+    const lower = trimmedGpa.toLowerCase();
+    if (lower.startsWith("gpa:") || lower.startsWith("ipk:")) {
+      formattedGpa = trimmedGpa;
+    } else {
+      formattedGpa = `${labels.gpa}: ${trimmedGpa}`;
+    }
+  }
+
+  // 3. Combine degreeMajor and formattedGpa
+  if (degreeMajor && formattedGpa) {
+    return `${degreeMajor}, ${formattedGpa}`;
+  }
+  if (degreeMajor) {
+    return degreeMajor;
+  }
+  if (formattedGpa) {
+    return formattedGpa;
+  }
+  return null;
 }
 
 export const MONTH_NAMES: Record<CVLanguage, { full: string[]; short: string[] }> = {

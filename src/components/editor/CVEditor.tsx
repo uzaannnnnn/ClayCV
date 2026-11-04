@@ -98,7 +98,7 @@ export function CVEditor() {
       <SectionCard
         id="education-section"
         title="4. Education"
-        description="Institutions, degrees, thesis & GPA/IPK"
+        description="Institutions, degrees, thesis & GPA"
         icon={GraduationCap}
         badge={educationCount > 0 ? `${educationCount} schools` : null}
         isOpen={openSections.education}
