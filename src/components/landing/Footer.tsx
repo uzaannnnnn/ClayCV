@@ -2,7 +2,8 @@
 
 import React, { useEffect, useRef } from "react";
 import Link from "next/link";
-import { FileText, Shield } from "lucide-react";
+import Image from "next/image";
+import { Shield } from "lucide-react";
 
 export function Footer() {
   const yearRef = useRef<HTMLSpanElement>(null);
@@ -18,9 +19,15 @@ export function Footer() {
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
         {/* Brand */}
         <div className="flex flex-col items-center md:items-start text-center md:text-left">
-          <Link href="/" className="flex items-center gap-2 mb-2">
-            <div className="w-8 h-8 rounded-[10px] bg-[#8B7CF6] flex items-center justify-center text-white shadow-sm">
-              <FileText className="w-4 h-4" />
+          <Link href="/" className="flex items-center gap-2.5 mb-2 group">
+            <div className="w-8 h-8 rounded-[10px] flex items-center justify-center shadow-sm overflow-hidden group-hover:scale-105 transition-transform">
+              <Image
+                src="/claycv-logo.png"
+                alt="ClayCV Logo"
+                width={32}
+                height={32}
+                className="w-full h-full object-contain"
+              />
             </div>
             <span className="font-extrabold text-lg tracking-tight text-[#292735]">
               Clay<span className="text-[#8B7CF6]">CV</span>

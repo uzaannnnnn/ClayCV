@@ -13,9 +13,21 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "ClayCV — Tactile Claymorphism CV & Resume Builder",
+  title: {
+    default: "ClayCV — Create Your Professional CV",
+    template: "%s | ClayCV",
+  },
   description:
-    "Create a professional, beautifully designed CV in minutes directly in your browser. No account, no tracking, just instant professional resumes.",
+    "Create a professional, ATS-friendly CV in minutes with ClayCV.",
+  icons: {
+    icon: [
+      { url: "/icon.png?v=claycv", type: "image/png" },
+      { url: "/favicon-32x32.png?v=claycv", sizes: "32x32", type: "image/png" },
+      { url: "/favicon-16x16.png?v=claycv", sizes: "16x16", type: "image/png" },
+      { url: "/favicon.ico?v=claycv" },
+    ],
+    apple: "/apple-icon.png?v=claycv",
+  },
 };
 
 export default function RootLayout({

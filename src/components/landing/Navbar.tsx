@@ -2,17 +2,25 @@
 
 import React from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { Sparkles, FileText } from "lucide-react";
+import { Sparkles } from "lucide-react";
 
 export function Navbar() {
   return (
     <header className="sticky top-0 z-40 w-full backdrop-blur-md bg-[#F4F1EB]/85 border-b border-[rgba(70,65,90,0.06)] px-4 sm:px-8 py-3.5 transition-all">
       <div className="max-w-7xl mx-auto flex items-center justify-between">
-        {/* Brand Logo with Clay Tactile Pill */}
+        {/* Brand Logo with Official ClayCV Icon */}
         <Link href="/" className="flex items-center gap-2.5 group">
-          <div className="w-10 h-10 rounded-[14px] bg-gradient-to-br from-[#A99CFF] to-[#8B7CF6] flex items-center justify-center text-white shadow-[-3px_-3px_8px_rgba(255,255,255,0.8),3px_3px_8px_rgba(139,124,246,0.35)] group-hover:scale-105 transition-transform">
-            <FileText className="w-5 h-5 text-white" />
+          <div className="w-10 h-10 rounded-[14px] flex items-center justify-center shadow-[-3px_-3px_8px_rgba(255,255,255,0.8),3px_3px_8px_rgba(139,124,246,0.35)] group-hover:scale-105 transition-transform overflow-hidden">
+            <Image
+              src="/claycv-logo.png"
+              alt="ClayCV Logo"
+              width={40}
+              height={40}
+              priority
+              className="w-full h-full object-contain"
+            />
           </div>
           <div className="flex flex-col">
             <span className="font-extrabold text-xl tracking-tight text-[#292735]">

@@ -51,7 +51,7 @@ export function AtsClassicTemplate({ data }: TemplateProps) {
             <h2 className="text-xs font-bold uppercase tracking-wider text-black border-b border-gray-400 pb-0.5 mb-1.5 font-serif">
               {labels.sections.summary}
             </h2>
-            <p className="text-xs text-gray-800 font-sans leading-relaxed whitespace-pre-line text-justify">
+            <p className="text-[11px] text-gray-800 font-sans leading-relaxed whitespace-pre-line text-justify">
               {personalInfo.summary}
             </p>
           </section>
@@ -80,7 +80,7 @@ export function AtsClassicTemplate({ data }: TemplateProps) {
                 return (
                   <div key={item.id} className="space-y-0.5">
                     <div className="flex flex-col sm:flex-row sm:items-baseline justify-between font-sans">
-                      <div className="font-bold text-xs sm:text-sm text-black">
+                      <div className="font-bold text-[11px] text-black">
                         {item.position || "Position"}
                         {item.company && (
                           <span className="font-normal italic text-gray-800">
@@ -88,26 +88,26 @@ export function AtsClassicTemplate({ data }: TemplateProps) {
                             — {item.company}
                           </span>
                         )}
-                        <span className="text-[11px] font-normal text-gray-600">
+                        <span className="text-[10px] font-normal text-gray-600">
                           {" "}
                           ({empTypeLabel} • {workModeLabel})
                         </span>
                       </div>
                       {dateStr && (
-                        <div className="text-[11px] text-gray-600 font-medium shrink-0">
+                        <div className="text-[10px] text-gray-600 font-medium shrink-0">
                           {dateStr}
                         </div>
                       )}
                     </div>
 
                     {item.location && (
-                      <p className="text-[11px] text-gray-600 italic font-sans -mt-0.5">
+                      <p className="text-[10px] text-gray-600 italic font-sans -mt-0.5">
                         {item.location}
                       </p>
                     )}
 
                     {item.description && (
-                      <p className="text-xs text-gray-800 font-sans leading-relaxed whitespace-pre-line text-justify pt-0.5">
+                      <p className="text-[11px] text-gray-800 font-sans leading-relaxed whitespace-pre-line text-justify pt-0.5">
                         {item.description}
                       </p>
                     )}
@@ -150,31 +150,31 @@ export function AtsClassicTemplate({ data }: TemplateProps) {
                 return (
                   <div key={item.id} className="space-y-0.5">
                     <div className="flex flex-col sm:flex-row sm:items-baseline justify-between font-sans">
-                      <div className="font-bold text-xs sm:text-sm text-black">
+                      <div className="font-bold text-[11px] text-black">
                         {item.institution}
                       </div>
                       {dateStr && (
-                        <div className="text-[11px] text-gray-600 shrink-0 font-medium ml-2">
+                        <div className="text-[10px] text-gray-600 shrink-0 font-medium ml-2">
                           {dateStr}
                         </div>
                       )}
                     </div>
 
                     {degreeMajorAndGpa && (
-                      <p className="text-xs text-gray-800 italic font-sans">
+                      <p className="text-[11px] text-gray-800 italic font-sans">
                         {degreeMajorAndGpa}
                       </p>
                     )}
 
                     {/* Thesis Title and Defense Grade displayed together */}
                     {thesisAndGrade && (
-                      <p className="text-[11px] text-gray-700 italic font-sans">
+                      <p className="text-[10px] text-gray-700 italic font-sans">
                         {thesisAndGrade}
                       </p>
                     )}
 
                     {item.description && (
-                      <p className="text-xs text-gray-800 font-sans pt-0.5 whitespace-pre-line text-justify">
+                      <p className="text-[11px] text-gray-800 font-sans pt-0.5 whitespace-pre-line text-justify">
                         {item.description}
                       </p>
                     )}
@@ -192,7 +192,7 @@ export function AtsClassicTemplate({ data }: TemplateProps) {
             <h2 className="text-xs font-bold uppercase tracking-wider text-black border-b border-gray-400 pb-0.5 mb-1.5 font-serif">
               {labels.sections.skills}
             </h2>
-            <p className="text-xs text-gray-800 font-sans leading-relaxed">
+            <p className="text-[11px] text-gray-800 font-sans leading-relaxed">
               {validSkills.map((s, idx) => (
                 <span key={s.id}>
                   <span className="font-medium text-black">{s.name}</span>
@@ -214,10 +214,10 @@ export function AtsClassicTemplate({ data }: TemplateProps) {
               {validProjects.map((project) => (
                 <div key={project.id} className="space-y-0.5">
                   <div className="flex flex-col sm:flex-row sm:items-baseline justify-between font-sans">
-                    <div className="font-bold text-xs sm:text-sm text-black">
+                    <div className="font-bold text-[11px] text-black">
                       {project.name}
                       {project.technologies && (
-                        <span className="font-normal text-gray-600 text-xs">
+                        <span className="font-normal text-gray-600 text-[11px]">
                           {" "}
                           [{project.technologies}]
                         </span>
@@ -228,14 +228,14 @@ export function AtsClassicTemplate({ data }: TemplateProps) {
                         href={normalizeUrl(project.url)}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-[11px] text-gray-800 hover:text-black font-sans shrink-0 ml-2"
+                        className="text-[10px] text-gray-800 hover:text-black font-sans shrink-0 ml-2"
                       >
                         {cleanDisplayUrl(project.url)}
                       </a>
                     )}
                   </div>
                   {project.description && (
-                    <p className="text-xs text-gray-800 font-sans leading-relaxed pt-0.5 whitespace-pre-line text-justify">
+                    <p className="text-[11px] text-gray-800 font-sans leading-relaxed pt-0.5 whitespace-pre-line text-justify">
                       {project.description}
                     </p>
                   )}
@@ -266,7 +266,7 @@ export function AtsClassicTemplate({ data }: TemplateProps) {
                 return (
                   <div key={cert.id} className="space-y-0.5 font-sans">
                     <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-1">
-                      <div className="font-bold text-xs text-black">
+                      <div className="font-bold text-[11px] text-black">
                         <span>{cert.name}</span>
                         {cert.issuingOrganization && (
                           <span className="font-normal italic text-gray-800">
@@ -288,14 +288,14 @@ export function AtsClassicTemplate({ data }: TemplateProps) {
                         )}
                       </div>
                       {certDates && (
-                        <div className="text-[11px] text-gray-600 shrink-0 font-medium ml-2">
+                        <div className="text-[10px] text-gray-600 shrink-0 font-medium ml-2">
                           {certDates}
                         </div>
                       )}
                     </div>
 
                     {cert.credentialId && (
-                      <div className="text-[11px] text-gray-700">
+                      <div className="text-[10px] text-gray-700">
                         <span className="font-semibold">
                           {labels.credentialId}:
                         </span>{" "}
@@ -321,18 +321,18 @@ export function AtsClassicTemplate({ data }: TemplateProps) {
     >
       {/* Centered Traditional Resume Header */}
       <header className="text-center border-b-2 border-black pb-3.5 mb-4">
-        <h1 className="text-2xl sm:text-3xl font-bold uppercase tracking-widest text-black">
+        <h1 className="text-[22.5px] sm:text-[28.5px] font-bold uppercase tracking-widest text-black">
           {personalInfo.fullName || "YOUR NAME"}
         </h1>
 
         {personalInfo.jobTitle && (
-          <p className="text-sm font-semibold tracking-wide italic text-gray-800 mt-1">
+          <p className="text-[13px] font-semibold tracking-wide italic text-gray-800 mt-1">
             {personalInfo.jobTitle}
           </p>
         )}
 
         {/* Contact Links Strip */}
-        <div className="mt-2 text-xs text-gray-700 font-sans flex flex-wrap justify-center items-center gap-x-3 gap-y-1">
+        <div className="mt-2 text-[11px] text-gray-700 font-sans flex flex-wrap justify-center items-center gap-x-3 gap-y-1">
           {personalInfo.email && (
             <a
               href={`mailto:${personalInfo.email}`}

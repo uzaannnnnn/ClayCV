@@ -49,7 +49,7 @@ export function AtsMinimalTemplate({ data }: TemplateProps) {
             <h2 className="text-[11px] font-bold uppercase tracking-widest text-black border-b border-black pb-0.5 mb-1 font-sans">
               {labels.sections.summary}
             </h2>
-            <p className="text-xs text-black leading-relaxed whitespace-pre-line">
+            <p className="text-[11px] text-black leading-relaxed whitespace-pre-line">
               {personalInfo.summary}
             </p>
           </section>
@@ -77,7 +77,7 @@ export function AtsMinimalTemplate({ data }: TemplateProps) {
 
                 return (
                   <div key={item.id} className="space-y-0.5">
-                    <div className="flex flex-col sm:flex-row sm:items-baseline justify-between text-xs">
+                    <div className="flex flex-col sm:flex-row sm:items-baseline justify-between text-[11px]">
                       <div className="font-bold text-black">
                         {item.position}{" "}
                         {item.company && (
@@ -85,26 +85,26 @@ export function AtsMinimalTemplate({ data }: TemplateProps) {
                             — {item.company}
                           </span>
                         )}
-                        <span className="text-[10px] text-gray-700">
+                        <span className="text-[9px] text-gray-700">
                           {" "}
                           [{empTypeLabel}, {workModeLabel}]
                         </span>
                       </div>
                       {dateStr && (
-                        <div className="text-[11px] text-black shrink-0">
+                        <div className="text-[10px] text-black shrink-0">
                           {dateStr}
                         </div>
                       )}
                     </div>
 
                     {item.location && (
-                      <p className="text-[10px] text-gray-700 italic">
+                      <p className="text-[9px] text-gray-700 italic">
                         {item.location}
                       </p>
                     )}
 
                     {item.description && (
-                      <p className="text-xs text-black leading-relaxed whitespace-pre-line pt-0.5">
+                      <p className="text-[11px] text-black leading-relaxed whitespace-pre-line pt-0.5">
                         {item.description}
                       </p>
                     )}
@@ -145,33 +145,33 @@ export function AtsMinimalTemplate({ data }: TemplateProps) {
                 );
 
                 return (
-                  <div key={item.id} className="space-y-0.5 text-xs">
+                  <div key={item.id} className="space-y-0.5 text-[11px]">
                     <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-1">
                       <div className="font-bold text-black">
                         {item.institution}
                       </div>
                       {dateStr && (
-                        <div className="text-[11px] text-black shrink-0 ml-2">
+                        <div className="text-[10px] text-black shrink-0 ml-2">
                           {dateStr}
                         </div>
                       )}
                     </div>
 
                     {degreeMajorAndGpa && (
-                      <p className="text-xs text-black">
+                      <p className="text-[11px] text-black">
                         {degreeMajorAndGpa}
                       </p>
                     )}
 
                     {/* Thesis Title and Defense Grade displayed together */}
                     {thesisAndGrade && (
-                      <p className="text-[10px] text-gray-800 italic">
+                      <p className="text-[9px] text-gray-800 italic">
                         {thesisAndGrade}
                       </p>
                     )}
 
                     {item.description && (
-                      <p className="text-xs text-black pt-0.5 whitespace-pre-line">
+                      <p className="text-[11px] text-black pt-0.5 whitespace-pre-line">
                         {item.description}
                       </p>
                     )}
@@ -189,7 +189,7 @@ export function AtsMinimalTemplate({ data }: TemplateProps) {
             <h2 className="text-[11px] font-bold uppercase tracking-widest text-black border-b border-black pb-0.5 mb-1 font-sans">
               {labels.sections.skills}
             </h2>
-            <p className="text-xs text-black leading-relaxed">
+            <p className="text-[11px] text-black leading-relaxed">
               {validSkills.map((s, idx) => (
                 <span key={s.id}>
                   <span>{s.name}</span>
@@ -209,7 +209,7 @@ export function AtsMinimalTemplate({ data }: TemplateProps) {
             </h2>
             <div className="space-y-2">
               {validProjects.map((project) => (
-                <div key={project.id} className="space-y-0.5 text-xs">
+                <div key={project.id} className="space-y-0.5 text-[11px]">
                   <div className="flex flex-col sm:flex-row sm:items-baseline justify-between">
                     <div className="font-bold text-black">
                       {project.name}{" "}
@@ -224,14 +224,14 @@ export function AtsMinimalTemplate({ data }: TemplateProps) {
                         href={normalizeUrl(project.url)}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-[11px] text-black font-mono shrink-0 ml-2 hover:opacity-75 transition-opacity"
+                        className="text-[10px] text-black font-mono shrink-0 ml-2 hover:opacity-75 transition-opacity"
                       >
                         {cleanDisplayUrl(project.url)}
                       </a>
                     )}
                   </div>
                   {project.description && (
-                    <p className="text-xs text-black pt-0.5 whitespace-pre-line leading-relaxed">
+                    <p className="text-[11px] text-black pt-0.5 whitespace-pre-line leading-relaxed">
                       {project.description}
                     </p>
                   )}
@@ -248,7 +248,7 @@ export function AtsMinimalTemplate({ data }: TemplateProps) {
             <h2 className="text-[11px] font-bold uppercase tracking-widest text-black border-b border-black pb-0.5 mb-1.5 font-sans">
               {labels.sections.certifications}
             </h2>
-            <div className="space-y-2 text-xs">
+            <div className="space-y-2 text-[11px]">
               {validCertifications.map((cert) => {
                 const certDates = formatCertificationDates(
                   cert.issueMonth,
@@ -284,14 +284,14 @@ export function AtsMinimalTemplate({ data }: TemplateProps) {
                         )}
                       </div>
                       {certDates && (
-                        <div className="text-[11px] text-black shrink-0 ml-2">
+                        <div className="text-[10px] text-black shrink-0 ml-2">
                           {certDates}
                         </div>
                       )}
                     </div>
 
                     {cert.credentialId && (
-                      <div className="text-[10px] text-gray-800">
+                      <div className="text-[9px] text-gray-800">
                         <span className="font-semibold">
                           {labels.credentialId}:
                         </span>{" "}
@@ -317,18 +317,18 @@ export function AtsMinimalTemplate({ data }: TemplateProps) {
     >
       {/* Header */}
       <header className="border-b border-black pb-2.5 mb-3.5">
-        <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-black">
+        <h1 className="text-[18.5px] sm:text-[22.5px] font-bold tracking-tight text-black">
           {personalInfo.fullName || "YOUR NAME"}
         </h1>
 
         {personalInfo.jobTitle && (
-          <p className="text-xs font-medium text-black mt-0.5">
+          <p className="text-[11px] font-medium text-black mt-0.5">
             {personalInfo.jobTitle}
           </p>
         )}
 
         {/* Contact Links Strip */}
-        <div className="mt-1.5 text-[11px] text-black flex flex-wrap items-center gap-x-3 gap-y-1">
+        <div className="mt-1.5 text-[10px] text-black flex flex-wrap items-center gap-x-3 gap-y-1">
           {personalInfo.email && (
             <a
               href={`mailto:${personalInfo.email}`}

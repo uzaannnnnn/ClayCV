@@ -49,7 +49,7 @@ export function AtsModernTemplate({ data }: TemplateProps) {
             <h2 className="text-xs font-bold uppercase tracking-wider text-[#8B7CF6] border-b border-[#8B7CF6]/30 pb-1 mb-1.5 font-sans">
               {labels.sections.summary}
             </h2>
-            <p className="text-xs text-[#374151] leading-relaxed whitespace-pre-line">
+            <p className="text-[11px] text-[#374151] leading-relaxed whitespace-pre-line">
               {personalInfo.summary}
             </p>
           </section>
@@ -78,33 +78,33 @@ export function AtsModernTemplate({ data }: TemplateProps) {
                 return (
                   <div key={item.id} className="space-y-0.5">
                     <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-1">
-                      <div className="font-bold text-xs sm:text-sm text-[#111827]">
+                      <div className="font-bold text-[11px] sm:text-[13px] text-[#111827]">
                         {item.position}{" "}
                         {item.company && (
                           <span className="font-semibold text-[#8B7CF6]">
                             • {item.company}
                           </span>
                         )}
-                        <span className="text-[11px] font-normal text-[#6B7280]">
+                        <span className="text-[10px] font-normal text-[#6B7280]">
                           {" "}
                           ({empTypeLabel} • {workModeLabel})
                         </span>
                       </div>
                       {dateStr && (
-                        <div className="text-[11px] text-[#6B7280] font-medium shrink-0">
+                        <div className="text-[10px] text-[#6B7280] font-medium shrink-0">
                           {dateStr}
                         </div>
                       )}
                     </div>
 
                     {item.location && (
-                      <p className="text-[11px] text-[#6B7280] italic">
+                      <p className="text-[10px] text-[#6B7280] italic">
                         {item.location}
                       </p>
                     )}
 
                     {item.description && (
-                      <p className="text-xs text-[#374151] leading-relaxed whitespace-pre-line pt-0.5">
+                      <p className="text-[11px] text-[#374151] leading-relaxed whitespace-pre-line pt-0.5">
                         {item.description}
                       </p>
                     )}
@@ -147,31 +147,31 @@ export function AtsModernTemplate({ data }: TemplateProps) {
                 return (
                   <div key={item.id} className="space-y-0.5">
                     <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-1">
-                      <div className="font-bold text-xs sm:text-sm text-[#111827]">
+                      <div className="font-bold text-[11px] sm:text-[13px] text-[#111827]">
                         {item.institution}
                       </div>
                       {dateStr && (
-                        <div className="text-[11px] text-[#6B7280] font-medium shrink-0 ml-2">
+                        <div className="text-[10px] text-[#6B7280] font-medium shrink-0 ml-2">
                           {dateStr}
                         </div>
                       )}
                     </div>
 
                     {degreeMajorAndGpa && (
-                      <p className="text-xs text-[#4B5563] font-medium">
+                      <p className="text-[11px] text-[#4B5563] font-medium">
                         {degreeMajorAndGpa}
                       </p>
                     )}
 
                     {/* Thesis Title and Defense Grade displayed together */}
                     {thesisAndGrade && (
-                      <p className="text-[11px] text-[#4B5563] italic">
+                      <p className="text-[10px] text-[#4B5563] italic">
                         {thesisAndGrade}
                       </p>
                     )}
 
                     {item.description && (
-                      <p className="text-xs text-[#374151] pt-0.5 whitespace-pre-line">
+                      <p className="text-[11px] text-[#374151] pt-0.5 whitespace-pre-line">
                         {item.description}
                       </p>
                     )}
@@ -193,7 +193,7 @@ export function AtsModernTemplate({ data }: TemplateProps) {
               {validSkills.map((s) => (
                 <span
                   key={s.id}
-                  className="px-2.5 py-0.5 rounded-[4px] bg-[#F3F4F6] text-[#1F2937] text-xs font-medium"
+                  className="px-2.5 py-0.5 rounded-[4px] bg-[#F3F4F6] text-[#1F2937] text-[11px] font-medium"
                 >
                   {s.name}
                 </span>
@@ -213,10 +213,10 @@ export function AtsModernTemplate({ data }: TemplateProps) {
               {validProjects.map((project) => (
                 <div key={project.id} className="space-y-0.5">
                   <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-1">
-                    <div className="font-bold text-xs sm:text-sm text-[#111827]">
+                    <div className="font-bold text-[11px] sm:text-[13px] text-[#111827]">
                       {project.name}{" "}
                       {project.technologies && (
-                        <span className="text-xs font-normal text-[#6B7280]">
+                        <span className="text-[11px] font-normal text-[#6B7280]">
                           • {project.technologies}
                         </span>
                       )}
@@ -226,14 +226,14 @@ export function AtsModernTemplate({ data }: TemplateProps) {
                         href={normalizeUrl(project.url)}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-[11px] text-[#8B7CF6] font-medium shrink-0 ml-2 hover:text-[#7C6AF4] transition-colors"
+                        className="text-[10px] text-[#8B7CF6] font-medium shrink-0 ml-2 hover:text-[#7C6AF4] transition-colors"
                       >
                         {cleanDisplayUrl(project.url)}
                       </a>
                     )}
                   </div>
                   {project.description && (
-                    <p className="text-xs text-[#374151] pt-0.5 whitespace-pre-line leading-relaxed">
+                    <p className="text-[11px] text-[#374151] pt-0.5 whitespace-pre-line leading-relaxed">
                       {project.description}
                     </p>
                   )}
@@ -264,7 +264,7 @@ export function AtsModernTemplate({ data }: TemplateProps) {
                 return (
                   <div key={cert.id} className="space-y-0.5">
                     <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-1">
-                      <div className="font-bold text-xs text-[#111827]">
+                      <div className="font-bold text-[11px] text-[#111827]">
                         <span>{cert.name}</span>
                         {cert.issuingOrganization && (
                           <span className="font-medium text-[#6B7280]">
@@ -286,14 +286,14 @@ export function AtsModernTemplate({ data }: TemplateProps) {
                         )}
                       </div>
                       {certDates && (
-                        <div className="text-[11px] text-[#6B7280] font-medium shrink-0 ml-2">
+                        <div className="text-[10px] text-[#6B7280] font-medium shrink-0 ml-2">
                           {certDates}
                         </div>
                       )}
                     </div>
 
                     {cert.credentialId && (
-                      <div className="text-[11px] text-[#4B5563]">
+                      <div className="text-[10px] text-[#4B5563]">
                         <span className="font-semibold text-[#111827]">
                           {labels.credentialId}:
                         </span>{" "}
@@ -319,18 +319,18 @@ export function AtsModernTemplate({ data }: TemplateProps) {
     >
       {/* Header */}
       <header className="border-b-2 border-[#8B7CF6] pb-3.5 mb-4">
-        <h1 className="text-2xl sm:text-3xl font-extrabold text-[#111827] tracking-tight">
+        <h1 className="text-[22.5px] sm:text-[28.5px] font-extrabold text-[#111827] tracking-tight">
           {personalInfo.fullName || "Your Name"}
         </h1>
 
         {personalInfo.jobTitle && (
-          <p className="text-sm font-semibold text-[#8B7CF6] mt-0.5">
+          <p className="text-[13px] font-semibold text-[#8B7CF6] mt-0.5">
             {personalInfo.jobTitle}
           </p>
         )}
 
         {/* Contact Links Strip */}
-        <div className="mt-2 text-xs text-[#4B5563] flex flex-wrap items-center gap-x-3 gap-y-1">
+        <div className="mt-2 text-[11px] text-[#4B5563] flex flex-wrap items-center gap-x-3 gap-y-1">
           {personalInfo.email && (
             <a
               href={`mailto:${personalInfo.email}`}

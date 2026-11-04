@@ -15,11 +15,11 @@ import { PdfExternalLinkIcon } from "./PdfExternalLinkIcon";
 
 const styles = StyleSheet.create({
   page: {
-    paddingTop: 24,
-    paddingBottom: 24,
+    paddingTop: 36,
+    paddingBottom: 36,
     paddingLeft: 34,
     paddingRight: 34,
-    fontSize: 11,
+    fontSize: 9,
     fontFamily: "Helvetica",
     color: "#000000",
   },
@@ -27,26 +27,26 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: "#000000",
     paddingBottom: 6,
-    marginBottom: 7,
+    marginBottom: 9,
   },
   fullName: {
-    fontSize: 20,
+    fontSize: 18,
     fontFamily: "Helvetica-Bold",
     color: "#000000",
     letterSpacing: -0.2,
     marginBottom: 2,
   },
   jobTitle: {
-    fontSize: 11.5,
+    fontSize: 9.5,
     fontFamily: "Helvetica",
     color: "#000000",
-    marginBottom: 3,
+    marginBottom: 4,
   },
   contactRow: {
     flexDirection: "row",
     flexWrap: "wrap",
     gap: 6,
-    fontSize: 10,
+    fontSize: 8,
     color: "#000000",
   },
   link: {
@@ -54,7 +54,7 @@ const styles = StyleSheet.create({
     textDecoration: "none",
   },
   section: {
-    marginBottom: 6,
+    marginBottom: 10,
   },
   sectionTitle: {
     fontSize: 9,
@@ -64,60 +64,60 @@ const styles = StyleSheet.create({
     letterSpacing: 1,
     borderBottomWidth: 0.8,
     borderBottomColor: "#000000",
-    paddingBottom: 1.5,
-    marginBottom: 3,
+    paddingBottom: 2,
+    marginBottom: 5,
   },
   summaryText: {
-    fontSize: 10.5,
+    fontSize: 8.5,
     color: "#000000",
-    lineHeight: 1.35,
+    lineHeight: 1.5,
   },
   itemBlock: {
-    marginBottom: 4,
+    marginBottom: 7,
   },
   itemHeader: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "flex-start",
-    marginBottom: 1,
+    marginBottom: 2,
   },
   itemTitle: {
-    fontSize: 11,
+    fontSize: 9,
     fontFamily: "Helvetica-Bold",
     color: "#000000",
     flex: 1,
     paddingRight: 10,
   },
   itemMeta: {
-    fontSize: 10,
+    fontSize: 8,
     color: "#000000",
   },
   itemDate: {
-    fontSize: 10,
+    fontSize: 8,
     color: "#000000",
     textAlign: "right",
     flexShrink: 0,
   },
   itemLocation: {
-    fontSize: 10,
+    fontSize: 8,
     color: "#333333",
-    marginBottom: 1,
+    marginBottom: 1.5,
   },
   itemThesis: {
-    fontSize: 10,
+    fontSize: 8,
     color: "#333333",
     fontFamily: "Helvetica-Oblique",
-    marginBottom: 1,
+    marginBottom: 1.5,
   },
   itemDescription: {
-    fontSize: 10.5,
+    fontSize: 8.5,
     color: "#000000",
-    lineHeight: 1.3,
+    lineHeight: 1.45,
   },
   skillsText: {
-    fontSize: 10.5,
+    fontSize: 8.5,
     color: "#000000",
-    lineHeight: 1.35,
+    lineHeight: 1.5,
   },
   certTitleRow: {
     flexDirection: "row",
@@ -127,7 +127,7 @@ const styles = StyleSheet.create({
     flexWrap: "wrap",
   },
   certTitle: {
-    fontSize: 11,
+    fontSize: 9,
     fontFamily: "Helvetica-Bold",
     color: "#000000",
   },
@@ -359,7 +359,7 @@ export function AtsMinimalPdfDocument({ data }: { data: CVData }) {
                           style={styles.iconLink}
                           src={normalizeUrl(cert.credentialUrl)}
                         >
-                          <PdfExternalLinkIcon color="#000000" size={8.5} />
+                          <PdfExternalLinkIcon color="#000000" size={7} />
                         </Link>
                       ) : null}
                     </View>
