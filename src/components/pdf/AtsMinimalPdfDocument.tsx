@@ -14,30 +14,29 @@ const styles = StyleSheet.create({
     fontSize: 9,
     fontFamily: "Helvetica",
     color: "#000000",
-    lineHeight: 1.35,
   },
   header: {
     borderBottomWidth: 1,
     borderBottomColor: "#000000",
     paddingBottom: 6,
-    marginBottom: 8,
+    marginBottom: 9,
   },
   fullName: {
     fontSize: 18,
     fontFamily: "Helvetica-Bold",
     color: "#000000",
     letterSpacing: -0.2,
+    marginBottom: 2,
   },
   jobTitle: {
     fontSize: 9.5,
     fontFamily: "Helvetica",
     color: "#000000",
-    marginTop: 1,
+    marginBottom: 4,
   },
   contactRow: {
     flexDirection: "row",
     flexWrap: "wrap",
-    marginTop: 3,
     gap: 6,
     fontSize: 8,
     color: "#000000",
@@ -71,17 +70,25 @@ const styles = StyleSheet.create({
   itemHeader: {
     flexDirection: "row",
     justifyContent: "space-between",
-    alignItems: "baseline",
-    marginBottom: 1,
+    alignItems: "flex-start",
+    marginBottom: 1.5,
   },
   itemTitle: {
     fontSize: 9,
     fontFamily: "Helvetica-Bold",
     color: "#000000",
+    flex: 1,
+    paddingRight: 10,
   },
   itemMeta: {
     fontSize: 8,
     color: "#000000",
+  },
+  itemDate: {
+    fontSize: 8,
+    color: "#000000",
+    textAlign: "right",
+    flexShrink: 0,
   },
   itemLocation: {
     fontSize: 8,
@@ -163,7 +170,7 @@ export function AtsMinimalPdfDocument({ data }: { data: CVData }) {
                       </Text>
                     </Text>
                     {dateStr ? (
-                      <Text style={styles.itemMeta}>{dateStr}</Text>
+                      <Text style={styles.itemDate}>{dateStr}</Text>
                     ) : null}
                   </View>
                   {item.location ? (
@@ -200,7 +207,7 @@ export function AtsMinimalPdfDocument({ data }: { data: CVData }) {
                   <View style={styles.itemHeader}>
                     <Text style={styles.itemTitle}>{item.institution}</Text>
                     {dateStr ? (
-                      <Text style={styles.itemMeta}>{dateStr}</Text>
+                      <Text style={styles.itemDate}>{dateStr}</Text>
                     ) : null}
                   </View>
                   {item.degree || item.fieldOfStudy ? (
@@ -321,7 +328,7 @@ export function AtsMinimalPdfDocument({ data }: { data: CVData }) {
                         </Text>
                       ) : null}
                     </Text>
-                    <Text style={styles.itemMeta}>
+                    <Text style={styles.itemDate}>
                       {issueDateStr ? `${labels.issued}: ${issueDateStr}` : ""}
                       {expiryDateStr
                         ? ` • ${labels.expires}: ${expiryDateStr}`

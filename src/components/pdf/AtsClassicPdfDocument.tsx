@@ -14,10 +14,9 @@ const styles = StyleSheet.create({
     fontSize: 9.5,
     fontFamily: "Times-Roman",
     color: "#111827",
-    lineHeight: 1.4,
   },
   header: {
-    textAlign: "center",
+    alignItems: "center",
     borderBottomWidth: 1.5,
     borderBottomColor: "#000000",
     paddingBottom: 8,
@@ -30,13 +29,14 @@ const styles = StyleSheet.create({
     textTransform: "uppercase",
     color: "#000000",
     textAlign: "center",
+    marginBottom: 3,
   },
   jobTitle: {
     fontSize: 10.5,
     fontFamily: "Times-Italic",
     color: "#374151",
-    marginTop: 2,
     textAlign: "center",
+    marginBottom: 5,
   },
   contactRow: {
     flexDirection: "row",
@@ -45,7 +45,6 @@ const styles = StyleSheet.create({
     fontSize: 8.5,
     fontFamily: "Helvetica",
     color: "#4B5563",
-    marginTop: 4,
     gap: 6,
   },
   link: {
@@ -78,13 +77,15 @@ const styles = StyleSheet.create({
   itemHeader: {
     flexDirection: "row",
     justifyContent: "space-between",
-    alignItems: "baseline",
-    marginBottom: 1,
+    alignItems: "flex-start",
+    marginBottom: 1.5,
   },
   itemTitle: {
     fontSize: 9.5,
     fontFamily: "Helvetica-Bold",
     color: "#000000",
+    flex: 1,
+    paddingRight: 10,
   },
   itemCompany: {
     fontFamily: "Times-Italic",
@@ -94,6 +95,13 @@ const styles = StyleSheet.create({
     fontSize: 8.5,
     fontFamily: "Helvetica",
     color: "#4B5563",
+  },
+  itemDate: {
+    fontSize: 8.5,
+    fontFamily: "Helvetica",
+    color: "#4B5563",
+    textAlign: "right",
+    flexShrink: 0,
   },
   itemLocation: {
     fontSize: 8.5,
@@ -183,7 +191,7 @@ export function AtsClassicPdfDocument({ data }: { data: CVData }) {
                       </Text>
                     </Text>
                     {dateStr ? (
-                      <Text style={styles.itemMeta}>{dateStr}</Text>
+                      <Text style={styles.itemDate}>{dateStr}</Text>
                     ) : null}
                   </View>
                   {item.location ? (
@@ -220,7 +228,7 @@ export function AtsClassicPdfDocument({ data }: { data: CVData }) {
                   <View style={styles.itemHeader}>
                     <Text style={styles.itemTitle}>{item.institution}</Text>
                     {dateStr ? (
-                      <Text style={styles.itemMeta}>{dateStr}</Text>
+                      <Text style={styles.itemDate}>{dateStr}</Text>
                     ) : null}
                   </View>
                   {item.degree || item.fieldOfStudy ? (
@@ -293,7 +301,7 @@ export function AtsClassicPdfDocument({ data }: { data: CVData }) {
                       style={styles.link}
                       src={normalizeUrl(project.url)}
                     >
-                      <Text style={styles.itemMeta}>
+                      <Text style={styles.itemDate}>
                         {cleanDisplayUrl(project.url)}
                       </Text>
                     </Link>
@@ -343,7 +351,7 @@ export function AtsClassicPdfDocument({ data }: { data: CVData }) {
                         </Text>
                       ) : null}
                     </Text>
-                    <Text style={styles.itemMeta}>
+                    <Text style={styles.itemDate}>
                       {issueDateStr ? `${labels.issued}: ${issueDateStr}` : ""}
                       {expiryDateStr
                         ? ` • ${labels.expires}: ${expiryDateStr}`

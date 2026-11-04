@@ -14,30 +14,29 @@ const styles = StyleSheet.create({
     fontSize: 9.5,
     fontFamily: "Helvetica",
     color: "#1E1E24",
-    lineHeight: 1.4,
   },
   header: {
     borderBottomWidth: 2,
     borderBottomColor: "#8B7CF6",
-    paddingBottom: 9,
-    marginBottom: 10,
+    paddingBottom: 8,
+    marginBottom: 11,
   },
   fullName: {
     fontSize: 21,
     fontFamily: "Helvetica-Bold",
     color: "#111827",
     letterSpacing: -0.3,
+    marginBottom: 3,
   },
   jobTitle: {
     fontSize: 11,
     fontFamily: "Helvetica-Bold",
     color: "#8B7CF6",
-    marginTop: 2,
+    marginBottom: 5,
   },
   contactRow: {
     flexDirection: "row",
     flexWrap: "wrap",
-    marginTop: 5,
     gap: 8,
   },
   contactItem: {
@@ -73,21 +72,25 @@ const styles = StyleSheet.create({
   itemHeader: {
     flexDirection: "row",
     justifyContent: "space-between",
-    alignItems: "baseline",
-    marginBottom: 1,
+    alignItems: "flex-start",
+    marginBottom: 1.5,
   },
   itemTitle: {
     fontSize: 9.5,
     fontFamily: "Helvetica-Bold",
     color: "#111827",
+    flex: 1,
+    paddingRight: 10,
   },
   companyHighlight: {
     fontFamily: "Helvetica-Bold",
     color: "#8B7CF6",
   },
-  itemMeta: {
+  itemDate: {
     fontSize: 8.5,
     color: "#6B7280",
+    textAlign: "right",
+    flexShrink: 0,
   },
   itemSubtitle: {
     fontSize: 8.5,
@@ -178,12 +181,12 @@ export function AtsModernPdfDocument({ data }: { data: CVData }) {
                           • {item.company}
                         </Text>
                       ) : null}{" "}
-                      <Text style={styles.itemMeta}>
+                      <Text style={styles.contactItem}>
                         ({empTypeLabel} • {workModeLabel})
                       </Text>
                     </Text>
                     {dateStr ? (
-                      <Text style={styles.itemMeta}>{dateStr}</Text>
+                      <Text style={styles.itemDate}>{dateStr}</Text>
                     ) : null}
                   </View>
                   {item.location ? (
@@ -220,7 +223,7 @@ export function AtsModernPdfDocument({ data }: { data: CVData }) {
                   <View style={styles.itemHeader}>
                     <Text style={styles.itemTitle}>{item.institution}</Text>
                     {dateStr ? (
-                      <Text style={styles.itemMeta}>{dateStr}</Text>
+                      <Text style={styles.itemDate}>{dateStr}</Text>
                     ) : null}
                   </View>
                   {item.degree || item.fieldOfStudy ? (
@@ -234,7 +237,7 @@ export function AtsModernPdfDocument({ data }: { data: CVData }) {
                   ) : null}
 
                   {item.gpa || item.defenseGrade || item.thesisTitle ? (
-                    <Text style={styles.itemMeta}>
+                    <Text style={styles.contactItem}>
                       {item.gpa ? `${labels.gpa}: ${item.gpa}   ` : ""}
                       {item.defenseGrade
                         ? `${labels.defenseGrade}: ${item.defenseGrade}   `
@@ -292,7 +295,9 @@ export function AtsModernPdfDocument({ data }: { data: CVData }) {
                       style={styles.link}
                       src={normalizeUrl(project.url)}
                     >
-                      <Text>{cleanDisplayUrl(project.url)}</Text>
+                      <Text style={styles.itemDate}>
+                        {cleanDisplayUrl(project.url)}
+                      </Text>
                     </Link>
                   ) : null}
                 </View>
@@ -335,12 +340,12 @@ export function AtsModernPdfDocument({ data }: { data: CVData }) {
                     <Text style={styles.itemTitle}>
                       {cert.name}{" "}
                       {cert.issuingOrganization ? (
-                        <Text style={styles.itemMeta}>
+                        <Text style={styles.itemSubtitle}>
                           • {cert.issuingOrganization}
                         </Text>
                       ) : null}
                     </Text>
-                    <Text style={styles.itemMeta}>
+                    <Text style={styles.itemDate}>
                       {issueDateStr ? `${labels.issued}: ${issueDateStr}` : ""}
                       {expiryDateStr
                         ? ` • ${labels.expires}: ${expiryDateStr}`
@@ -348,7 +353,7 @@ export function AtsModernPdfDocument({ data }: { data: CVData }) {
                     </Text>
                   </View>
                   {cert.credentialId || cert.credentialUrl ? (
-                    <Text style={styles.itemMeta}>
+                    <Text style={styles.contactItem}>
                       {cert.credentialId
                         ? `${labels.credentialId}: ${cert.credentialId}   `
                         : ""}
