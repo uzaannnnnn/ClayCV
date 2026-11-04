@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
     textDecoration: "none",
   },
   section: {
-    marginBottom: 9,
+    marginBottom: 11,
   },
   sectionTitle: {
     fontSize: 9.5,
@@ -70,23 +70,23 @@ const styles = StyleSheet.create({
     borderBottomWidth: 0.75,
     borderBottomColor: "#9CA3AF",
     paddingBottom: 2,
-    marginBottom: 5,
+    marginBottom: 6,
     color: "#000000",
   },
   summaryText: {
     fontSize: 9,
     fontFamily: "Helvetica",
     color: "#1F2937",
-    lineHeight: 1.4,
+    lineHeight: 1.55,
   },
   itemBlock: {
-    marginBottom: 6,
+    marginBottom: 7.5,
   },
   itemHeader: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "flex-start",
-    marginBottom: 1.5,
+    marginBottom: 2.5,
   },
   itemTitle: {
     fontSize: 9.5,
@@ -115,25 +115,25 @@ const styles = StyleSheet.create({
     fontSize: 8.5,
     fontFamily: "Times-Italic",
     color: "#4B5563",
-    marginBottom: 1,
+    marginBottom: 2,
   },
   itemThesis: {
     fontSize: 8.5,
     fontFamily: "Times-Italic",
     color: "#374151",
-    marginBottom: 1,
+    marginBottom: 2,
   },
   itemDescription: {
     fontSize: 8.5,
     fontFamily: "Helvetica",
     color: "#1F2937",
-    lineHeight: 1.35,
+    lineHeight: 1.5,
   },
   skillsText: {
     fontSize: 8.5,
     fontFamily: "Helvetica",
     color: "#1F2937",
-    lineHeight: 1.4,
+    lineHeight: 1.5,
   },
   bold: {
     fontFamily: "Helvetica-Bold",

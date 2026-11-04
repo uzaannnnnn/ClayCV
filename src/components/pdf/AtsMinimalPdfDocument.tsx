@@ -54,7 +54,7 @@ const styles = StyleSheet.create({
     textDecoration: "none",
   },
   section: {
-    marginBottom: 8,
+    marginBottom: 10,
   },
   sectionTitle: {
     fontSize: 9,
@@ -65,21 +65,21 @@ const styles = StyleSheet.create({
     borderBottomWidth: 0.8,
     borderBottomColor: "#000000",
     paddingBottom: 2,
-    marginBottom: 4,
+    marginBottom: 5,
   },
   summaryText: {
     fontSize: 8.5,
     color: "#000000",
-    lineHeight: 1.35,
+    lineHeight: 1.5,
   },
   itemBlock: {
-    marginBottom: 5,
+    marginBottom: 7,
   },
   itemHeader: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "flex-start",
-    marginBottom: 1.5,
+    marginBottom: 2,
   },
   itemTitle: {
     fontSize: 9,
@@ -101,23 +101,23 @@ const styles = StyleSheet.create({
   itemLocation: {
     fontSize: 8,
     color: "#333333",
-    marginBottom: 1,
+    marginBottom: 1.5,
   },
   itemThesis: {
     fontSize: 8,
     color: "#333333",
     fontFamily: "Helvetica-Oblique",
-    marginBottom: 1,
+    marginBottom: 1.5,
   },
   itemDescription: {
     fontSize: 8.5,
     color: "#000000",
-    lineHeight: 1.3,
+    lineHeight: 1.45,
   },
   skillsText: {
     fontSize: 8.5,
     color: "#000000",
-    lineHeight: 1.35,
+    lineHeight: 1.5,
   },
   certTitleRow: {
     flexDirection: "row",

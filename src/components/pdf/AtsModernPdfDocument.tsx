@@ -57,7 +57,7 @@ const styles = StyleSheet.create({
     textDecoration: "none",
   },
   section: {
-    marginBottom: 10,
+    marginBottom: 11,
   },
   sectionTitle: {
     fontSize: 9.5,
@@ -68,21 +68,21 @@ const styles = StyleSheet.create({
     borderBottomWidth: 0.5,
     borderBottomColor: "#E5E7EB",
     paddingBottom: 3,
-    marginBottom: 5,
+    marginBottom: 6,
   },
   summaryText: {
     fontSize: 9,
     color: "#374151",
-    lineHeight: 1.4,
+    lineHeight: 1.5,
   },
   itemBlock: {
-    marginBottom: 6,
+    marginBottom: 7,
   },
   itemHeader: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "flex-start",
-    marginBottom: 1.5,
+    marginBottom: 2.5,
   },
   itemTitle: {
     fontSize: 9.5,
@@ -104,18 +104,18 @@ const styles = StyleSheet.create({
   itemSubtitle: {
     fontSize: 8.5,
     color: "#4B5563",
-    marginBottom: 1,
+    marginBottom: 1.5,
   },
   itemThesis: {
     fontSize: 8.5,
     color: "#4B5563",
     fontFamily: "Helvetica-Oblique",
-    marginBottom: 1,
+    marginBottom: 1.5,
   },
   itemDescription: {
     fontSize: 8.5,
     color: "#374151",
-    lineHeight: 1.35,
+    lineHeight: 1.48,
   },
   skillsWrap: {
     flexDirection: "row",
