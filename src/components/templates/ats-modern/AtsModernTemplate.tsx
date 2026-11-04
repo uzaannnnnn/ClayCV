@@ -264,10 +264,11 @@ export function AtsModernTemplate({ data }: TemplateProps) {
                 return (
                   <div key={cert.id} className="space-y-0.5">
                     <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-1">
-                      <div className="font-bold text-xs sm:text-sm text-[#111827] flex items-center gap-1.5 flex-wrap">
+                      <div className="font-bold text-xs text-[#111827]">
                         <span>{cert.name}</span>
                         {cert.issuingOrganization && (
                           <span className="font-medium text-[#6B7280]">
+                            {" "}
                             • {cert.issuingOrganization}
                           </span>
                         )}
@@ -278,14 +279,14 @@ export function AtsModernTemplate({ data }: TemplateProps) {
                             rel="noopener noreferrer"
                             title={labels.openCertificateLink}
                             aria-label={labels.openCertificateLink}
-                            className="inline-flex items-center text-[#8B7CF6] hover:text-[#7C6AF4] transition-colors"
+                            className="inline-flex items-center ml-1 text-[#8B7CF6] hover:text-[#7C6AF4] transition-colors align-baseline"
                           >
-                            <ExternalLink className="w-3.5 h-3.5" />
+                            <ExternalLink className="w-3.5 h-3.5 inline" />
                           </a>
                         )}
                       </div>
                       {certDates && (
-                        <div className="text-[11px] text-[#6B7280] font-medium shrink-0">
+                        <div className="text-[11px] text-[#6B7280] font-medium shrink-0 ml-2">
                           {certDates}
                         </div>
                       )}

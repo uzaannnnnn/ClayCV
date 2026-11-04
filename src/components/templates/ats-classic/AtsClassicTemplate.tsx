@@ -266,10 +266,11 @@ export function AtsClassicTemplate({ data }: TemplateProps) {
                 return (
                   <div key={cert.id} className="space-y-0.5 font-sans">
                     <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-1">
-                      <div className="font-bold text-xs sm:text-sm text-black flex items-center gap-1.5 flex-wrap">
+                      <div className="font-bold text-xs text-black">
                         <span>{cert.name}</span>
                         {cert.issuingOrganization && (
                           <span className="font-normal italic text-gray-800">
+                            {" "}
                             — {cert.issuingOrganization}
                           </span>
                         )}
@@ -280,14 +281,14 @@ export function AtsClassicTemplate({ data }: TemplateProps) {
                             rel="noopener noreferrer"
                             title={labels.openCertificateLink}
                             aria-label={labels.openCertificateLink}
-                            className="inline-flex items-center text-gray-600 hover:text-black transition-colors"
+                            className="inline-flex items-center ml-1 text-gray-600 hover:text-black transition-colors align-baseline"
                           >
-                            <ExternalLink className="w-3.5 h-3.5" />
+                            <ExternalLink className="w-3.5 h-3.5 inline" />
                           </a>
                         )}
                       </div>
                       {certDates && (
-                        <div className="text-[11px] text-gray-600 shrink-0 font-medium">
+                        <div className="text-[11px] text-gray-600 shrink-0 font-medium ml-2">
                           {certDates}
                         </div>
                       )}

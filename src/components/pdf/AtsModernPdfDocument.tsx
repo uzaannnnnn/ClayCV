@@ -139,6 +139,11 @@ const styles = StyleSheet.create({
     paddingRight: 10,
     flexWrap: "wrap",
   },
+  certTitle: {
+    fontSize: 9.5,
+    fontFamily: "Helvetica-Bold",
+    color: "#1E1E24",
+  },
   iconLink: {
     marginLeft: 4,
     textDecoration: "none",
@@ -360,7 +365,7 @@ export function AtsModernPdfDocument({ data }: { data: CVData }) {
                 <View key={cert.id} style={styles.itemBlock} wrap={false}>
                   <View style={styles.itemHeader}>
                     <View style={styles.certTitleRow}>
-                      <Text style={styles.itemTitle}>
+                      <Text style={styles.certTitle}>
                         {cert.name}{" "}
                         {cert.issuingOrganization ? (
                           <Text style={styles.itemSubtitle}>

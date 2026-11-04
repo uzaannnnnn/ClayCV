@@ -262,7 +262,7 @@ export function AtsMinimalTemplate({ data }: TemplateProps) {
                 return (
                   <div key={cert.id} className="space-y-0.5">
                     <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-1">
-                      <div className="font-bold text-black flex items-center gap-1.5 flex-wrap">
+                      <div className="font-bold text-black">
                         <span>{cert.name}</span>
                         {cert.issuingOrganization && (
                           <span className="font-normal">
@@ -277,14 +277,14 @@ export function AtsMinimalTemplate({ data }: TemplateProps) {
                             rel="noopener noreferrer"
                             title={labels.openCertificateLink}
                             aria-label={labels.openCertificateLink}
-                            className="inline-flex items-center text-gray-700 hover:text-black transition-colors"
+                            className="inline-flex items-center ml-1 text-gray-700 hover:text-black transition-colors align-baseline"
                           >
-                            <ExternalLink className="w-3 h-3" />
+                            <ExternalLink className="w-3 h-3 inline" />
                           </a>
                         )}
                       </div>
                       {certDates && (
-                        <div className="text-[11px] text-black shrink-0">
+                        <div className="text-[11px] text-black shrink-0 ml-2">
                           {certDates}
                         </div>
                       )}
