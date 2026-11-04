@@ -78,7 +78,7 @@ export const CV_LABELS: Record<CVLanguage, DocumentLabels> = {
     credentialId: "ID Kredensial",
     credentialUrl: "URL Kredensial",
     noExpiry: "Tanpa Kedaluwarsa",
-    expires: "Kedaluwarsa",
+    expires: "Kadaluwarsa",
     issued: "Diterbitkan",
     viewCredential: "Lihat Kredensial",
     openCertificateLink: "Buka tautan verifikasi sertifikat",
@@ -270,3 +270,5 @@ export const MONTH_NAMES: Record<CVLanguage, { full: string[]; short: string[] }
 export function getDocumentLabels(lang: CVLanguage): DocumentLabels {
   return CV_LABELS[lang] || CV_LABELS.en;
 }
+
+export { formatCertificationDates } from "@/lib/dates/date-utils";

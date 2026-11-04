@@ -5,7 +5,10 @@ import {
   formatThesisAndGrade,
   formatDegreeMajorAndGpa,
 } from "@/lib/i18n/cv-labels";
-import { formatDateRange, formatMonthYear } from "@/lib/dates/date-utils";
+import {
+  formatDateRange,
+  formatCertificationDates,
+} from "@/lib/dates/date-utils";
 import { normalizeUrl, cleanDisplayUrl } from "@/lib/utils";
 import { ExternalLink } from "lucide-react";
 
@@ -251,20 +254,14 @@ export function AtsClassicTemplate({ data }: TemplateProps) {
             </h2>
             <div className="space-y-2.5">
               {validCertifications.map((cert) => {
-                const issueDateStr = formatMonthYear(
+                const certDates = formatCertificationDates(
                   cert.issueMonth,
                   cert.issueYear,
-                  language,
-                  true
+                  cert.expiryMonth,
+                  cert.expiryYear,
+                  cert.noExpiry,
+                  language
                 );
-                const expiryDateStr = cert.noExpiry
-                  ? labels.noExpiry
-                  : formatMonthYear(
-                      cert.expiryMonth,
-                      cert.expiryYear,
-                      language,
-                      true
-                    );
 
                 return (
                   <div key={cert.id} className="space-y-0.5 font-sans">
@@ -289,19 +286,11 @@ export function AtsClassicTemplate({ data }: TemplateProps) {
                           </a>
                         )}
                       </div>
-                      <div className="text-[11px] text-gray-600 shrink-0 font-medium">
-                        {issueDateStr && (
-                          <span>
-                            {labels.issued}: {issueDateStr}
-                          </span>
-                        )}
-                        {expiryDateStr && (
-                          <span>
-                            {" "}
-                            • {labels.expires}: {expiryDateStr}
-                          </span>
-                        )}
-                      </div>
+                      {certDates && (
+                        <div className="text-[11px] text-gray-600 shrink-0 font-medium">
+                          {certDates}
+                        </div>
+                      )}
                     </div>
 
                     {cert.credentialId && (

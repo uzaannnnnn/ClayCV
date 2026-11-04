@@ -93,3 +93,56 @@ export function validateDateRange(
 
   return null;
 }
+
+/**
+ * Formats certification issue date and expiration date metadata.
+ *
+ * Rules:
+ * - Issue date exists + noExpiry is true → show issue date only: `${issued}: ${issueDate}`
+ * - Issue date exists + valid expiration date → show both dates: `${issued}: ${issueDate} • ${expires}: ${expiryDate}`
+ * - Issue date exists + expiration date is empty and noExpiry is false → show issue date only: `${issued}: ${issueDate}`
+ * - Issue date is empty + valid expiration date → show expiration date only: `${expires}: ${expiryDate}`
+ * - Both dates are empty → hide the entire date metadata row: returns null.
+ * - When noExpiry is true, NEVER output placeholder expiration values.
+ *
+ * Examples (ID):
+ * - Diterbitkan: Nov 2021
+ * - Diterbitkan: Nov 2021 • Kadaluwarsa: Nov 2024
+ * - Kadaluwarsa: Nov 2024
+ *
+ * Examples (EN):
+ * - Issued: Nov 2021
+ * - Issued: Nov 2021 • Expires: Nov 2024
+ * - Expires: Nov 2024
+ */
+export function formatCertificationDates(
+  issueMonth: number | null | undefined,
+  issueYear: number | null | undefined,
+  expiryMonth: number | null | undefined,
+  expiryYear: number | null | undefined,
+  noExpiry: boolean = false,
+  language: CVLanguage = "en"
+): string | null {
+  const labels = getDocumentLabels(language);
+  const issueDateStr = formatMonthYear(
+    issueMonth ?? null,
+    issueYear ?? null,
+    language,
+    true
+  );
+
+  const expiryDateStr =
+    !noExpiry && expiryYear
+      ? formatMonthYear(expiryMonth ?? null, expiryYear, language, true)
+      : "";
+
+  const parts: string[] = [];
+  if (issueDateStr) {
+    parts.push(`${labels.issued}: ${issueDateStr}`);
+  }
+  if (expiryDateStr) {
+    parts.push(`${labels.expires}: ${expiryDateStr}`);
+  }
+
+  return parts.length > 0 ? parts.join(" • ") : null;
+}

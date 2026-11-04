@@ -6,7 +6,10 @@ import {
   formatThesisAndGrade,
   formatDegreeMajorAndGpa,
 } from "@/lib/i18n/cv-labels";
-import { formatDateRange, formatMonthYear } from "@/lib/dates/date-utils";
+import {
+  formatDateRange,
+  formatCertificationDates,
+} from "@/lib/dates/date-utils";
 import { normalizeUrl, cleanDisplayUrl } from "@/lib/utils";
 import { PdfExternalLinkIcon } from "./PdfExternalLinkIcon";
 
@@ -344,20 +347,14 @@ export function AtsModernPdfDocument({ data }: { data: CVData }) {
               {labels.sections.certifications}
             </Text>
             {validCertifications.map((cert) => {
-              const issueDateStr = formatMonthYear(
+              const certDates = formatCertificationDates(
                 cert.issueMonth,
                 cert.issueYear,
-                language,
-                true
+                cert.expiryMonth,
+                cert.expiryYear,
+                cert.noExpiry,
+                language
               );
-              const expiryDateStr = cert.noExpiry
-                ? labels.noExpiry
-                : formatMonthYear(
-                    cert.expiryMonth,
-                    cert.expiryYear,
-                    language,
-                    true
-                  );
 
               return (
                 <View key={cert.id} style={styles.itemBlock} wrap={false}>
@@ -380,12 +377,9 @@ export function AtsModernPdfDocument({ data }: { data: CVData }) {
                         </Link>
                       ) : null}
                     </View>
-                    <Text style={styles.itemDate}>
-                      {issueDateStr ? `${labels.issued}: ${issueDateStr}` : ""}
-                      {expiryDateStr
-                        ? ` • ${labels.expires}: ${expiryDateStr}`
-                        : ""}
-                    </Text>
+                    {certDates ? (
+                      <Text style={styles.itemDate}>{certDates}</Text>
+                    ) : null}
                   </View>
                   {cert.credentialId ? (
                     <Text style={styles.contactItem}>
