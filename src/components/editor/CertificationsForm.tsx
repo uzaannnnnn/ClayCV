@@ -188,14 +188,15 @@ export function CertificationsForm() {
                   htmlFor={`no-expiry-${item.id}`}
                   className="text-xs font-medium text-[#292735] cursor-pointer select-none"
                 >
-                  This credential does not expire (Tanpa Kedaluwarsa)
+                  This credential does not expire
                 </label>
               </div>
 
               {/* Credential ID & URL */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 sm:gap-4 items-start">
                 <Input
                   label="Credential ID"
+                  labelClassName="block text-[11px] font-bold uppercase tracking-wider text-[#777482] truncate whitespace-nowrap"
                   placeholder="e.g. AWS-839210-SAA"
                   value={item.credentialId}
                   onChange={(e) =>
@@ -205,7 +206,8 @@ export function CertificationsForm() {
                   }
                 />
                 <Input
-                  label="Credential Verification URL"
+                  label="Credential URL"
+                  labelClassName="block text-[11px] font-bold uppercase tracking-wider text-[#777482] truncate whitespace-nowrap"
                   placeholder="e.g. https://www.credly.com/badges/..."
                   value={item.credentialUrl}
                   onChange={(e) =>
