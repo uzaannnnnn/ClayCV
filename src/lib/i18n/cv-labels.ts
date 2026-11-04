@@ -71,7 +71,7 @@ export const CV_LABELS: Record<CVLanguage, DocumentLabels> = {
       remote: "Jarak Jauh",
     },
     present: "Sekarang",
-    in: "dalam",
+    in: "in",
     thesisTitle: "Judul Skripsi",
     defenseGrade: "Nilai Sidang",
     gpa: "IPK",
@@ -86,43 +86,78 @@ export const CV_LABELS: Record<CVLanguage, DocumentLabels> = {
 };
 
 /**
- * Format optional thesis title and defense grade together compactly.
+ * Format optional thesis title and defense grade without 'Thesis:' / 'Judul Skripsi:' prefixes.
+ *
+ * Rules:
+ * - Remove "Thesis:" and "Judul Skripsi:" completely.
+ * - Display thesis title directly with quotation marks: "Thesis Title"
+ * - Display "Grade:" followed by defense grade: Grade: A+
+ * - Separate thesis title and grade using a comma.
+ * - If only thesis exists: "Thesis Title"
+ * - If only grade exists: Grade: A+
+ * - If both empty: null
+ *
  * Examples:
- * - Both: Thesis: "Distributed Systems", Grade: A
- * - Thesis only: Thesis: "Distributed Systems"
- * - Grade only: Grade: A
- * - Neither: null
+ * - "Optimizing Distributed Event Propagation in Reactive Web Applications", Grade: A+
+ * - "Thesis Title"
+ * - Grade: A+
  */
 export function formatThesisAndGrade(
   thesisTitle?: string,
   defenseGrade?: string,
-  language: CVLanguage = "en"
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  _language: CVLanguage = "en"
 ): string | null {
-  const labels = getDocumentLabels(language);
-  const parts: string[] = [];
-
   const trimmedThesis = thesisTitle?.trim();
   const trimmedGrade = defenseGrade?.trim();
 
+  let formattedThesis = "";
   if (trimmedThesis) {
-    parts.push(`${labels.thesisTitle}: "${trimmedThesis}"`);
-  }
-  if (trimmedGrade) {
-    parts.push(`${labels.defenseGrade}: ${trimmedGrade}`);
+    let clean = trimmedThesis.replace(/^(thesis|judul skripsi)\s*:\s*/i, "").trim();
+    if (
+      (clean.startsWith('"') && clean.endsWith('"')) ||
+      (clean.startsWith('“') && clean.endsWith('”'))
+    ) {
+      clean = clean.slice(1, -1).trim();
+    }
+    if (clean) {
+      formattedThesis = `"${clean}"`;
+    }
   }
 
-  return parts.length > 0 ? parts.join(", ") : null;
+  let formattedGrade = "";
+  if (trimmedGrade) {
+    const clean = trimmedGrade
+      .replace(/^(grade|nilai sidang|defense grade)\s*:\s*/i, "")
+      .trim();
+    if (clean) {
+      formattedGrade = `Grade: ${clean}`;
+    }
+  }
+
+  if (formattedThesis && formattedGrade) {
+    return `${formattedThesis}, ${formattedGrade}`;
+  }
+  if (formattedThesis) {
+    return formattedThesis;
+  }
+  if (formattedGrade) {
+    return formattedGrade;
+  }
+  return null;
 }
 
 /**
- * Formats Degree, Field of Study, and GPA into a single line.
- * Rule: GPA must appear beside the field of study/major, separated by a comma.
+ * Formats Degree, Field of Study, and GPA into a single line without GPA/IPK labels.
+ *
+ * Rules:
+ * - Remove "GPA:" and "IPK:" completely.
+ * - Display only the numeric GPA value directly after degree/major, separated by a comma.
+ * - If GPA empty, display only degree/major without an additional comma.
  *
  * Examples:
- * - Bachelor of Science in Computer Science, GPA: 3.88/4.00
- * - Bachelor of Science, GPA: 3.88/4.00
- * - Computer Science, GPA: 3.88/4.00
- * - GPA: 3.88/4.00
+ * - Bachelor of Science in Computer Science, 3.85/4.00
+ * - Bachelor degree in Computer Science, 3.88/4.00
  * - Bachelor of Science in Computer Science (when GPA empty)
  */
 export function formatDegreeMajorAndGpa(
@@ -146,14 +181,13 @@ export function formatDegreeMajorAndGpa(
     degreeMajor = trimmedMajor;
   }
 
-  // 2. Format GPA if present
+  // 2. Format GPA if present (strip any GPA: or IPK: label, normalize spaces around slash)
   let formattedGpa = "";
   if (trimmedGpa) {
-    const lower = trimmedGpa.toLowerCase();
-    if (lower.startsWith("gpa:") || lower.startsWith("ipk:")) {
-      formattedGpa = trimmedGpa;
-    } else {
-      formattedGpa = `${labels.gpa}: ${trimmedGpa}`;
+    let clean = trimmedGpa.replace(/^(gpa|ipk)\s*:\s*/i, "").trim();
+    clean = clean.replace(/\s*\/\s*/g, "/");
+    if (clean) {
+      formattedGpa = clean;
     }
   }
 

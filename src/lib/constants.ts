@@ -99,7 +99,7 @@ export const SAMPLE_CV_DATA: CVData = {
         "Dean's Honor List for 6 semesters. Team Lead for the Berkeley Autonomous Systems & HCI Laboratory.",
       thesisTitle: "Optimizing Distributed Event Propagation in Reactive Web Applications",
       defenseGrade: "A+",
-      gpa: "3.88 / 4.00",
+      gpa: "3.88/4.00",
     },
   ],
   skills: [
