@@ -27,7 +27,7 @@ export function Hero() {
           <div className="lg:col-span-6 space-y-6 text-center lg:text-left">
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full clay-card-sm bg-[#FAF8F5] text-xs font-semibold text-[#8B7CF6]">
               <Sparkles className="w-4 h-4 text-[#8B7CF6]" />
-              <span>Zero friction • 100% Client-Side • No Account Required</span>
+              <span>ATS-First • 100% Client-Side • No Account Required</span>
             </div>
 
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-[#292735] tracking-tight leading-[1.12]">
@@ -38,8 +38,8 @@ export function Hero() {
             </h1>
 
             <p className="text-base sm:text-lg text-[#777482] max-w-xl mx-auto lg:mx-0 leading-relaxed">
-              Create a professional, beautifully designed CV in minutes. No
-              account, no hassle, just your next opportunity.
+              Create a professional, ATS-friendly CV in minutes. No account, no
+              hassle, just your next opportunity.
             </p>
 
             {/* CTAs */}
@@ -69,7 +69,7 @@ export function Hero() {
             <div className="pt-4 flex flex-wrap items-center justify-center lg:justify-start gap-6 text-xs font-medium text-[#777482]">
               <div className="flex items-center gap-1.5">
                 <CheckCircle2 className="w-4 h-4 text-[#8B7CF6]" />
-                <span>Instant PDF Download</span>
+                <span>3 ATS-Optimized Templates</span>
               </div>
               <div className="flex items-center gap-1.5">
                 <ShieldCheck className="w-4 h-4 text-[#8B7CF6]" />
@@ -77,7 +77,7 @@ export function Hero() {
               </div>
               <div className="flex items-center gap-1.5">
                 <Zap className="w-4 h-4 text-[#8B7CF6]" />
-                <span>Real-Time Preview</span>
+                <span>English & Indonesian CV</span>
               </div>
             </div>
           </div>
@@ -89,12 +89,12 @@ export function Hero() {
               {/* Floating Clay Accents */}
               <div className="absolute -top-4 -right-4 bg-[#FFD6C2] text-[#C05621] px-3.5 py-1.5 rounded-[14px] text-xs font-bold shadow-[-3px_-3px_8px_rgba(255,255,255,0.9),3px_4px_10px_rgba(192,86,33,0.2)] flex items-center gap-1.5 z-20">
                 <Sparkles className="w-3.5 h-3.5" />
-                <span>ATS-Friendly</span>
+                <span>ATS-Friendly Single Column</span>
               </div>
 
               <div className="absolute -bottom-4 -left-4 bg-[#D7EDE1] text-[#227248] px-3.5 py-1.5 rounded-[14px] text-xs font-bold shadow-[-3px_-3px_8px_rgba(255,255,255,0.9),3px_4px_10px_rgba(34,114,72,0.2)] flex items-center gap-1.5 z-20">
                 <FileCheck2 className="w-3.5 h-3.5" />
-                <span>Vector PDF Ready</span>
+                <span>True Vector A4 PDF</span>
               </div>
 
               {/* Document Window Preview Header */}
@@ -108,21 +108,21 @@ export function Hero() {
                   </span>
                 </div>
                 <Badge variant="purple" className="text-[11px] font-semibold">
-                  Modern Template
+                  ATS Modern
                 </Badge>
               </div>
 
-              {/* Realistic CV Document Preview (Clean ATS Resume Paper) */}
-              <div className="cv-paper rounded-[12px] p-6 text-left border border-[rgba(0,0,0,0.06)] bg-white text-[#1A1A1A] text-xs leading-relaxed">
+              {/* Realistic CV Document Preview */}
+              <div className="cv-paper rounded-[6px] p-6 text-left border border-[rgba(0,0,0,0.06)] bg-white text-[#1A1A1A] text-xs leading-relaxed">
                 {/* Header */}
-                <div className="border-b border-[#8B7CF6]/30 pb-3">
+                <div className="border-b-2 border-[#8B7CF6] pb-3">
                   <h3 className="text-lg font-bold text-[#1A1A1A] tracking-tight">
                     Alex Morgan
                   </h3>
                   <p className="text-[#8B7CF6] font-medium text-xs">
-                    Senior Product Designer & Frontend Engineer
+                    Senior Software Engineer & Systems Architect
                   </p>
-                  <div className="mt-1 flex flex-wrap gap-x-3 text-[10px] text-[#555555]">
+                  <div className="mt-1 flex flex-wrap gap-x-2 text-[10px] text-[#555555]">
                     <span>alex.morgan@example.com</span>
                     <span>•</span>
                     <span>+1 (555) 234-5678</span>
@@ -137,28 +137,28 @@ export function Hero() {
                     Professional Summary
                   </h4>
                   <p className="text-[11px] text-[#444444]">
-                    Strategic product designer and frontend engineer with 7+
-                    years of experience building accessible design systems and
-                    high-converting web applications.
+                    Senior Software Engineer with 7+ years building scalable
+                    distributed systems, high-performing TypeScript frontends,
+                    and enterprise design systems.
                   </p>
                 </div>
 
                 {/* Experience */}
                 <div className="mt-3">
                   <h4 className="text-[10px] font-bold uppercase tracking-wider text-[#8B7CF6] mb-1">
-                    Experience
+                    Work Experience
                   </h4>
                   <div className="space-y-1.5">
                     <div>
                       <div className="flex justify-between items-baseline font-semibold text-[#1A1A1A]">
-                        <span>Lead UI/UX Engineer • Starlight Systems</span>
+                        <span>Lead UI/UX Engineer • Starlight Digital</span>
                         <span className="text-[10px] text-[#777482]">
-                          2022 – Present
+                          Mar 2022 — Present
                         </span>
                       </div>
                       <p className="text-[10px] text-[#555555]">
-                        Architected enterprise design systems, reducing feature
-                        delivery time by 35%.
+                        Architected enterprise design system used by 14 squads;
+                        accelerated release cycles by 35%.
                       </p>
                     </div>
                   </div>
@@ -167,19 +167,19 @@ export function Hero() {
                 {/* Skills */}
                 <div className="mt-3">
                   <h4 className="text-[10px] font-bold uppercase tracking-wider text-[#8B7CF6] mb-1">
-                    Key Competencies
+                    Skills & Competencies
                   </h4>
                   <div className="flex flex-wrap gap-1 text-[10px]">
-                    <span className="bg-[#F4F1EB] px-2 py-0.5 rounded text-[#333333]">
-                      React / Next.js
-                    </span>
-                    <span className="bg-[#F4F1EB] px-2 py-0.5 rounded text-[#333333]">
+                    <span className="bg-[#F3F4F6] px-2 py-0.5 rounded text-[#1F2937]">
                       TypeScript
                     </span>
-                    <span className="bg-[#F4F1EB] px-2 py-0.5 rounded text-[#333333]">
-                      Design Systems
+                    <span className="bg-[#F3F4F6] px-2 py-0.5 rounded text-[#1F2937]">
+                      React / Next.js
                     </span>
-                    <span className="bg-[#F4F1EB] px-2 py-0.5 rounded text-[#333333]">
+                    <span className="bg-[#F3F4F6] px-2 py-0.5 rounded text-[#1F2937]">
+                      Distributed Systems
+                    </span>
+                    <span className="bg-[#F3F4F6] px-2 py-0.5 rounded text-[#1F2937]">
                       Tailwind CSS
                     </span>
                   </div>

@@ -3,7 +3,6 @@
 import React, { useState } from "react";
 import { useCVStore } from "@/store/cv-store";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 
 export function PersonalInfoForm() {
   const { cvData, updatePersonalInfo } = useCVStore();
@@ -59,7 +58,7 @@ export function PersonalInfoForm() {
         />
         <Input
           label="Professional Title"
-          placeholder="e.g. Senior Frontend Engineer"
+          placeholder="e.g. Senior Software Engineer"
           value={personalInfo.jobTitle}
           onChange={(e) => handleChange("jobTitle", e.target.value)}
         />
@@ -78,7 +77,7 @@ export function PersonalInfoForm() {
         <Input
           label="Phone Number"
           type="tel"
-          placeholder="e.g. +1 (555) 019-2834"
+          placeholder="e.g. +1 (555) 234-5678"
           value={personalInfo.phone}
           onChange={(e) => handleChange("phone", e.target.value)}
         />
@@ -88,13 +87,13 @@ export function PersonalInfoForm() {
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <Input
           label="Location"
-          placeholder="e.g. San Francisco, CA or Remote"
+          placeholder="e.g. San Francisco, CA or Jakarta, Indonesia"
           value={personalInfo.location}
           onChange={(e) => handleChange("location", e.target.value)}
         />
         <Input
           label="Portfolio / Website"
-          placeholder="e.g. https://alexmorgan.design"
+          placeholder="e.g. https://alexmorgan.dev"
           value={personalInfo.website}
           onChange={(e) => handleChange("website", e.target.value)}
           error={errors.website}
@@ -118,16 +117,6 @@ export function PersonalInfoForm() {
           error={errors.github}
         />
       </div>
-
-      {/* Summary */}
-      <Textarea
-        label="Professional Summary"
-        rows={4}
-        placeholder="Brief summary of your background, core strengths, and career achievements..."
-        value={personalInfo.summary}
-        onChange={(e) => handleChange("summary", e.target.value)}
-        helperText="A concise 2-4 sentence overview works best for modern recruiters."
-      />
     </div>
   );
 }

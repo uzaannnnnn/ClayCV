@@ -40,7 +40,7 @@ export function ProjectsForm() {
             onClick={() => addProject()}
           >
             <Plus className="w-4 h-4 mr-1.5" />
-            Add Project
+            Add First Project
           </Button>
         </div>
       ) : (
@@ -58,7 +58,7 @@ export function ProjectsForm() {
                 <button
                   type="button"
                   onClick={() => removeProject(item.id)}
-                  className="text-xs text-red-500 hover:text-red-700 flex items-center gap-1 transition-colors px-2 py-1 rounded-[8px] hover:bg-red-50"
+                  className="text-xs text-red-500 hover:text-red-700 flex items-center gap-1 transition-colors px-2 py-1 rounded-[8px] hover:bg-red-50 cursor-pointer"
                   title="Remove this project"
                 >
                   <Trash2 className="w-3.5 h-3.5" />
@@ -70,7 +70,7 @@ export function ProjectsForm() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                 <Input
                   label="Project Name *"
-                  placeholder="e.g. ClayCV or SaaS Analytics"
+                  placeholder="e.g. ClayCV, Distributed Analytics"
                   value={item.name}
                   onChange={(e) =>
                     updateProject(item.id, { name: e.target.value })
@@ -88,7 +88,7 @@ export function ProjectsForm() {
 
               {/* URL */}
               <Input
-                label="Project Link / Repo URL"
+                label="Project Link / Repo URL (Clickable in PDF)"
                 placeholder="e.g. https://github.com/username/project"
                 value={item.url}
                 onChange={(e) =>

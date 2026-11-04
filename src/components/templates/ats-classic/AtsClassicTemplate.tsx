@@ -1,0 +1,412 @@
+import React from "react";
+import { CVData, SectionKey } from "@/types/cv";
+import { getDocumentLabels } from "@/lib/i18n/cv-labels";
+import { formatDateRange, formatMonthYear } from "@/lib/dates/date-utils";
+import { normalizeUrl, cleanDisplayUrl } from "@/lib/utils";
+
+export interface TemplateProps {
+  data: CVData;
+}
+
+export function AtsClassicTemplate({ data }: TemplateProps) {
+  const {
+    personalInfo,
+    experience,
+    education,
+    skills,
+    projects,
+    certifications,
+    language,
+    sectionOrder,
+  } = data;
+
+  const labels = getDocumentLabels(language);
+
+  // Filter valid entries
+  const validExperience = experience.filter(
+    (e) => e.company.trim() || e.position.trim()
+  );
+  const validEducation = education.filter(
+    (e) => e.institution.trim() || e.degree.trim() || e.fieldOfStudy.trim()
+  );
+  const validSkills = skills.filter((s) => s.name.trim());
+  const validProjects = projects.filter((p) => p.name.trim());
+  const validCertifications = certifications.filter((c) => c.name.trim());
+
+  // Render Section by Key
+  const renderSection = (key: SectionKey) => {
+    switch (key) {
+      case "summary":
+        if (!personalInfo.summary.trim()) return null;
+        return (
+          <section key="summary" className="mb-4">
+            <h2 className="text-xs font-bold uppercase tracking-wider text-black border-b border-gray-400 pb-0.5 mb-1.5 font-serif">
+              {labels.sections.summary}
+            </h2>
+            <p className="text-xs text-gray-800 font-sans leading-relaxed whitespace-pre-line text-justify">
+              {personalInfo.summary}
+            </p>
+          </section>
+        );
+
+      case "experience":
+        if (validExperience.length === 0) return null;
+        return (
+          <section key="experience" className="mb-4">
+            <h2 className="text-xs font-bold uppercase tracking-wider text-black border-b border-gray-400 pb-0.5 mb-2 font-serif">
+              {labels.sections.experience}
+            </h2>
+            <div className="space-y-3.5">
+              {validExperience.map((item) => {
+                const dateStr = formatDateRange(
+                  item.startMonth,
+                  item.startYear,
+                  item.endMonth,
+                  item.endYear,
+                  item.current,
+                  language
+                );
+                const empTypeLabel = labels.employmentTypes[item.employmentType];
+                const workModeLabel = labels.workModes[item.workMode];
+
+                return (
+                  <div key={item.id} className="space-y-0.5">
+                    <div className="flex flex-col sm:flex-row sm:items-baseline justify-between font-sans">
+                      <div className="font-bold text-xs sm:text-sm text-black">
+                        {item.position || "Position"}
+                        {item.company && (
+                          <span className="font-normal italic text-gray-800">
+                            {" "}
+                            — {item.company}
+                          </span>
+                        )}
+                        <span className="text-[11px] font-normal text-gray-600">
+                          {" "}
+                          ({empTypeLabel} • {workModeLabel})
+                        </span>
+                      </div>
+                      {dateStr && (
+                        <div className="text-[11px] text-gray-600 font-medium shrink-0">
+                          {dateStr}
+                        </div>
+                      )}
+                    </div>
+
+                    {item.location && (
+                      <p className="text-[11px] text-gray-600 italic font-sans -mt-0.5">
+                        {item.location}
+                      </p>
+                    )}
+
+                    {item.description && (
+                      <p className="text-xs text-gray-800 font-sans leading-relaxed whitespace-pre-line text-justify pt-0.5">
+                        {item.description}
+                      </p>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </section>
+        );
+
+      case "education":
+        if (validEducation.length === 0) return null;
+        return (
+          <section key="education" className="mb-4">
+            <h2 className="text-xs font-bold uppercase tracking-wider text-black border-b border-gray-400 pb-0.5 mb-2 font-serif">
+              {labels.sections.education}
+            </h2>
+            <div className="space-y-3">
+              {validEducation.map((item) => {
+                const dateStr = formatDateRange(
+                  item.startMonth,
+                  item.startYear,
+                  item.endMonth,
+                  item.endYear,
+                  item.current,
+                  language
+                );
+
+                return (
+                  <div key={item.id} className="space-y-0.5">
+                    <div className="flex flex-col sm:flex-row sm:items-baseline justify-between font-sans">
+                      <div className="font-bold text-xs sm:text-sm text-black">
+                        {item.institution}
+                      </div>
+                      {dateStr && (
+                        <div className="text-[11px] text-gray-600 shrink-0 font-medium">
+                          {dateStr}
+                        </div>
+                      )}
+                    </div>
+
+                    {(item.degree || item.fieldOfStudy) && (
+                      <p className="text-xs text-gray-800 italic font-sans">
+                        {item.degree}
+                        {item.degree && item.fieldOfStudy ? ` ${labels.in} ` : ""}
+                        {item.fieldOfStudy}
+                      </p>
+                    )}
+
+                    {/* Optional Academic Fields */}
+                    {(item.gpa || item.defenseGrade || item.thesisTitle) && (
+                      <div className="text-[11px] text-gray-700 font-sans space-y-0.5">
+                        {item.gpa && (
+                          <p>
+                            <span className="font-semibold">{labels.gpa}:</span>{" "}
+                            {item.gpa}
+                          </p>
+                        )}
+                        {item.defenseGrade && (
+                          <p>
+                            <span className="font-semibold">
+                              {labels.defenseGrade}:
+                            </span>{" "}
+                            {item.defenseGrade}
+                          </p>
+                        )}
+                        {item.thesisTitle && (
+                          <p>
+                            <span className="font-semibold">
+                              {labels.thesisTitle}:
+                            </span>{" "}
+                            &ldquo;{item.thesisTitle}&rdquo;
+                          </p>
+                        )}
+                      </div>
+                    )}
+
+                    {item.description && (
+                      <p className="text-xs text-gray-800 font-sans pt-0.5 whitespace-pre-line text-justify">
+                        {item.description}
+                      </p>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </section>
+        );
+
+      case "skills":
+        if (validSkills.length === 0) return null;
+        return (
+          <section key="skills" className="mb-4">
+            <h2 className="text-xs font-bold uppercase tracking-wider text-black border-b border-gray-400 pb-0.5 mb-1.5 font-serif">
+              {labels.sections.skills}
+            </h2>
+            <p className="text-xs text-gray-800 font-sans leading-relaxed">
+              {validSkills.map((s, idx) => (
+                <span key={s.id}>
+                  <span className="font-medium text-black">{s.name}</span>
+                  {idx < validSkills.length - 1 && "  •  "}
+                </span>
+              ))}
+            </p>
+          </section>
+        );
+
+      case "projects":
+        if (validProjects.length === 0) return null;
+        return (
+          <section key="projects" className="mb-4">
+            <h2 className="text-xs font-bold uppercase tracking-wider text-black border-b border-gray-400 pb-0.5 mb-2 font-serif">
+              {labels.sections.projects}
+            </h2>
+            <div className="space-y-2.5">
+              {validProjects.map((project) => (
+                <div key={project.id} className="space-y-0.5">
+                  <div className="flex flex-col sm:flex-row sm:items-baseline justify-between font-sans">
+                    <div className="font-bold text-xs sm:text-sm text-black">
+                      {project.name}
+                      {project.technologies && (
+                        <span className="font-normal text-gray-600 text-xs">
+                          {" "}
+                          [{project.technologies}]
+                        </span>
+                      )}
+                    </div>
+                    {project.url && (
+                      <a
+                        href={normalizeUrl(project.url)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-[11px] text-gray-800 hover:text-black underline font-sans"
+                      >
+                        {cleanDisplayUrl(project.url)}
+                      </a>
+                    )}
+                  </div>
+                  {project.description && (
+                    <p className="text-xs text-gray-800 font-sans leading-relaxed pt-0.5 whitespace-pre-line text-justify">
+                      {project.description}
+                    </p>
+                  )}
+                </div>
+              ))}
+            </div>
+          </section>
+        );
+
+      case "certifications":
+        if (validCertifications.length === 0) return null;
+        return (
+          <section key="certifications" className="mb-4">
+            <h2 className="text-xs font-bold uppercase tracking-wider text-black border-b border-gray-400 pb-0.5 mb-2 font-serif">
+              {labels.sections.certifications}
+            </h2>
+            <div className="space-y-2.5">
+              {validCertifications.map((cert) => {
+                const issueDateStr = formatMonthYear(
+                  cert.issueMonth,
+                  cert.issueYear,
+                  language,
+                  true
+                );
+                const expiryDateStr = cert.noExpiry
+                  ? labels.noExpiry
+                  : formatMonthYear(
+                      cert.expiryMonth,
+                      cert.expiryYear,
+                      language,
+                      true
+                    );
+
+                return (
+                  <div key={cert.id} className="space-y-0.5 font-sans">
+                    <div className="flex flex-col sm:flex-row sm:items-baseline justify-between">
+                      <div className="font-bold text-xs sm:text-sm text-black">
+                        {cert.name}
+                        {cert.issuingOrganization && (
+                          <span className="font-normal italic text-gray-800">
+                            {" "}
+                            — {cert.issuingOrganization}
+                          </span>
+                        )}
+                      </div>
+                      <div className="text-[11px] text-gray-600 shrink-0 font-medium">
+                        {issueDateStr && (
+                          <span>
+                            {labels.issued}: {issueDateStr}
+                          </span>
+                        )}
+                        {expiryDateStr && (
+                          <span>
+                            {" "}
+                            • {labels.expires}: {expiryDateStr}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="flex flex-wrap gap-x-4 text-[11px] text-gray-700">
+                      {cert.credentialId && (
+                        <span>
+                          <span className="font-semibold">
+                            {labels.credentialId}:
+                          </span>{" "}
+                          {cert.credentialId}
+                        </span>
+                      )}
+                      {cert.credentialUrl && (
+                        <a
+                          href={normalizeUrl(cert.credentialUrl)}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="underline hover:text-black text-gray-800"
+                        >
+                          {labels.credentialUrl}: {cleanDisplayUrl(cert.credentialUrl)}
+                        </a>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </section>
+        );
+
+      default:
+        return null;
+    }
+  };
+
+  return (
+    <div
+      style={{ width: "210mm", minHeight: "297mm" }}
+      className="bg-white text-[#111827] p-[18mm] sm:p-[20mm] font-serif leading-relaxed box-border mx-auto"
+    >
+      {/* Centered Traditional Resume Header */}
+      <header className="text-center border-b-2 border-black pb-3.5 mb-4">
+        <h1 className="text-2xl sm:text-3xl font-bold uppercase tracking-widest text-black">
+          {personalInfo.fullName || "YOUR NAME"}
+        </h1>
+
+        {personalInfo.jobTitle && (
+          <p className="text-sm font-semibold tracking-wide italic text-gray-800 mt-1">
+            {personalInfo.jobTitle}
+          </p>
+        )}
+
+        {/* Contact Links Strip */}
+        <div className="mt-2 text-xs text-gray-700 font-sans flex flex-wrap justify-center items-center gap-x-3 gap-y-1">
+          {personalInfo.email && (
+            <a
+              href={`mailto:${personalInfo.email}`}
+              className="hover:underline text-gray-700"
+            >
+              {personalInfo.email}
+            </a>
+          )}
+          {personalInfo.phone && <span>• {personalInfo.phone}</span>}
+          {personalInfo.location && <span>• {personalInfo.location}</span>}
+          {personalInfo.website && (
+            <span>
+              •{" "}
+              <a
+                href={normalizeUrl(personalInfo.website)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline hover:text-black"
+              >
+                {cleanDisplayUrl(personalInfo.website)}
+              </a>
+            </span>
+          )}
+          {personalInfo.linkedin && (
+            <span>
+              •{" "}
+              <a
+                href={normalizeUrl(personalInfo.linkedin)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline hover:text-black"
+              >
+                {cleanDisplayUrl(personalInfo.linkedin)}
+              </a>
+            </span>
+          )}
+          {personalInfo.github && (
+            <span>
+              •{" "}
+              <a
+                href={normalizeUrl(personalInfo.github)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline hover:text-black"
+              >
+                {cleanDisplayUrl(personalInfo.github)}
+              </a>
+            </span>
+          )}
+        </div>
+      </header>
+
+      {/* Dynamic Sections Ordered by User Preference */}
+      <main className="space-y-1">
+        {sectionOrder.map((sectionKey) => renderSection(sectionKey))}
+      </main>
+    </div>
+  );
+}

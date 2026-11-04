@@ -11,7 +11,6 @@ export function SkillsForm() {
   const { skills } = cvData;
 
   const [skillInput, setSkillInput] = useState("");
-  const [levelInput, setLevelInput] = useState("");
   const [error, setError] = useState("");
 
   const handleAddSkill = (e?: React.FormEvent) => {
@@ -30,9 +29,8 @@ export function SkillsForm() {
       return;
     }
 
-    addSkill({ name: trimmed, level: levelInput || undefined });
+    addSkill(trimmed);
     setSkillInput("");
-    setLevelInput("");
     setError("");
   };
 
@@ -51,7 +49,7 @@ export function SkillsForm() {
           <div className="w-full sm:flex-1">
             <Input
               label="Skill Name"
-              placeholder="e.g. TypeScript, React, Leadership"
+              placeholder="e.g. TypeScript, React, System Architecture, Docker"
               value={skillInput}
               onChange={(e) => {
                 setSkillInput(e.target.value);
@@ -59,28 +57,8 @@ export function SkillsForm() {
               }}
               onKeyDown={handleKeyDown}
               error={error}
+              helperText="Press Enter or click Add to append."
             />
-          </div>
-
-          <div className="w-full sm:w-44 space-y-1.5">
-            <label
-              htmlFor="skill-level-select"
-              className="block text-xs font-semibold uppercase tracking-wider text-[#777482]"
-            >
-              Level (Optional)
-            </label>
-            <select
-              id="skill-level-select"
-              value={levelInput}
-              onChange={(e) => setLevelInput(e.target.value)}
-              className="clay-input w-full px-3 py-2.5 text-sm cursor-pointer"
-            >
-              <option value="">No level specified</option>
-              <option value="Beginner">Beginner</option>
-              <option value="Intermediate">Intermediate</option>
-              <option value="Advanced">Advanced</option>
-              <option value="Expert">Expert</option>
-            </select>
           </div>
 
           <Button
@@ -90,7 +68,7 @@ export function SkillsForm() {
             className="w-full sm:w-auto shrink-0 h-11"
           >
             <Plus className="w-4 h-4 mr-1" />
-            <span>Add</span>
+            <span>Add Skill</span>
           </Button>
         </div>
       </div>
@@ -109,22 +87,17 @@ export function SkillsForm() {
             </p>
           </div>
         ) : (
-          <div className="flex flex-wrap gap-2 p-3 bg-white/70 rounded-[18px] border border-[rgba(70,65,90,0.08)]">
+          <div className="flex flex-wrap gap-2 p-3.5 bg-white/80 rounded-[18px] border border-[rgba(70,65,90,0.08)]">
             {skills.map((skill) => (
               <span
                 key={skill.id}
-                className="clay-badge group inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium bg-white text-[#292735] hover:border-[#8B7CF6]/40 transition-colors"
+                className="clay-badge group inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold bg-white text-[#292735] hover:border-[#8B7CF6]/40 transition-colors shadow-sm"
               >
                 <span>{skill.name}</span>
-                {skill.level && (
-                  <span className="text-[10px] font-semibold text-[#8B7CF6] bg-[#E8E3FF] px-1.5 py-0.5 rounded-full">
-                    {skill.level}
-                  </span>
-                )}
                 <button
                   type="button"
                   onClick={() => removeSkill(skill.id)}
-                  className="text-[#777482] hover:text-red-500 rounded-full p-0.5 transition-colors focus:outline-none"
+                  className="text-[#777482] hover:text-red-500 rounded-full p-0.5 transition-colors focus:outline-none cursor-pointer"
                   aria-label={`Remove ${skill.name}`}
                 >
                   <X className="w-3.5 h-3.5" />

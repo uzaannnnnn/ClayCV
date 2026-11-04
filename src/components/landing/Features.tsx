@@ -2,42 +2,42 @@
 
 import React from "react";
 import { Card } from "@/components/ui/card";
-import { Edit3, Eye, LayoutTemplate, Download } from "lucide-react";
+import { CheckCircle2, Calendar, Globe2, ShieldCheck } from "lucide-react";
 
 export function Features() {
   const features = [
     {
-      title: "Easy CV Builder",
+      title: "ATS-First Architecture",
       description:
-        "Intuitive form modules for personal details, work history, education, skills, and projects with real-time feedback.",
-      icon: Edit3,
+        "Every template is engineered with single-column linear text hierarchies, standard headings, and selectable text that Applicant Tracking Systems can easily parse.",
+      icon: CheckCircle2,
       accentBg: "bg-[#E8E3FF]",
       accentColor: "text-[#6C5BD8]",
-      badgeText: "Tactile UX",
+      badgeText: "100% ATS Ready",
     },
     {
-      title: "Live Preview",
+      title: "Structured Date Dropdowns",
       description:
-        "Every stroke immediately renders your CV document in real-time. What you see is precisely what goes into your final document.",
-      icon: Eye,
+        "Say goodbye to inconsistent date formats. Month and year dropdown selectors ensure perfectly standardized chronology across work and education records.",
+      icon: Calendar,
       accentBg: "bg-[#D8E8F8]",
       accentColor: "text-[#2B6CB0]",
-      badgeText: "Zero Delay",
+      badgeText: "Zero Date Errors",
     },
     {
-      title: "Professional Templates",
+      title: "English & Indonesian CV",
       description:
-        "Choose between Modern and Classic templates engineered to pass Applicant Tracking Systems (ATS) with pristine typography.",
-      icon: LayoutTemplate,
+        "Seamlessly switch your CV document language between English and Bahasa Indonesia with automatic translation of sections, dates, and employment types.",
+      icon: Globe2,
       accentBg: "bg-[#FFD6C2]",
       accentColor: "text-[#C05621]",
-      badgeText: "ATS-Ready",
+      badgeText: "Bilingual Output",
     },
     {
-      title: "Instant PDF Download",
+      title: "Private Local & IndexedDB",
       description:
-        "Generate clean, vectorized A4 PDF files directly in your browser without waiting for server queues or watermarks.",
-      icon: Download,
+        "Your CV data and certificate files are stored 100% locally in your browser. No accounts, no cloud sync, and zero tracking of your personal history.",
+      icon: ShieldCheck,
       accentBg: "bg-[#D7EDE1]",
       accentColor: "text-[#227248]",
       badgeText: "100% Client-Side",
@@ -48,14 +48,13 @@ export function Features() {
     <section id="features" className="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
       <div className="text-center max-w-2xl mx-auto mb-16 space-y-3">
         <h2 className="text-xs font-bold uppercase tracking-widest text-[#8B7CF6]">
-          Engineered for Simplicity
+          Engineered for Simplicity & Compliance
         </h2>
         <p className="text-3xl sm:text-4xl font-extrabold text-[#292735] tracking-tight">
-          Everything You Need, Nothing You Don&apos;t
+          Everything You Need for Your Next Role
         </p>
         <p className="text-sm sm:text-base text-[#777482]">
-          Built from the ground up to respect your time and privacy. No logins, no
-          tracking, and no unnecessary friction.
+          Built from the ground up to respect your time, privacy, and career goals.
         </p>
       </div>
 

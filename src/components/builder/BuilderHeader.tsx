@@ -6,6 +6,7 @@ import { useCVStore } from "@/store/cv-store";
 import { Button } from "@/components/ui/button";
 import { Dialog } from "@/components/ui/dialog";
 import { downloadCvPdf } from "@/lib/pdf/download";
+import { CVLanguage, TemplateType } from "@/types/cv";
 import {
   ArrowLeft,
   Download,
@@ -14,11 +15,20 @@ import {
   Loader2,
   AlertCircle,
   Sparkles,
+  Globe,
+  LayoutTemplate,
 } from "lucide-react";
 
 export function BuilderHeader() {
-  const { cvData, saveStatus, setTitle, resetCV, loadSampleData } =
-    useCVStore();
+  const {
+    cvData,
+    saveStatus,
+    setTitle,
+    setLanguage,
+    setTemplate,
+    resetCV,
+    loadSampleData,
+  } = useCVStore();
 
   const [isResetDialogOpen, setIsResetDialogOpen] = useState(false);
   const [isSampleDialogOpen, setIsSampleDialogOpen] = useState(false);
@@ -40,9 +50,9 @@ export function BuilderHeader() {
 
   return (
     <>
-      <header className="sticky top-0 z-40 w-full backdrop-blur-md bg-[#F4F1EB]/90 border-b border-[rgba(70,65,90,0.06)] px-4 sm:px-6 py-3 transition-all">
+      <header className="sticky top-0 z-40 w-full backdrop-blur-md bg-[#F4F1EB]/90 border-b border-[rgba(70,65,90,0.06)] px-4 sm:px-6 py-2.5 transition-all">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-3">
-          {/* Left: Back Link & Document Title */}
+          {/* Left: Back Link, Document Title & Autosave */}
           <div className="flex items-center gap-3">
             <Link
               href="/"
@@ -58,8 +68,8 @@ export function BuilderHeader() {
                 type="text"
                 value={cvData.title}
                 onChange={(e) => setTitle(e.target.value)}
-                placeholder="Resume Document Title"
-                className="font-bold text-base sm:text-lg text-[#292735] bg-transparent border-b border-transparent hover:border-[#8B7CF6]/40 focus:border-[#8B7CF6] focus:outline-none transition-colors px-1 py-0.5 max-w-[200px] sm:max-w-[280px]"
+                placeholder="Resume Title"
+                className="font-bold text-base sm:text-lg text-[#292735] bg-transparent border-b border-transparent hover:border-[#8B7CF6]/40 focus:border-[#8B7CF6] focus:outline-none transition-colors px-1 py-0.5 max-w-[170px] sm:max-w-[240px]"
                 title="Click to rename document"
               />
 
@@ -87,8 +97,39 @@ export function BuilderHeader() {
             </div>
           </div>
 
-          {/* Right: Actions (Load Sample, Reset, Download PDF) */}
-          <div className="flex items-center gap-2.5 self-end md:self-auto">
+          {/* Right: Language Selector, Template Selector & Action Buttons */}
+          <div className="flex items-center flex-wrap gap-2.5 self-end md:self-auto">
+            {/* CV Document Language Selector */}
+            <div className="flex items-center gap-1 bg-[#FAF8F5] px-2 py-1 rounded-[14px] border border-[rgba(70,65,90,0.08)] shadow-sm">
+              <Globe className="w-3.5 h-3.5 text-[#8B7CF6] shrink-0" />
+              <select
+                value={cvData.language}
+                onChange={(e) => setLanguage(e.target.value as CVLanguage)}
+                className="bg-transparent text-xs font-semibold text-[#292735] focus:outline-none cursor-pointer pr-1"
+                title="CV Document Language (Affects only resume output, not website UI)"
+                aria-label="CV Document Language"
+              >
+                <option value="en">CV: English</option>
+                <option value="id">CV: Bahasa Indonesia</option>
+              </select>
+            </div>
+
+            {/* Template Selector Dropdown */}
+            <div className="hidden sm:flex items-center gap-1 bg-[#FAF8F5] px-2 py-1 rounded-[14px] border border-[rgba(70,65,90,0.08)] shadow-sm">
+              <LayoutTemplate className="w-3.5 h-3.5 text-[#8B7CF6] shrink-0" />
+              <select
+                value={cvData.template}
+                onChange={(e) => setTemplate(e.target.value as TemplateType)}
+                className="bg-transparent text-xs font-semibold text-[#292735] focus:outline-none cursor-pointer pr-1"
+                title="ATS Template"
+                aria-label="ATS Template"
+              >
+                <option value="modern">ATS Modern</option>
+                <option value="classic">ATS Classic</option>
+                <option value="minimal">ATS Minimal</option>
+              </select>
+            </div>
+
             {/* Load Sample Data Button */}
             <Button
               type="button"
@@ -136,7 +177,7 @@ export function BuilderHeader() {
             <span>{downloadError}</span>
             <button
               onClick={() => setDownloadError("")}
-              className="font-bold underline ml-2"
+              className="font-bold underline ml-2 cursor-pointer"
             >
               Dismiss
             </button>
@@ -149,7 +190,7 @@ export function BuilderHeader() {
         isOpen={isResetDialogOpen}
         onClose={() => setIsResetDialogOpen(false)}
         title="Reset CV Content?"
-        description="Are you sure you want to clear this CV? All personal details, work history, education, skills, and projects will be permanently removed. This action cannot be undone."
+        description="Are you sure you want to clear this CV? All personal details, work history, education, skills, projects, and certifications will be permanently removed. This action cannot be undone."
         confirmLabel="Yes, Clear Everything"
         cancelLabel="Cancel"
         isDestructive={true}
@@ -161,7 +202,7 @@ export function BuilderHeader() {
         isOpen={isSampleDialogOpen}
         onClose={() => setIsSampleDialogOpen(false)}
         title="Load Sample Resume?"
-        description="This will populate the builder with an example Senior Product Designer resume to help you explore templates and formatting. Any unsaved current data will be replaced."
+        description="This will populate the builder with an example Senior Software Engineer resume to help you test templates, Indonesian/English language switching, and section reordering."
         confirmLabel="Load Example"
         cancelLabel="Cancel"
         isDestructive={false}

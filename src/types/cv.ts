@@ -1,4 +1,22 @@
-export type TemplateType = "modern" | "classic";
+export type CVLanguage = "en" | "id";
+
+export type TemplateType = "classic" | "modern" | "minimal";
+
+export type EmploymentType =
+  | "internship"
+  | "full-time"
+  | "part-time"
+  | "freelance";
+
+export type WorkMode = "onsite" | "remote";
+
+export type SectionKey =
+  | "summary"
+  | "experience"
+  | "education"
+  | "skills"
+  | "projects"
+  | "certifications";
 
 export interface PersonalInfo {
   fullName: string;
@@ -12,31 +30,40 @@ export interface PersonalInfo {
   summary: string;
 }
 
-export interface EducationItem {
-  id: string;
-  institution: string;
-  degree: string;
-  fieldOfStudy: string;
-  startDate: string;
-  endDate: string;
-  description: string;
-}
-
 export interface ExperienceItem {
   id: string;
   company: string;
   position: string;
   location: string;
-  startDate: string;
-  endDate: string;
+  employmentType: EmploymentType;
+  workMode: WorkMode;
+  startMonth: number | null;
+  startYear: number | null;
+  endMonth: number | null;
+  endYear: number | null;
   current: boolean;
   description: string;
+}
+
+export interface EducationItem {
+  id: string;
+  institution: string;
+  degree: string;
+  fieldOfStudy: string;
+  startMonth: number | null;
+  startYear: number | null;
+  endMonth: number | null;
+  endYear: number | null;
+  current: boolean;
+  description: string;
+  thesisTitle: string;
+  defenseGrade: string;
+  gpa: string;
 }
 
 export interface SkillItem {
   id: string;
   name: string;
-  level?: string;
 }
 
 export interface ProjectItem {
@@ -47,15 +74,35 @@ export interface ProjectItem {
   url: string;
 }
 
+export interface CertificationItem {
+  id: string;
+  name: string;
+  issuingOrganization: string;
+  issueMonth: number | null;
+  issueYear: number | null;
+  expiryMonth: number | null;
+  expiryYear: number | null;
+  noExpiry: boolean;
+  credentialId: string;
+  credentialUrl: string;
+  attachmentId?: string;
+  attachmentName?: string;
+  attachmentSize?: number;
+  attachmentType?: string;
+}
+
 export interface CVData {
   id: string;
   title: string;
+  language: CVLanguage;
   template: TemplateType;
+  sectionOrder: SectionKey[];
   personalInfo: PersonalInfo;
-  education: EducationItem[];
   experience: ExperienceItem[];
+  education: EducationItem[];
   skills: SkillItem[];
   projects: ProjectItem[];
+  certifications: CertificationItem[];
   updatedAt: string;
 }
 

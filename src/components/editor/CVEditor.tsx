@@ -4,30 +4,39 @@ import React, { useState } from "react";
 import { useCVStore } from "@/store/cv-store";
 import { SectionCard } from "./SectionCard";
 import { PersonalInfoForm } from "./PersonalInfoForm";
+import { SummaryForm } from "./SummaryForm";
 import { ExperienceForm } from "./ExperienceForm";
 import { EducationForm } from "./EducationForm";
 import { SkillsForm } from "./SkillsForm";
 import { ProjectsForm } from "./ProjectsForm";
+import { CertificationsForm } from "./CertificationsForm";
+import { SectionOrderManager } from "./SectionOrderManager";
 import {
   User,
+  FileText,
   Briefcase,
   GraduationCap,
-  Sparkles,
+  Wrench,
   FolderGit2,
+  Award,
+  ArrowDownUp,
   ShieldCheck,
 } from "lucide-react";
 
 export function CVEditor() {
   const { cvData } = useCVStore();
-  const { personalInfo, experience, education, skills, projects } = cvData;
+  const { personalInfo, experience, education, skills, projects, certifications } =
+    cvData;
 
-  // Track accordion open state (default personal info open)
   const [openSections, setOpenSections] = useState<Record<string, boolean>>({
     personal: true,
+    summary: true,
     experience: true,
     education: false,
     skills: false,
     projects: false,
+    certifications: false,
+    order: false,
   });
 
   const toggleSection = (section: string) => {
@@ -42,14 +51,15 @@ export function CVEditor() {
   const educationCount = education.length;
   const skillsCount = skills.length;
   const projectsCount = projects.length;
+  const certsCount = certifications.length;
 
   return (
     <div className="space-y-4 pb-12">
       {/* 1. Personal Information */}
       <SectionCard
         id="personal-section"
-        title="Personal Information"
-        description="Name, job title, contact details & summary"
+        title="1. Personal Information"
+        description="Name, job title, and contact coordinates"
         icon={User}
         badge={personalCompletion}
         isOpen={openSections.personal}
@@ -58,11 +68,24 @@ export function CVEditor() {
         <PersonalInfoForm />
       </SectionCard>
 
-      {/* 2. Work Experience */}
+      {/* 2. Professional Summary */}
+      <SectionCard
+        id="summary-section"
+        title="2. Professional Summary"
+        description="Core background, strengths, and career highlights"
+        icon={FileText}
+        badge={personalInfo.summary ? "Added" : null}
+        isOpen={openSections.summary}
+        onToggle={() => toggleSection("summary")}
+      >
+        <SummaryForm />
+      </SectionCard>
+
+      {/* 3. Work Experience */}
       <SectionCard
         id="experience-section"
-        title="Work Experience"
-        description="Past & present positions, company impact"
+        title="3. Work Experience"
+        description="Roles, employment types, work mode & dates"
         icon={Briefcase}
         badge={experienceCount > 0 ? `${experienceCount} roles` : null}
         isOpen={openSections.experience}
@@ -71,11 +94,11 @@ export function CVEditor() {
         <ExperienceForm />
       </SectionCard>
 
-      {/* 3. Education */}
+      {/* 4. Education */}
       <SectionCard
         id="education-section"
-        title="Education"
-        description="Universities, degrees, fields of study"
+        title="4. Education"
+        description="Institutions, degrees, thesis & GPA/IPK"
         icon={GraduationCap}
         badge={educationCount > 0 ? `${educationCount} schools` : null}
         isOpen={openSections.education}
@@ -84,12 +107,12 @@ export function CVEditor() {
         <EducationForm />
       </SectionCard>
 
-      {/* 4. Skills */}
+      {/* 5. Skills */}
       <SectionCard
         id="skills-section"
-        title="Skills & Competencies"
-        description="Tools, languages, and core specializations"
-        icon={Sparkles}
+        title="5. Skills & Competencies"
+        description="Technical toolset and capabilities (pure text)"
+        icon={Wrench}
         badge={skillsCount > 0 ? `${skillsCount} skills` : null}
         isOpen={openSections.skills}
         onToggle={() => toggleSection("skills")}
@@ -97,10 +120,10 @@ export function CVEditor() {
         <SkillsForm />
       </SectionCard>
 
-      {/* 5. Projects */}
+      {/* 6. Projects */}
       <SectionCard
         id="projects-section"
-        title="Key Projects"
+        title="6. Projects"
         description="Open source, client work, and personal apps"
         icon={FolderGit2}
         badge={projectsCount > 0 ? `${projectsCount} projects` : null}
@@ -108,6 +131,32 @@ export function CVEditor() {
         onToggle={() => toggleSection("projects")}
       >
         <ProjectsForm />
+      </SectionCard>
+
+      {/* 7. Certifications */}
+      <SectionCard
+        id="certifications-section"
+        title="7. Certifications"
+        description="Credentials, issue dates, and file attachments"
+        icon={Award}
+        badge={certsCount > 0 ? `${certsCount} certs` : null}
+        isOpen={openSections.certifications}
+        onToggle={() => toggleSection("certifications")}
+      >
+        <CertificationsForm />
+      </SectionCard>
+
+      {/* 8. Section Ordering */}
+      <SectionCard
+        id="ordering-section"
+        title="8. Customize Section Order"
+        description="Drag or use arrows to rearrange sections on your CV"
+        icon={ArrowDownUp}
+        badge="Customizable"
+        isOpen={openSections.order}
+        onToggle={() => toggleSection("order")}
+      >
+        <SectionOrderManager />
       </SectionCard>
 
       {/* Privacy guarantee note in editor */}

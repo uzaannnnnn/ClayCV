@@ -3,20 +3,36 @@ import { sanitizeFilename } from "@/lib/utils";
 
 export async function downloadCvPdf(data: CVData): Promise<void> {
   const { pdf } = await import("@react-pdf/renderer");
-  const { ModernPdfDocument } = await import("@/components/pdf/ModernPdfDocument");
-  const { ClassicPdfDocument } = await import("@/components/pdf/ClassicPdfDocument");
+  const { AtsClassicPdfDocument } = await import(
+    "@/components/pdf/AtsClassicPdfDocument"
+  );
+  const { AtsModernPdfDocument } = await import(
+    "@/components/pdf/AtsModernPdfDocument"
+  );
+  const { AtsMinimalPdfDocument } = await import(
+    "@/components/pdf/AtsMinimalPdfDocument"
+  );
 
-  const DocumentComponent =
-    data.template === "classic" ? ClassicPdfDocument : ModernPdfDocument;
-
-  const docElement = DocumentComponent({ data });
+  let docElement;
+  switch (data.template) {
+    case "classic":
+      docElement = AtsClassicPdfDocument({ data });
+      break;
+    case "minimal":
+      docElement = AtsMinimalPdfDocument({ data });
+      break;
+    case "modern":
+    default:
+      docElement = AtsModernPdfDocument({ data });
+      break;
+  }
 
   // Generate PDF Blob
   const blob = await pdf(docElement).toBlob();
 
   // Determine sanitized filename: firstname-lastname-cv.pdf
   const namePart = data.personalInfo.fullName.trim();
-  let baseFilename = "cv";
+  let baseFilename = "resume";
   if (namePart) {
     baseFilename = sanitizeFilename(namePart);
   } else if (data.title && data.title !== "My Resume") {
