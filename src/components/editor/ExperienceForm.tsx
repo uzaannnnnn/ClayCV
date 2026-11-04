@@ -3,12 +3,48 @@
 import React from "react";
 import { useCVStore } from "@/store/cv-store";
 import { Input } from "@/components/ui/input";
+import { Select } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { MonthYearSelect } from "@/components/ui/month-year-select";
-import { EmploymentType, WorkMode } from "@/types/cv";
+import { CVLanguage, EmploymentType, WorkMode } from "@/types/cv";
 import { Plus, Trash2, Briefcase } from "lucide-react";
 import { validateDateRange } from "@/lib/dates/date-utils";
+
+const FIELD_LABEL_CLASS =
+  "block text-[11px] font-bold uppercase tracking-wider text-[#777482] truncate whitespace-nowrap";
+
+const EMPLOYMENT_TYPE_OPTIONS: Record<
+  CVLanguage,
+  { value: EmploymentType; label: string }[]
+> = {
+  en: [
+    { value: "internship", label: "Internship" },
+    { value: "full-time", label: "Full-time" },
+    { value: "part-time", label: "Part-time" },
+    { value: "freelance", label: "Freelance" },
+  ],
+  id: [
+    { value: "internship", label: "Magang" },
+    { value: "full-time", label: "Penuh Waktu" },
+    { value: "part-time", label: "Paruh Waktu" },
+    { value: "freelance", label: "Freelance" },
+  ],
+};
+
+const WORK_MODE_OPTIONS: Record<
+  CVLanguage,
+  { value: WorkMode; label: string }[]
+> = {
+  en: [
+    { value: "onsite", label: "Onsite" },
+    { value: "remote", label: "Remote" },
+  ],
+  id: [
+    { value: "onsite", label: "Di Kantor" },
+    { value: "remote", label: "Jarak Jauh" },
+  ],
+};
 
 export function ExperienceForm() {
   const { cvData, addExperience, updateExperience, removeExperience } =
@@ -89,9 +125,10 @@ export function ExperienceForm() {
                 </div>
 
                 {/* Location, Employment Type & Work Mode */}
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3.5 sm:gap-4 items-start">
                   <Input
                     label="Location"
+                    labelClassName={FIELD_LABEL_CLASS}
                     placeholder="e.g. San Francisco, CA"
                     value={item.location}
                     onChange={(e) =>
@@ -100,43 +137,31 @@ export function ExperienceForm() {
                   />
 
                   {/* Employment Type */}
-                  <div className="space-y-1.5">
-                    <label className="block text-xs font-semibold uppercase tracking-wider text-[#777482]">
-                      Employment Type
-                    </label>
-                    <select
-                      value={item.employmentType}
-                      onChange={(e) =>
-                        updateExperience(item.id, {
-                          employmentType: e.target.value as EmploymentType,
-                        })
-                      }
-                      className="clay-input w-full px-3 py-2.5 text-xs sm:text-sm cursor-pointer"
-                    >
-                      <option value="full-time">Full-time (Penuh Waktu)</option>
-                      <option value="part-time">Part-time (Paruh Waktu)</option>
-                      <option value="internship">Internship (Magang)</option>
-                      <option value="freelance">Freelance</option>
-                    </select>
-                  </div>
+                  <Select
+                    label="Employment Type"
+                    labelClassName={FIELD_LABEL_CLASS}
+                    value={item.employmentType}
+                    onChange={(val) =>
+                      updateExperience(item.id, {
+                        employmentType: val as EmploymentType,
+                      })
+                    }
+                    options={EMPLOYMENT_TYPE_OPTIONS[language]}
+                  />
 
                   {/* Work Arrangement */}
-                  <div className="space-y-1.5">
-                    <label className="block text-xs font-semibold uppercase tracking-wider text-[#777482]">
-                      Work Arrangement
-                    </label>
-                    <select
+                  <div className="sm:col-span-2 md:col-span-1">
+                    <Select
+                      label="Work Arrangement"
+                      labelClassName={FIELD_LABEL_CLASS}
                       value={item.workMode}
-                      onChange={(e) =>
+                      onChange={(val) =>
                         updateExperience(item.id, {
-                          workMode: e.target.value as WorkMode,
+                          workMode: val as WorkMode,
                         })
                       }
-                      className="clay-input w-full px-3 py-2.5 text-xs sm:text-sm cursor-pointer"
-                    >
-                      <option value="onsite">Onsite (Di Kantor)</option>
-                      <option value="remote">Remote (Jarak Jauh)</option>
-                    </select>
+                      options={WORK_MODE_OPTIONS[language]}
+                    />
                   </div>
                 </div>
 
