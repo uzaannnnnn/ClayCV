@@ -1,8 +1,9 @@
 import React from "react";
 import { CVData, SectionKey } from "@/types/cv";
-import { getDocumentLabels } from "@/lib/i18n/cv-labels";
+import { getDocumentLabels, formatThesisAndGrade } from "@/lib/i18n/cv-labels";
 import { formatDateRange, formatMonthYear } from "@/lib/dates/date-utils";
 import { normalizeUrl, cleanDisplayUrl } from "@/lib/utils";
+import { ExternalLink } from "lucide-react";
 
 export interface TemplateProps {
   data: CVData;
@@ -127,15 +128,21 @@ export function AtsClassicTemplate({ data }: TemplateProps) {
                   item.current,
                   language
                 );
+                const thesisAndGrade = formatThesisAndGrade(
+                  item.thesisTitle,
+                  item.defenseGrade,
+                  language
+                );
 
                 return (
                   <div key={item.id} className="space-y-0.5">
                     <div className="flex flex-col sm:flex-row sm:items-baseline justify-between font-sans">
                       <div className="font-bold text-xs sm:text-sm text-black">
                         {item.institution}
+                        {item.gpa?.trim() ? `, ${item.gpa.trim()}` : ""}
                       </div>
                       {dateStr && (
-                        <div className="text-[11px] text-gray-600 shrink-0 font-medium">
+                        <div className="text-[11px] text-gray-600 shrink-0 font-medium ml-2">
                           {dateStr}
                         </div>
                       )}
@@ -149,32 +156,11 @@ export function AtsClassicTemplate({ data }: TemplateProps) {
                       </p>
                     )}
 
-                    {/* Optional Academic Fields */}
-                    {(item.gpa || item.defenseGrade || item.thesisTitle) && (
-                      <div className="text-[11px] text-gray-700 font-sans space-y-0.5">
-                        {item.gpa && (
-                          <p>
-                            <span className="font-semibold">{labels.gpa}:</span>{" "}
-                            {item.gpa}
-                          </p>
-                        )}
-                        {item.defenseGrade && (
-                          <p>
-                            <span className="font-semibold">
-                              {labels.defenseGrade}:
-                            </span>{" "}
-                            {item.defenseGrade}
-                          </p>
-                        )}
-                        {item.thesisTitle && (
-                          <p>
-                            <span className="font-semibold">
-                              {labels.thesisTitle}:
-                            </span>{" "}
-                            &ldquo;{item.thesisTitle}&rdquo;
-                          </p>
-                        )}
-                      </div>
+                    {/* Thesis Title and Defense Grade displayed together */}
+                    {thesisAndGrade && (
+                      <p className="text-[11px] text-gray-700 italic font-sans">
+                        {thesisAndGrade}
+                      </p>
                     )}
 
                     {item.description && (
@@ -232,7 +218,7 @@ export function AtsClassicTemplate({ data }: TemplateProps) {
                         href={normalizeUrl(project.url)}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-[11px] text-gray-800 hover:text-black underline font-sans"
+                        className="text-[11px] text-gray-800 hover:text-black font-sans shrink-0 ml-2"
                       >
                         {cleanDisplayUrl(project.url)}
                       </a>
@@ -275,14 +261,25 @@ export function AtsClassicTemplate({ data }: TemplateProps) {
 
                 return (
                   <div key={cert.id} className="space-y-0.5 font-sans">
-                    <div className="flex flex-col sm:flex-row sm:items-baseline justify-between">
-                      <div className="font-bold text-xs sm:text-sm text-black">
-                        {cert.name}
+                    <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-1">
+                      <div className="font-bold text-xs sm:text-sm text-black flex items-center gap-1.5 flex-wrap">
+                        <span>{cert.name}</span>
                         {cert.issuingOrganization && (
                           <span className="font-normal italic text-gray-800">
-                            {" "}
                             — {cert.issuingOrganization}
                           </span>
+                        )}
+                        {cert.credentialUrl && (
+                          <a
+                            href={normalizeUrl(cert.credentialUrl)}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            title={labels.openCertificateLink}
+                            aria-label={labels.openCertificateLink}
+                            className="inline-flex items-center text-gray-600 hover:text-black transition-colors"
+                          >
+                            <ExternalLink className="w-3.5 h-3.5" />
+                          </a>
                         )}
                       </div>
                       <div className="text-[11px] text-gray-600 shrink-0 font-medium">
@@ -300,26 +297,14 @@ export function AtsClassicTemplate({ data }: TemplateProps) {
                       </div>
                     </div>
 
-                    <div className="flex flex-wrap gap-x-4 text-[11px] text-gray-700">
-                      {cert.credentialId && (
-                        <span>
-                          <span className="font-semibold">
-                            {labels.credentialId}:
-                          </span>{" "}
-                          {cert.credentialId}
-                        </span>
-                      )}
-                      {cert.credentialUrl && (
-                        <a
-                          href={normalizeUrl(cert.credentialUrl)}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="underline hover:text-black text-gray-800"
-                        >
-                          {labels.credentialUrl}: {cleanDisplayUrl(cert.credentialUrl)}
-                        </a>
-                      )}
-                    </div>
+                    {cert.credentialId && (
+                      <div className="text-[11px] text-gray-700">
+                        <span className="font-semibold">
+                          {labels.credentialId}:
+                        </span>{" "}
+                        {cert.credentialId}
+                      </div>
+                    )}
                   </div>
                 );
               })}
@@ -334,8 +319,8 @@ export function AtsClassicTemplate({ data }: TemplateProps) {
 
   return (
     <div
-      style={{ width: "210mm", minHeight: "297mm" }}
-      className="bg-white text-[#111827] p-[18mm] sm:p-[20mm] font-serif leading-relaxed box-border mx-auto"
+      style={{ width: "210mm", minHeight: "297mm", padding: "14mm 12mm" }}
+      className="cv-document bg-white text-[#111827] font-serif leading-relaxed box-border mx-auto"
     >
       {/* Centered Traditional Resume Header */}
       <header className="text-center border-b-2 border-black pb-3.5 mb-4">
@@ -354,7 +339,7 @@ export function AtsClassicTemplate({ data }: TemplateProps) {
           {personalInfo.email && (
             <a
               href={`mailto:${personalInfo.email}`}
-              className="hover:underline text-gray-700"
+              className="text-gray-700 hover:text-black transition-colors"
             >
               {personalInfo.email}
             </a>
@@ -368,7 +353,7 @@ export function AtsClassicTemplate({ data }: TemplateProps) {
                 href={normalizeUrl(personalInfo.website)}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="underline hover:text-black"
+                className="text-gray-700 hover:text-black transition-colors"
               >
                 {cleanDisplayUrl(personalInfo.website)}
               </a>
@@ -381,7 +366,7 @@ export function AtsClassicTemplate({ data }: TemplateProps) {
                 href={normalizeUrl(personalInfo.linkedin)}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="underline hover:text-black"
+                className="text-gray-700 hover:text-black transition-colors"
               >
                 {cleanDisplayUrl(personalInfo.linkedin)}
               </a>
@@ -394,7 +379,7 @@ export function AtsClassicTemplate({ data }: TemplateProps) {
                 href={normalizeUrl(personalInfo.github)}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="underline hover:text-black"
+                className="text-gray-700 hover:text-black transition-colors"
               >
                 {cleanDisplayUrl(personalInfo.github)}
               </a>

@@ -109,7 +109,7 @@ export function LivePreview() {
           className="shrink-0"
         >
           {/* Exact Physical A4 Document Wrapper: 210mm x min 297mm */}
-          <div className="cv-paper rounded-[2px] shadow-2xl border border-[rgba(0,0,0,0.12)]">
+          <div className="cv-paper cv-document rounded-[2px] shadow-2xl border border-[rgba(0,0,0,0.12)]">
             {renderTemplate()}
           </div>
         </div>

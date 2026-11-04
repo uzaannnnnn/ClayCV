@@ -15,6 +15,7 @@ export interface DocumentLabels {
   expires: string;
   issued: string;
   viewCredential: string;
+  openCertificateLink: string;
 }
 
 export const CV_LABELS: Record<CVLanguage, DocumentLabels> = {
@@ -39,8 +40,8 @@ export const CV_LABELS: Record<CVLanguage, DocumentLabels> = {
     },
     present: "Present",
     in: "in",
-    thesisTitle: "Thesis Title",
-    defenseGrade: "Defense Grade",
+    thesisTitle: "Thesis",
+    defenseGrade: "Grade",
     gpa: "GPA",
     credentialId: "Credential ID",
     credentialUrl: "Credential URL",
@@ -48,6 +49,7 @@ export const CV_LABELS: Record<CVLanguage, DocumentLabels> = {
     expires: "Expires",
     issued: "Issued",
     viewCredential: "View Credential",
+    openCertificateLink: "Open certificate verification link",
   },
   id: {
     sections: {
@@ -71,7 +73,7 @@ export const CV_LABELS: Record<CVLanguage, DocumentLabels> = {
     present: "Sekarang",
     in: "dalam",
     thesisTitle: "Judul Skripsi",
-    defenseGrade: "Nilai Sidang",
+    defenseGrade: "Grade",
     gpa: "IPK",
     credentialId: "ID Kredensial",
     credentialUrl: "URL Kredensial",
@@ -79,8 +81,38 @@ export const CV_LABELS: Record<CVLanguage, DocumentLabels> = {
     expires: "Kedaluwarsa",
     issued: "Diterbitkan",
     viewCredential: "Lihat Kredensial",
+    openCertificateLink: "Buka tautan verifikasi sertifikat",
   },
 };
+
+/**
+ * Format optional thesis title and defense grade together compactly.
+ * Examples:
+ * - Both: Thesis: "Distributed Systems", Grade: A
+ * - Thesis only: Thesis: "Distributed Systems"
+ * - Grade only: Grade: A
+ * - Neither: null
+ */
+export function formatThesisAndGrade(
+  thesisTitle?: string,
+  defenseGrade?: string,
+  language: CVLanguage = "en"
+): string | null {
+  const labels = getDocumentLabels(language);
+  const parts: string[] = [];
+
+  const trimmedThesis = thesisTitle?.trim();
+  const trimmedGrade = defenseGrade?.trim();
+
+  if (trimmedThesis) {
+    parts.push(`${labels.thesisTitle}: "${trimmedThesis}"`);
+  }
+  if (trimmedGrade) {
+    parts.push(`${labels.defenseGrade}: ${trimmedGrade}`);
+  }
+
+  return parts.length > 0 ? parts.join(", ") : null;
+}
 
 export const MONTH_NAMES: Record<CVLanguage, { full: string[]; short: string[] }> = {
   en: {

@@ -1,16 +1,17 @@
 import React from "react";
 import { Document, Page, Text, View, StyleSheet, Link } from "@react-pdf/renderer";
 import { CVData, SectionKey } from "@/types/cv";
-import { getDocumentLabels } from "@/lib/i18n/cv-labels";
+import { getDocumentLabels, formatThesisAndGrade } from "@/lib/i18n/cv-labels";
 import { formatDateRange, formatMonthYear } from "@/lib/dates/date-utils";
 import { normalizeUrl, cleanDisplayUrl } from "@/lib/utils";
+import { PdfExternalLinkIcon } from "./PdfExternalLinkIcon";
 
 const styles = StyleSheet.create({
   page: {
     paddingTop: 36,
     paddingBottom: 36,
-    paddingLeft: 42,
-    paddingRight: 42,
+    paddingLeft: 34,
+    paddingRight: 34,
     fontSize: 9.5,
     fontFamily: "Times-Roman",
     color: "#111827",
@@ -49,7 +50,7 @@ const styles = StyleSheet.create({
   },
   link: {
     color: "#111827",
-    textDecoration: "underline",
+    textDecoration: "none",
   },
   section: {
     marginBottom: 9,
@@ -109,6 +110,12 @@ const styles = StyleSheet.create({
     color: "#4B5563",
     marginBottom: 1,
   },
+  itemThesis: {
+    fontSize: 8.5,
+    fontFamily: "Times-Italic",
+    color: "#374151",
+    marginBottom: 1,
+  },
   itemDescription: {
     fontSize: 8.5,
     fontFamily: "Helvetica",
@@ -123,6 +130,17 @@ const styles = StyleSheet.create({
   },
   bold: {
     fontFamily: "Helvetica-Bold",
+  },
+  certTitleRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    flex: 1,
+    paddingRight: 10,
+    flexWrap: "wrap",
+  },
+  iconLink: {
+    marginLeft: 4,
+    textDecoration: "none",
   },
 });
 
@@ -222,11 +240,19 @@ export function AtsClassicPdfDocument({ data }: { data: CVData }) {
                 item.current,
                 language
               );
+              const thesisAndGrade = formatThesisAndGrade(
+                item.thesisTitle,
+                item.defenseGrade,
+                language
+              );
 
               return (
                 <View key={item.id} style={styles.itemBlock} wrap={false}>
                   <View style={styles.itemHeader}>
-                    <Text style={styles.itemTitle}>{item.institution}</Text>
+                    <Text style={styles.itemTitle}>
+                      {item.institution}
+                      {item.gpa?.trim() ? `, ${item.gpa.trim()}` : ""}
+                    </Text>
                     {dateStr ? (
                       <Text style={styles.itemDate}>{dateStr}</Text>
                     ) : null}
@@ -241,16 +267,9 @@ export function AtsClassicPdfDocument({ data }: { data: CVData }) {
                     </Text>
                   ) : null}
 
-                  {item.gpa || item.defenseGrade || item.thesisTitle ? (
-                    <Text style={styles.itemMeta}>
-                      {item.gpa ? `${labels.gpa}: ${item.gpa}   ` : ""}
-                      {item.defenseGrade
-                        ? `${labels.defenseGrade}: ${item.defenseGrade}   `
-                        : ""}
-                      {item.thesisTitle
-                        ? `${labels.thesisTitle}: "${item.thesisTitle}"`
-                        : ""}
-                    </Text>
+                  {/* Thesis Title and Defense Grade displayed together */}
+                  {thesisAndGrade ? (
+                    <Text style={styles.itemThesis}>{thesisAndGrade}</Text>
                   ) : null}
 
                   {item.description ? (
@@ -343,14 +362,24 @@ export function AtsClassicPdfDocument({ data }: { data: CVData }) {
               return (
                 <View key={cert.id} style={styles.itemBlock} wrap={false}>
                   <View style={styles.itemHeader}>
-                    <Text style={styles.itemTitle}>
-                      {cert.name}{" "}
-                      {cert.issuingOrganization ? (
-                        <Text style={styles.itemCompany}>
-                          — {cert.issuingOrganization}
-                        </Text>
+                    <View style={styles.certTitleRow}>
+                      <Text style={styles.itemTitle}>
+                        {cert.name}{" "}
+                        {cert.issuingOrganization ? (
+                          <Text style={styles.itemCompany}>
+                            — {cert.issuingOrganization}
+                          </Text>
+                        ) : null}
+                      </Text>
+                      {cert.credentialUrl ? (
+                        <Link
+                          style={styles.iconLink}
+                          src={normalizeUrl(cert.credentialUrl)}
+                        >
+                          <PdfExternalLinkIcon color="#4B5563" size={7.5} />
+                        </Link>
                       ) : null}
-                    </Text>
+                    </View>
                     <Text style={styles.itemDate}>
                       {issueDateStr ? `${labels.issued}: ${issueDateStr}` : ""}
                       {expiryDateStr
@@ -358,22 +387,10 @@ export function AtsClassicPdfDocument({ data }: { data: CVData }) {
                         : ""}
                     </Text>
                   </View>
-                  {cert.credentialId || cert.credentialUrl ? (
+                  {cert.credentialId ? (
                     <Text style={styles.itemMeta}>
-                      {cert.credentialId
-                        ? `${labels.credentialId}: ${cert.credentialId}   `
-                        : ""}
-                      {cert.credentialUrl ? (
-                        <Link
-                          style={styles.link}
-                          src={normalizeUrl(cert.credentialUrl)}
-                        >
-                          <Text>
-                            {labels.credentialUrl}:{" "}
-                            {cleanDisplayUrl(cert.credentialUrl)}
-                          </Text>
-                        </Link>
-                      ) : null}
+                      <Text style={styles.bold}>{labels.credentialId}: </Text>
+                      {cert.credentialId}
                     </Text>
                   ) : null}
                 </View>

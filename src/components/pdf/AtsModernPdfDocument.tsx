@@ -1,16 +1,17 @@
 import React from "react";
 import { Document, Page, Text, View, StyleSheet, Link } from "@react-pdf/renderer";
 import { CVData, SectionKey } from "@/types/cv";
-import { getDocumentLabels } from "@/lib/i18n/cv-labels";
+import { getDocumentLabels, formatThesisAndGrade } from "@/lib/i18n/cv-labels";
 import { formatDateRange, formatMonthYear } from "@/lib/dates/date-utils";
 import { normalizeUrl, cleanDisplayUrl } from "@/lib/utils";
+import { PdfExternalLinkIcon } from "./PdfExternalLinkIcon";
 
 const styles = StyleSheet.create({
   page: {
     paddingTop: 36,
     paddingBottom: 36,
-    paddingLeft: 40,
-    paddingRight: 40,
+    paddingLeft: 34,
+    paddingRight: 34,
     fontSize: 9.5,
     fontFamily: "Helvetica",
     color: "#1E1E24",
@@ -42,6 +43,7 @@ const styles = StyleSheet.create({
   contactItem: {
     fontSize: 8.5,
     color: "#4B5563",
+    textDecoration: "none",
   },
   link: {
     color: "#8B7CF6",
@@ -97,6 +99,12 @@ const styles = StyleSheet.create({
     color: "#4B5563",
     marginBottom: 1,
   },
+  itemThesis: {
+    fontSize: 8.5,
+    color: "#4B5563",
+    fontFamily: "Helvetica-Oblique",
+    marginBottom: 1,
+  },
   itemDescription: {
     fontSize: 8.5,
     color: "#374151",
@@ -116,6 +124,21 @@ const styles = StyleSheet.create({
     color: "#1F2937",
     marginRight: 4,
     marginBottom: 4,
+  },
+  certTitleRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    flex: 1,
+    paddingRight: 10,
+    flexWrap: "wrap",
+  },
+  iconLink: {
+    marginLeft: 4,
+    textDecoration: "none",
+  },
+  bold: {
+    fontFamily: "Helvetica-Bold",
+    color: "#111827",
   },
 });
 
@@ -217,11 +240,19 @@ export function AtsModernPdfDocument({ data }: { data: CVData }) {
                 item.current,
                 language
               );
+              const thesisAndGrade = formatThesisAndGrade(
+                item.thesisTitle,
+                item.defenseGrade,
+                language
+              );
 
               return (
                 <View key={item.id} style={styles.itemBlock} wrap={false}>
                   <View style={styles.itemHeader}>
-                    <Text style={styles.itemTitle}>{item.institution}</Text>
+                    <Text style={styles.itemTitle}>
+                      {item.institution}
+                      {item.gpa?.trim() ? `, ${item.gpa.trim()}` : ""}
+                    </Text>
                     {dateStr ? (
                       <Text style={styles.itemDate}>{dateStr}</Text>
                     ) : null}
@@ -236,16 +267,9 @@ export function AtsModernPdfDocument({ data }: { data: CVData }) {
                     </Text>
                   ) : null}
 
-                  {item.gpa || item.defenseGrade || item.thesisTitle ? (
-                    <Text style={styles.contactItem}>
-                      {item.gpa ? `${labels.gpa}: ${item.gpa}   ` : ""}
-                      {item.defenseGrade
-                        ? `${labels.defenseGrade}: ${item.defenseGrade}   `
-                        : ""}
-                      {item.thesisTitle
-                        ? `${labels.thesisTitle}: "${item.thesisTitle}"`
-                        : ""}
-                    </Text>
+                  {/* Thesis Title and Defense Grade displayed together */}
+                  {thesisAndGrade ? (
+                    <Text style={styles.itemThesis}>{thesisAndGrade}</Text>
                   ) : null}
 
                   {item.description ? (
@@ -337,14 +361,24 @@ export function AtsModernPdfDocument({ data }: { data: CVData }) {
               return (
                 <View key={cert.id} style={styles.itemBlock} wrap={false}>
                   <View style={styles.itemHeader}>
-                    <Text style={styles.itemTitle}>
-                      {cert.name}{" "}
-                      {cert.issuingOrganization ? (
-                        <Text style={styles.itemSubtitle}>
-                          • {cert.issuingOrganization}
-                        </Text>
+                    <View style={styles.certTitleRow}>
+                      <Text style={styles.itemTitle}>
+                        {cert.name}{" "}
+                        {cert.issuingOrganization ? (
+                          <Text style={styles.itemSubtitle}>
+                            • {cert.issuingOrganization}
+                          </Text>
+                        ) : null}
+                      </Text>
+                      {cert.credentialUrl ? (
+                        <Link
+                          style={styles.iconLink}
+                          src={normalizeUrl(cert.credentialUrl)}
+                        >
+                          <PdfExternalLinkIcon color="#8B7CF6" size={7.5} />
+                        </Link>
                       ) : null}
-                    </Text>
+                    </View>
                     <Text style={styles.itemDate}>
                       {issueDateStr ? `${labels.issued}: ${issueDateStr}` : ""}
                       {expiryDateStr
@@ -352,22 +386,10 @@ export function AtsModernPdfDocument({ data }: { data: CVData }) {
                         : ""}
                     </Text>
                   </View>
-                  {cert.credentialId || cert.credentialUrl ? (
+                  {cert.credentialId ? (
                     <Text style={styles.contactItem}>
-                      {cert.credentialId
-                        ? `${labels.credentialId}: ${cert.credentialId}   `
-                        : ""}
-                      {cert.credentialUrl ? (
-                        <Link
-                          style={styles.link}
-                          src={normalizeUrl(cert.credentialUrl)}
-                        >
-                          <Text>
-                            {labels.credentialUrl}:{" "}
-                            {cleanDisplayUrl(cert.credentialUrl)}
-                          </Text>
-                        </Link>
-                      ) : null}
+                      <Text style={styles.bold}>{labels.credentialId}: </Text>
+                      {cert.credentialId}
                     </Text>
                   ) : null}
                 </View>

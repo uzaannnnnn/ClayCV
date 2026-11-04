@@ -238,6 +238,27 @@ body {
     0 8px 10px -6px rgba(0, 0, 0, 0.04);
 }
 
+/* Hyperlinks inside CV documents must have NO UNDERLINE on default, hover, focus, active */
+.cv-paper a,
+.cv-paper a:visited,
+.cv-paper a:hover,
+.cv-paper a:focus,
+.cv-paper a:active,
+.cv-document a,
+.cv-document a:visited,
+.cv-document a:hover,
+.cv-document a:focus,
+.cv-document a:active {
+  text-decoration: none !important;
+}
+
+.cv-paper a:focus-visible,
+.cv-document a:focus-visible {
+  outline: 1.5px solid rgba(139, 124, 246, 0.6);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
 /* Custom scrollbars */
 ::-webkit-scrollbar {
   width: 8px;
