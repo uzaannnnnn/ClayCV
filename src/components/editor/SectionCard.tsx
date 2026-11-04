@@ -41,16 +41,13 @@ export function SectionCard({
   return (
     <div
       id={id}
-      className={cn(
-        "clay-card transition-all duration-200 bg-[#FAF8F5] overflow-hidden",
-        isOpen ? "ring-2 ring-[#8B7CF6]/20" : "hover:border-[#8B7CF6]/30"
-      )}
+      className={cn("cv-section", isOpen && "is-open cv-section-open")}
     >
       {/* Header Button */}
       <button
         type="button"
         onClick={handleToggle}
-        className="w-full px-5 py-4 flex items-center justify-between text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8B7CF6] rounded-[22px] transition-colors"
+        className="cv-section-trigger w-full px-5 py-4 flex items-center justify-between text-left cursor-pointer select-none"
         aria-expanded={isOpen}
       >
         <div className="flex items-center gap-3.5 min-w-0">
@@ -92,8 +89,10 @@ export function SectionCard({
 
       {/* Accordion Content */}
       {isOpen && (
-        <div className="px-5 pb-6 pt-1 border-t border-[rgba(70,65,90,0.06)] animate-in fade-in duration-150">
-          {children}
+        <div className="cv-section-content px-5 pb-6 pt-2 animate-in fade-in duration-150">
+          <div className="cv-section-content-inner">
+            {children}
+          </div>
         </div>
       )}
     </div>

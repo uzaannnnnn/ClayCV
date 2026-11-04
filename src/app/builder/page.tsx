@@ -70,7 +70,7 @@ function BuilderContent() {
         {/* Desktop Two-Column Layout */}
         <div className="hidden lg:grid lg:grid-cols-12 gap-8 items-start">
           {/* Left Column: Form Editor & Section Ordering (45%) */}
-          <div className="lg:col-span-5 xl:col-span-5 h-full overflow-y-auto pr-1">
+          <div className="lg:col-span-5 xl:col-span-5">
             <CVEditor />
           </div>
 
@@ -83,7 +83,7 @@ function BuilderContent() {
         {/* Mobile / Tablet Tabbed View */}
         <div className="lg:hidden">
           {activeMobileTab === "edit" ? (
-            <div className="animate-in fade-in duration-150">
+            <div className="animate-in fade-in duration-150 p-1 sm:p-2">
               <CVEditor />
             </div>
           ) : (
