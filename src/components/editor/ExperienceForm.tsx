@@ -8,7 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { MonthYearSelect } from "@/components/ui/month-year-select";
 import { CVLanguage, EmploymentType, WorkMode } from "@/types/cv";
-import { Plus, Trash2, Briefcase } from "lucide-react";
+import { Plus, Trash2, Briefcase, Sparkles } from "lucide-react";
 import { validateDateRange } from "@/lib/dates/date-utils";
 
 const FIELD_LABEL_CLASS =
@@ -47,8 +47,13 @@ const WORK_MODE_OPTIONS: Record<
 };
 
 export function ExperienceForm() {
-  const { cvData, addExperience, updateExperience, removeExperience } =
-    useCVStore();
+  const {
+    cvData,
+    addExperience,
+    updateExperience,
+    removeExperience,
+    setActiveWorkspace,
+  } = useCVStore();
   const { experience, language } = cvData;
 
   return (
@@ -225,15 +230,27 @@ export function ExperienceForm() {
                 </div>
 
                 {/* Description */}
-                <Textarea
-                  label="Role Description & Accomplishments"
-                  rows={3}
-                  placeholder="• Architected and shipped scalable features...&#10;• Led sprint planning and cross-functional teams...&#10;• Increased performance metrics by 40%."
-                  value={item.description}
-                  onChange={(e) =>
-                    updateExperience(item.id, { description: e.target.value })
-                  }
-                />
+                <div className="space-y-1.5">
+                  <div className="flex items-center justify-end">
+                    <button
+                      type="button"
+                      onClick={() => setActiveWorkspace("writing")}
+                      className="inline-flex items-center gap-1 text-xs font-semibold text-[#8B7CF6] hover:text-[#6C5BD8] cursor-pointer"
+                    >
+                      <Sparkles className="w-3.5 h-3.5" />
+                      <span>Improve with Gemini AI</span>
+                    </button>
+                  </div>
+                  <Textarea
+                    label="Role Description & Accomplishments"
+                    rows={3}
+                    placeholder="• Architected and shipped scalable features...&#10;• Led sprint planning and cross-functional teams...&#10;• Increased performance metrics by 40%."
+                    value={item.description}
+                    onChange={(e) =>
+                      updateExperience(item.id, { description: e.target.value })
+                    }
+                  />
+                </div>
               </div>
             );
           })}

@@ -54,3 +54,36 @@ export async function downloadCvPdf(data: CVData): Promise<void> {
     URL.revokeObjectURL(url);
   }, 1000);
 }
+
+export async function downloadCoverLetterPdf(params: {
+  fullName: string;
+  email?: string;
+  phone?: string;
+  location?: string;
+  jobTitle?: string;
+  companyName?: string;
+  content: string;
+}): Promise<void> {
+  const { pdf } = await import("@react-pdf/renderer");
+  const { CoverLetterPdfDocument } = await import(
+    "@/components/pdf/CoverLetterPdfDocument"
+  );
+
+  const docElement = CoverLetterPdfDocument(params);
+  const blob = await pdf(docElement).toBlob();
+
+  const base = sanitizeFilename(params.fullName || params.jobTitle || "cover-letter");
+  const filename = `${base}-cover-letter.pdf`;
+
+  const url = URL.createObjectURL(blob);
+  const anchor = document.createElement("a");
+  anchor.href = url;
+  anchor.download = filename;
+  document.body.appendChild(anchor);
+  anchor.click();
+  document.body.removeChild(anchor);
+
+  setTimeout(() => {
+    URL.revokeObjectURL(url);
+  }, 1000);
+}

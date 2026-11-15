@@ -5,10 +5,16 @@ import { useCVStore } from "@/store/cv-store";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { Plus, Trash2, FolderGit2 } from "lucide-react";
+import { Plus, Trash2, FolderGit2, Sparkles } from "lucide-react";
 
 export function ProjectsForm() {
-  const { cvData, addProject, updateProject, removeProject } = useCVStore();
+  const {
+    cvData,
+    addProject,
+    updateProject,
+    removeProject,
+    setActiveWorkspace,
+  } = useCVStore();
   const { projects } = cvData;
 
   const validateUrl = (val: string) => {
@@ -98,15 +104,27 @@ export function ProjectsForm() {
               />
 
               {/* Description */}
-              <Textarea
-                label="Project Description"
-                rows={2}
-                placeholder="Briefly describe the problem solved, architecture choices, and impact..."
-                value={item.description}
-                onChange={(e) =>
-                  updateProject(item.id, { description: e.target.value })
-                }
-              />
+              <div className="space-y-1.5">
+                <div className="flex items-center justify-end">
+                  <button
+                    type="button"
+                    onClick={() => setActiveWorkspace("writing")}
+                    className="inline-flex items-center gap-1 text-xs font-semibold text-[#8B7CF6] hover:text-[#6C5BD8] cursor-pointer"
+                  >
+                    <Sparkles className="w-3.5 h-3.5" />
+                    <span>Generate Project Description with AI</span>
+                  </button>
+                </div>
+                <Textarea
+                  label="Project Description"
+                  rows={2}
+                  placeholder="Briefly describe the problem solved, architecture choices, and impact..."
+                  value={item.description}
+                  onChange={(e) =>
+                    updateProject(item.id, { description: e.target.value })
+                  }
+                />
+              </div>
             </div>
           ))}
 

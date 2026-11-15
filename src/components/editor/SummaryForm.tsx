@@ -3,13 +3,27 @@
 import React from "react";
 import { useCVStore } from "@/store/cv-store";
 import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
+import { Sparkles } from "lucide-react";
 
 export function SummaryForm() {
-  const { cvData, updatePersonalInfo } = useCVStore();
+  const { cvData, updatePersonalInfo, setActiveWorkspace } = useCVStore();
   const { summary } = cvData.personalInfo;
 
   return (
-    <div className="pt-2">
+    <div className="pt-2 space-y-2.5">
+      <div className="flex items-center justify-end">
+        <Button
+          type="button"
+          variant="ghost"
+          size="sm"
+          onClick={() => setActiveWorkspace("writing")}
+          className="text-xs text-[#8B7CF6] hover:text-[#6C5BD8] h-7 px-2.5"
+        >
+          <Sparkles className="w-3.5 h-3.5 mr-1" />
+          <span>Generate / Improve with Gemini AI</span>
+        </Button>
+      </div>
       <Textarea
         label="Professional Summary"
         rows={4}

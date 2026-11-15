@@ -4,10 +4,10 @@ import React, { useState } from "react";
 import { useCVStore } from "@/store/cv-store";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Plus, X, Wrench } from "lucide-react";
+import { Plus, X, Wrench, Sparkles } from "lucide-react";
 
 export function SkillsForm() {
-  const { cvData, addSkill, removeSkill } = useCVStore();
+  const { cvData, addSkill, removeSkill, setActiveWorkspace } = useCVStore();
   const { skills } = cvData;
 
   const [skillInput, setSkillInput] = useState("");
@@ -75,9 +75,19 @@ export function SkillsForm() {
 
       {/* Skills Pill List */}
       <div>
-        <label className="block text-xs font-semibold uppercase tracking-wider text-[#777482] mb-2.5">
-          Added Skills ({skills.length})
-        </label>
+        <div className="flex items-center justify-between mb-2.5">
+          <label className="block text-xs font-semibold uppercase tracking-wider text-[#777482]">
+            Added Skills ({skills.length})
+          </label>
+          <button
+            type="button"
+            onClick={() => setActiveWorkspace("writing")}
+            className="inline-flex items-center gap-1 text-xs font-semibold text-[#8B7CF6] hover:text-[#6C5BD8] cursor-pointer"
+          >
+            <Sparkles className="w-3.5 h-3.5" />
+            <span>Get AI Skill Suggestions</span>
+          </button>
+        </div>
 
         {skills.length === 0 ? (
           <div className="text-center py-6 border border-dashed border-[rgba(70,65,90,0.15)] rounded-[18px] bg-[#FAF8F5]">

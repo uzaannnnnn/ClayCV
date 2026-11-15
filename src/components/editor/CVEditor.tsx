@@ -163,8 +163,9 @@ export function CVEditor() {
       <div className="clay-card-sm p-4 bg-[#FAF8F5] flex items-center gap-3 text-xs text-[#777482] mt-6">
         <ShieldCheck className="w-5 h-5 text-[#8B7CF6] shrink-0" />
         <p>
-          Your CV is stored locally in this browser. We do not upload your
-          personal information to a server.
+          Your CV and certificate files are stored locally in this browser.
+          Minimized CV text is only sent to the Google Gemini API when you
+          explicitly grant consent and trigger an AI feature.
         </p>
       </div>
     </div>
