@@ -56,8 +56,9 @@ export function BuilderHeader() {
           <div className="flex items-center gap-3">
             <Link
               href="/"
-              className="w-9 h-9 rounded-[12px] bg-[#FAF8F5] border border-[rgba(70,65,90,0.08)] flex items-center justify-center text-[#777482] hover:text-[#292735] hover:bg-white transition-all shadow-sm shrink-0"
+              className="w-10 h-10 rounded-[12px] bg-[#FAF8F5] border border-[rgba(70,65,90,0.08)] flex items-center justify-center text-[#595566] hover:text-[#292735] hover:bg-white transition-all shadow-sm shrink-0"
               title="Return to Home"
+              aria-label="Return to Home"
             >
               <ArrowLeft className="w-4 h-4" />
             </Link>
@@ -69,12 +70,13 @@ export function BuilderHeader() {
                 value={cvData.title}
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder="Resume Title"
-                className="font-bold text-base sm:text-lg text-[#292735] bg-transparent border-b border-transparent hover:border-[#8B7CF6]/40 focus:border-[#8B7CF6] focus:outline-none transition-colors px-1 py-0.5 max-w-[170px] sm:max-w-[240px]"
+                aria-label="CV document title"
+                className="font-bold text-base sm:text-lg text-[#292735] bg-transparent border-b border-transparent hover:border-[#8B7CF6]/40 focus:border-[#6C5BD8] focus:outline-none transition-colors px-1 py-0.5 max-w-[160px] sm:max-w-[240px]"
                 title="Click to rename document"
               />
 
               {/* Autosave Indicator */}
-              <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#EAE6DE]/70 text-[11px] font-medium text-[#777482] shrink-0">
+              <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#EAE6DE]/70 text-[11px] font-medium text-[#595566] shrink-0">
                 {saveStatus === "saving" && (
                   <>
                     <Loader2 className="w-3 h-3 text-[#8B7CF6] animate-spin" />
@@ -136,10 +138,10 @@ export function BuilderHeader() {
               variant="ghost"
               size="sm"
               onClick={() => setIsSampleDialogOpen(true)}
-              className="text-xs text-[#777482] hover:text-[#8B7CF6]"
+              className="text-xs text-[#595566] hover:text-[#6C5BD8]"
               title="Fill with sample data for demonstration"
             >
-              <Sparkles className="w-3.5 h-3.5 mr-1 text-[#8B7CF6]" />
+              <Sparkles className="w-3.5 h-3.5 text-[#8B7CF6]" />
               <span className="hidden sm:inline">Load Sample</span>
             </Button>
 
@@ -152,7 +154,7 @@ export function BuilderHeader() {
               className="text-xs"
               title="Clear all fields"
             >
-              <RotateCcw className="w-3.5 h-3.5 mr-1" />
+              <RotateCcw className="w-3.5 h-3.5" />
               <span>Reset</span>
             </Button>
 
@@ -165,8 +167,8 @@ export function BuilderHeader() {
               isLoading={isDownloading}
               className="shadow-md"
             >
-              <Download className="w-4 h-4 mr-1.5" />
-              <span>Download PDF</span>
+              <Download className="w-4 h-4" />
+              <span>{isDownloading ? "Downloading..." : "Download PDF"}</span>
             </Button>
           </div>
         </div>

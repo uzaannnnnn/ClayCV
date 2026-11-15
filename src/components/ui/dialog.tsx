@@ -1,7 +1,8 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useId, useRef } from "react";
 import { X } from "lucide-react";
+import { cn } from "@/lib/utils";
 import { Button } from "./button";
 
 export interface DialogProps {
@@ -14,6 +15,9 @@ export interface DialogProps {
   cancelLabel?: string;
   onConfirm?: () => void;
   isDestructive?: boolean;
+  maxWidthClassName?: string;
+  footer?: React.ReactNode;
+  hideFooter?: boolean;
 }
 
 export function Dialog({
@@ -26,20 +30,41 @@ export function Dialog({
   cancelLabel = "Cancel",
   onConfirm,
   isDestructive = false,
+  maxWidthClassName = "max-w-md",
+  footer,
+  hideFooter = false,
 }: DialogProps) {
+  const titleId = useId();
+  const descriptionId = useId();
+  const panelRef = useRef<HTMLDivElement>(null);
+  const previousFocusRef = useRef<HTMLElement | null>(null);
+
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape" && isOpen) {
+        e.preventDefault();
         onClose();
       }
     };
+
     if (isOpen) {
+      previousFocusRef.current =
+        document.activeElement instanceof HTMLElement
+          ? document.activeElement
+          : null;
       document.body.style.overflow = "hidden";
       window.addEventListener("keydown", handleKeyDown);
+      requestAnimationFrame(() => {
+        panelRef.current?.focus();
+      });
     }
+
     return () => {
       document.body.style.overflow = "unset";
       window.removeEventListener("keydown", handleKeyDown);
+      if (isOpen && previousFocusRef.current) {
+        previousFocusRef.current.focus();
+      }
     };
   }, [isOpen, onClose]);
 
@@ -49,58 +74,74 @@ export function Dialog({
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6">
       {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-[#292735]/40 backdrop-blur-sm transition-opacity"
+        className="fixed inset-0 bg-[#292735]/45 backdrop-blur-xs transition-opacity"
         onClick={onClose}
         aria-hidden="true"
       />
 
       {/* Modal Dialog */}
       <div
+        ref={panelRef}
+        tabIndex={-1}
         role="dialog"
         aria-modal="true"
-        aria-labelledby="dialog-title"
-        aria-describedby="dialog-description"
-        className="clay-panel relative z-10 w-full max-w-md p-6 sm:p-8 animate-in fade-in zoom-in-95 duration-200"
+        aria-labelledby={titleId}
+        aria-describedby={description ? descriptionId : undefined}
+        className={cn(
+          "clay-panel relative z-10 w-full max-h-[90dvh] overflow-y-auto p-6 sm:p-7 focus:outline-none",
+          maxWidthClassName
+        )}
       >
         <button
+          type="button"
           onClick={onClose}
-          className="absolute top-5 right-5 p-1.5 text-[#777482] hover:text-[#292735] rounded-full hover:bg-[#EAE6DE]/70 transition-colors"
+          className="absolute top-4 right-4 min-h-[40px] min-w-[40px] flex items-center justify-center text-[#595566] hover:text-[#292735] rounded-full hover:bg-[#EAE6DE]/80 transition-colors cursor-pointer"
           aria-label="Close dialog"
         >
           <X className="w-5 h-5" />
         </button>
 
-        <h3
-          id="dialog-title"
-          className="text-lg font-bold text-[#292735] pr-6"
+        <h2
+          id={titleId}
+          className="text-lg sm:text-xl font-bold text-[#292735] pr-10 leading-snug"
         >
           {title}
-        </h3>
+        </h2>
 
         {description && (
-          <p id="dialog-description" className="mt-2 text-sm text-[#777482]">
+          <p
+            id={descriptionId}
+            className="mt-2 text-sm text-[#595566] leading-relaxed"
+          >
             {description}
           </p>
         )}
 
         {children && <div className="mt-4">{children}</div>}
 
-        <div className="mt-6 flex flex-col-reverse sm:flex-row sm:justify-end gap-2.5">
-          <Button variant="secondary" onClick={onClose}>
-            {cancelLabel}
-          </Button>
-          {onConfirm && (
-            <Button
-              variant={isDestructive ? "destructive" : "primary"}
-              onClick={() => {
-                onConfirm();
-                onClose();
-              }}
-            >
-              {confirmLabel}
-            </Button>
-          )}
-        </div>
+        {!hideFooter && (
+          footer ? (
+            <div className="mt-6">{footer}</div>
+          ) : (
+            <div className="mt-6 flex flex-col-reverse sm:flex-row sm:justify-end gap-2.5">
+              <Button type="button" variant="secondary" onClick={onClose}>
+                {cancelLabel}
+              </Button>
+              {onConfirm && (
+                <Button
+                  type="button"
+                  variant={isDestructive ? "destructive" : "primary"}
+                  onClick={() => {
+                    onConfirm();
+                    onClose();
+                  }}
+                >
+                  {confirmLabel}
+                </Button>
+              )}
+            </div>
+          )
+        )}
       </div>
     </div>
   );

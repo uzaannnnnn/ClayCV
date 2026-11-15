@@ -60,7 +60,7 @@ export function CardDescription({
   ...props
 }: React.HTMLAttributes<HTMLParagraphElement>) {
   return (
-    <p className={cn("text-sm text-[#777482]", className)} {...props}>
+    <p className={cn("text-sm text-[#595566]", className)} {...props}>
       {children}
     </p>
   );

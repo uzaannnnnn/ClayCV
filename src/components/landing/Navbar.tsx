@@ -26,14 +26,14 @@ export function Navbar() {
             <span className="font-extrabold text-xl tracking-tight text-[#292735]">
               Clay<span className="text-[#8B7CF6]">CV</span>
             </span>
-            <span className="text-[10px] -mt-1 font-semibold text-[#777482] uppercase tracking-wider">
+            <span className="text-[10px] -mt-1 font-semibold text-[#595566] uppercase tracking-wider">
               Tactile Resume Builder
             </span>
           </div>
         </Link>
 
         {/* Navigation Links */}
-        <nav className="hidden md:flex items-center gap-8 text-sm font-medium text-[#777482]">
+        <nav className="hidden md:flex items-center gap-8 text-sm font-medium text-[#595566]">
           <a
             href="#features"
             className="hover:text-[#292735] transition-colors py-1"

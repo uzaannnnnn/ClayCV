@@ -34,26 +34,26 @@ export function Features() {
       badgeText: "Bilingual Output",
     },
     {
-      title: "Private Local & IndexedDB",
+      title: "Stored in Your Browser",
       description:
-        "Your CV data and certificate files are stored 100% locally in your browser. No accounts, no cloud sync, and zero tracking of your personal history.",
+        "Your CV data and certificate files stay privately in your browser. No accounts, no cloud sync, and zero tracking of your personal history.",
       icon: ShieldCheck,
       accentBg: "bg-[#D7EDE1]",
       accentColor: "text-[#227248]",
-      badgeText: "100% Client-Side",
+      badgeText: "Private & Local",
     },
   ];
 
   return (
     <section id="features" className="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
       <div className="text-center max-w-2xl mx-auto mb-16 space-y-3">
-        <h2 className="text-xs font-bold uppercase tracking-widest text-[#8B7CF6]">
+        <h2 className="text-xs font-bold uppercase tracking-widest text-[#6C5BD8]">
           Engineered for Simplicity & Compliance
         </h2>
         <p className="text-3xl sm:text-4xl font-extrabold text-[#292735] tracking-tight">
           Everything You Need for Your Next Role
         </p>
-        <p className="text-sm sm:text-base text-[#777482]">
+        <p className="text-sm sm:text-base text-[#595566]">
           Built from the ground up to respect your time, privacy, and career goals.
         </p>
       </div>
@@ -84,7 +84,7 @@ export function Features() {
                 <h3 className="text-lg font-bold text-[#292735] mb-2">
                   {feature.title}
                 </h3>
-                <p className="text-sm text-[#777482] leading-relaxed">
+                <p className="text-sm text-[#595566] leading-relaxed">
                   {feature.description}
                 </p>
               </div>

@@ -160,12 +160,12 @@ export function CVEditor() {
       </SectionCard>
 
       {/* Privacy guarantee note in editor */}
-      <div className="clay-card-sm p-4 bg-[#FAF8F5] flex items-center gap-3 text-xs text-[#777482] mt-6">
-        <ShieldCheck className="w-5 h-5 text-[#8B7CF6] shrink-0" />
+      <div className="clay-card-sm p-4 bg-[#FAF8F5] flex items-center gap-3 text-xs text-[#595566] mt-6">
+        <ShieldCheck className="w-5 h-5 text-[#6C5BD8] shrink-0" />
         <p>
-          Your CV and certificate files are stored locally in this browser.
-          Minimized CV text is only sent to the Google Gemini API when you
-          explicitly grant consent and trigger an AI feature.
+          Your CV and certificate files stay stored in this browser. Only the
+          necessary CV details are sent to Google Gemini when you agree to the
+          privacy notice and run an AI feature.
         </p>
       </div>
     </div>

@@ -55,8 +55,8 @@ export function SectionCard({
             className={cn(
               "w-10 h-10 rounded-[14px] flex items-center justify-center transition-all shrink-0",
               isOpen
-                ? "bg-gradient-to-br from-[#A99CFF] to-[#8B7CF6] text-white shadow-[-2px_-2px_6px_rgba(255,255,255,0.9),2px_3px_8px_rgba(139,124,246,0.3)]"
-                : "bg-[#EFECE6] text-[#777482] shadow-[-2px_-2px_5px_rgba(255,255,255,0.85),2px_2px_5px_rgba(163,157,147,0.18)]"
+                ? "bg-gradient-to-br from-[#8372F3] to-[#6C5BD8] text-white shadow-[-2px_-2px_6px_rgba(255,255,255,0.9),2px_3px_8px_rgba(108,91,216,0.3)]"
+                : "bg-[#EFECE6] text-[#595566] shadow-[-2px_-2px_5px_rgba(255,255,255,0.85),2px_2px_5px_rgba(163,157,147,0.18)]"
             )}
           >
             <Icon className="w-5 h-5" />
@@ -68,18 +68,18 @@ export function SectionCard({
                 {title}
               </h3>
               {badge !== undefined && badge !== null && (
-                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#E8E3FF] text-[#6C5BD8]">
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#E8E3FF] text-[#6C5BD8] shrink-0">
                   {badge}
                 </span>
               )}
             </div>
-            <p className="text-xs text-[#777482] truncate">{description}</p>
+            <p className="text-xs text-[#595566] truncate">{description}</p>
           </div>
         </div>
 
         <div
           className={cn(
-            "w-8 h-8 rounded-full flex items-center justify-center text-[#777482] transition-transform duration-200 shrink-0 ml-2",
+            "w-8 h-8 rounded-full flex items-center justify-center text-[#595566] transition-transform duration-200 shrink-0 ml-2",
             isOpen ? "rotate-180 bg-[#FAF8F5]" : "rotate-0"
           )}
         >

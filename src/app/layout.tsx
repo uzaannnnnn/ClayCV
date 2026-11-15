@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "ClayCV — Create Your Professional CV",
+    default: "ClayCV: Create Your Professional CV",
     template: "%s | ClayCV",
   },
   description:

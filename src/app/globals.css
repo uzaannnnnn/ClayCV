@@ -17,12 +17,12 @@
   --clay-yellow: #F8E9BD;
 
   --clay-text-primary: #292735;
-  --clay-text-secondary: #777482;
-  --clay-text-muted: #A29FAC;
+  --clay-text-secondary: #595566;
+  --clay-text-muted: #6D697A;
   --clay-text-inverted: #FFFFFF;
 
-  --clay-border-default: rgba(70, 65, 90, 0.08);
-  --clay-border-active: rgba(139, 124, 246, 0.45);
+  --clay-border-default: rgba(70, 65, 90, 0.1);
+  --clay-border-active: rgba(108, 91, 216, 0.5);
 }
 
 @theme {
@@ -39,10 +39,33 @@
   --color-clay-mint: #D7EDE1;
   --color-clay-yellow: #F8E9BD;
   --color-clay-text: #292735;
-  --color-clay-muted: #777482;
-  --color-clay-subtle: #A29FAC;
-  --color-clay-border: rgba(70, 65, 90, 0.08);
-  --color-clay-border-active: rgba(139, 124, 246, 0.45);
+  --color-clay-muted: #595566;
+  --color-clay-subtle: #6D697A;
+  --color-clay-border: rgba(70, 65, 90, 0.1);
+  --color-clay-border-active: rgba(108, 91, 216, 0.5);
+}
+
+@layer base {
+  button:not(:disabled),
+  [role="button"]:not([aria-disabled="true"]),
+  a[href],
+  summary,
+  select:not(:disabled) {
+    cursor: pointer;
+  }
+
+  button:disabled,
+  [aria-disabled="true"],
+  input:disabled,
+  textarea:disabled,
+  select:disabled {
+    cursor: not-allowed;
+  }
+
+  :focus-visible {
+    outline: 2px solid #6C5BD8;
+    outline-offset: 2px;
+  }
 }
 
 body {
@@ -130,23 +153,23 @@ body {
 
 /* Buttons */
 .clay-btn-primary {
-  background: linear-gradient(135deg, #9688FF 0%, #8B7CF6 50%, #7B6AF2 100%);
+  background: linear-gradient(135deg, #8372F3 0%, #715EE6 55%, #6450D9 100%);
   color: #FFFFFF;
   border-radius: 16px;
   border: 1px solid rgba(255, 255, 255, 0.25);
   box-shadow:
     -4px -4px 12px rgba(255, 255, 255, 0.7),
-    4px 6px 14px rgba(139, 124, 246, 0.35);
+    4px 6px 14px rgba(113, 94, 230, 0.35);
   transition: all 0.18s cubic-bezier(0.34, 1.56, 0.64, 1);
   font-weight: 600;
 }
 
 .clay-btn-primary:hover {
-  background: linear-gradient(135deg, #A194FF 0%, #9081F8 50%, #8272F4 100%);
+  background: linear-gradient(135deg, #8D7DF6 0%, #7A67EC 55%, #6C58DF 100%);
   transform: translateY(-1px);
   box-shadow:
     -5px -5px 14px rgba(255, 255, 255, 0.8),
-    5px 8px 18px rgba(139, 124, 246, 0.42);
+    5px 8px 18px rgba(113, 94, 230, 0.42);
 }
 
 .clay-btn-primary:active {

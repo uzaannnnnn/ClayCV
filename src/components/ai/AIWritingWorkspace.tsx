@@ -8,7 +8,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { AIPrivacyConsentBanner } from "./AIPrivacyConsentBanner";
 import { AIResultCard } from "./AIResultCard";
 import { callWritingAI } from "@/lib/ai/client-api";
-import { DEFAULT_GEMINI_MODEL } from "@/lib/ai/gemini-config";
 import {
   WritingOperation,
   WritingStyle,
@@ -84,6 +83,7 @@ export function AIWritingWorkspace() {
   const {
     cvData,
     aiConsentAccepted,
+    openConsentModal,
     updatePersonalInfo,
     updateExperience,
     updateProject,
@@ -93,7 +93,8 @@ export function AIWritingWorkspace() {
   const [activeTab, setActiveTab] = useState<WritingOperation>(
     "professional_summary"
   );
-  const [isLoading, setIsLoading] = useState(false);
+  const [activeAction, setActiveAction] = useState<string | null>(null);
+  const isLoading = activeAction !== null;
   const [error, setError] = useState<string | null>(null);
   const [response, setResponse] = useState<WritingResponseData | null>(null);
 
@@ -165,16 +166,16 @@ export function AIWritingWorkspace() {
     }
   };
 
-  const handleExecute = async () => {
+  const handleExecute = async (source: string = "generate") => {
     if (!aiConsentAccepted) {
-      setError(
-        "Please accept the Google Gemini Privacy Consent above before generating AI content."
-      );
+      openConsentModal();
       return;
     }
 
-    setError(null);
-    setIsLoading(true);
+    if (source === "generate") {
+      setError(null);
+    }
+    setActiveAction(source);
 
     try {
       if (activeTab === "professional_summary") {
@@ -315,12 +316,13 @@ export function AIWritingWorkspace() {
         });
         setResponse(res.data);
       }
+      setError(null);
     } catch (err) {
       setError(
         err instanceof Error ? err.message : "Failed to generate AI content."
       );
     } finally {
-      setIsLoading(false);
+      setActiveAction(null);
     }
   };
 
@@ -404,14 +406,14 @@ export function AIWritingWorkspace() {
       <div className="clay-card p-3 sm:p-4 bg-[#FAF8F5]">
         <div className="flex items-center justify-between mb-2.5 px-1">
           <div className="flex items-center gap-2">
-            <Sparkles className="w-4 h-4 text-[#8B7CF6]" />
+            <Sparkles className="w-4 h-4 text-[#6C5BD8]" />
             <h2 className="text-sm font-bold text-[#292735]">
               AI Writing Assistant
             </h2>
           </div>
-          <span className="text-[11px] font-semibold text-[#777482]">
+          <span className="text-xs font-semibold text-[#595566]">
             CV Language:{" "}
-            <strong className="text-[#8B7CF6]">
+            <strong className="text-[#6C5BD8]">
               {cvData.language === "id" ? "Bahasa Indonesia" : "English"}
             </strong>
           </span>
@@ -427,10 +429,10 @@ export function AIWritingWorkspace() {
                 type="button"
                 onClick={() => handleTabChange(tab.id)}
                 className={cn(
-                  "flex items-center gap-1.5 px-3 py-2 rounded-[12px] text-xs font-bold transition-all cursor-pointer",
+                  "min-h-[38px] flex items-center gap-1.5 px-3 py-1.5 rounded-[12px] text-xs font-bold transition-all cursor-pointer",
                   isSelected
-                    ? "bg-[#8B7CF6] text-white shadow-sm"
-                    : "bg-white/80 text-[#777482] hover:text-[#292735] hover:bg-white"
+                    ? "bg-[#6C5BD8] text-white shadow-sm"
+                    : "bg-white/85 text-[#595566] hover:text-[#292735] hover:bg-white"
                 )}
               >
                 <Icon className="w-3.5 h-3.5" />
@@ -449,7 +451,7 @@ export function AIWritingWorkspace() {
               <h3 className="text-base font-bold text-[#292735]">
                 Professional Summary Generator
               </h3>
-              <p className="text-xs text-[#777482] mt-0.5">
+              <p className="text-xs text-[#595566] mt-0.5">
                 Generates Short, Professional, and Detailed summaries from your
                 actual CV experience, education, and skills without inventing
                 qualifications or years of experience.
@@ -463,7 +465,7 @@ export function AIWritingWorkspace() {
                 onChange={(e) => setTargetPosition(e.target.value)}
               />
               <Input
-                label="Years of Experience (Optional — Only used if provided)"
+                label="Years of Experience (Optional)"
                 placeholder="e.g. 5+ years"
                 value={yearsOfExp}
                 onChange={(e) => setYearsOfExp(e.target.value)}
@@ -485,7 +487,7 @@ export function AIWritingWorkspace() {
               <h3 className="text-base font-bold text-[#292735]">
                 Work Experience Writer
               </h3>
-              <p className="text-xs text-[#777482] mt-0.5">
+              <p className="text-xs text-[#595566] mt-0.5">
                 Rewrites descriptions into strong action-verb bullet points in
                 Professional, Concise, and Achievement-Oriented styles without
                 fabricating metrics.
@@ -493,7 +495,7 @@ export function AIWritingWorkspace() {
             </div>
 
             {cvData.experience.length === 0 ? (
-              <div className="p-4 rounded-[14px] bg-[#FAF8F5] border border-dashed border-[rgba(70,65,90,0.2)] text-xs text-[#777482]">
+              <div className="p-4 rounded-[14px] bg-[#FAF8F5] border border-dashed border-[rgba(70,65,90,0.2)] text-xs text-[#595566]">
                 No Work Experience entries found. Add a role in the CV Builder
                 tab first, or load sample data to test.
               </div>
@@ -501,7 +503,7 @@ export function AIWritingWorkspace() {
               <>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                   <div>
-                    <label className="block text-xs font-semibold uppercase tracking-wider text-[#777482] mb-1.5">
+                    <label className="block text-xs font-semibold uppercase tracking-wider text-[#595566] mb-1.5">
                       Select Work Experience Entry
                     </label>
                     <select
@@ -511,7 +513,7 @@ export function AIWritingWorkspace() {
                     >
                       {cvData.experience.map((exp, idx) => (
                         <option key={exp.id} value={exp.id}>
-                          #{idx + 1} — {exp.position || "Untitled"} at{" "}
+                          #{idx + 1}: {exp.position || "Untitled"} at{" "}
                           {exp.company || "Company"}
                         </option>
                       ))}
@@ -519,7 +521,7 @@ export function AIWritingWorkspace() {
                   </div>
 
                   <div>
-                    <label className="block text-xs font-semibold uppercase tracking-wider text-[#777482] mb-1.5">
+                    <label className="block text-xs font-semibold uppercase tracking-wider text-[#595566] mb-1.5">
                       Preferred Writing Style
                     </label>
                     <select
@@ -568,9 +570,9 @@ export function AIWritingWorkspace() {
               <h3 className="text-base font-bold text-[#292735]">
                 Achievement Statement Generator
               </h3>
-              <p className="text-xs text-[#777482] mt-0.5">
-                Describe what you worked on and any real outcomes. Gemini will
-                craft polished achievement bullets without inventing results.
+              <p className="text-xs text-[#595566] mt-0.5">
+                Describe what you worked on and any real outcomes. AI will
+                craft clear achievement bullets without inventing results.
               </p>
             </div>
 
@@ -629,7 +631,7 @@ export function AIWritingWorkspace() {
               <h3 className="text-base font-bold text-[#292735]">
                 Project Description Generator
               </h3>
-              <p className="text-xs text-[#777482] mt-0.5">
+              <p className="text-xs text-[#595566] mt-0.5">
                 Generates Short, Detailed, and Bullet-Point project descriptions
                 from your project details.
               </p>
@@ -637,7 +639,7 @@ export function AIWritingWorkspace() {
 
             {cvData.projects.length > 0 && (
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-[#777482] mb-1.5">
+                <label className="block text-xs font-semibold uppercase tracking-wider text-[#595566] mb-1.5">
                   Target Project Entry
                 </label>
                 <select
@@ -647,7 +649,7 @@ export function AIWritingWorkspace() {
                 >
                   {cvData.projects.map((p, idx) => (
                     <option key={p.id} value={p.id}>
-                      #{idx + 1} — {p.name || "Untitled Project"} (
+                      #{idx + 1}: {p.name || "Untitled Project"} (
                       {p.technologies || "No tech listed"})
                     </option>
                   ))}
@@ -693,14 +695,14 @@ export function AIWritingWorkspace() {
               <h3 className="text-base font-bold text-[#292735]">
                 AI Skills Recommendations
               </h3>
-              <p className="text-xs text-[#777482] mt-0.5">
+              <p className="text-xs text-[#595566] mt-0.5">
                 Analyzes your work experience, projects, and education to
                 suggest relevant Technical Skills, Programming Languages,
                 Frameworks, Tools, and Soft Skills. Suggestions are never added
                 automatically.
               </p>
             </div>
-            <div className="p-3.5 rounded-[14px] bg-[#FAF8F5] text-xs text-[#777482] flex items-center justify-between">
+            <div className="p-3.5 rounded-[14px] bg-[#FAF8F5] text-xs text-[#595566] flex items-center justify-between">
               <span>
                 Currently listed skills in CV:{" "}
                 <strong className="text-[#292735]">
@@ -725,7 +727,7 @@ export function AIWritingWorkspace() {
                   ? "Grammar, Clarity & Professional Tone Improver"
                   : "Bilingual CV Translator (English ↔ Bahasa Indonesia)"}
               </h3>
-              <p className="text-xs text-[#777482] mt-0.5">
+              <p className="text-xs text-[#595566] mt-0.5">
                 {activeTab === "grammar_tone"
                   ? "Fixes grammar, removes redundancy, and elevates tone while preserving your exact factual meaning."
                   : "Translates your selected CV section while preserving company names, proper nouns, programming languages, and technical terms."}
@@ -734,7 +736,7 @@ export function AIWritingWorkspace() {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-[#777482] mb-1.5">
+                <label className="block text-xs font-semibold uppercase tracking-wider text-[#595566] mb-1.5">
                   Select CV Field to Load
                 </label>
                 <select
@@ -758,7 +760,7 @@ export function AIWritingWorkspace() {
 
               {activeTab === "translation" ? (
                 <div>
-                  <label className="block text-xs font-semibold uppercase tracking-wider text-[#777482] mb-1.5">
+                  <label className="block text-xs font-semibold uppercase tracking-wider text-[#595566] mb-1.5">
                     Target Translation Language
                   </label>
                   <select
@@ -797,16 +799,16 @@ export function AIWritingWorkspace() {
         )}
 
         {/* Primary Action Row */}
-        <div className="flex items-center justify-between pt-2 border-t border-gray-100">
-          <span className="text-[11px] text-[#777482]">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-2 border-t border-gray-100">
+          <span className="text-xs text-[#595566]">
             {!aiConsentAccepted ? (
               <span className="text-[#6C5BD8] font-medium">
-                Grant privacy consent above to enable AI generation.
+                Please agree to the privacy notice above to use AI writing tools.
               </span>
+            ) : isLoading ? (
+              activeTabInfo.loadingText
             ) : (
-              <>
-                Powered by Google Gemini (<code>{DEFAULT_GEMINI_MODEL}</code>)
-              </>
+              "Powered by Google Gemini AI"
             )}
           </span>
           <Button
@@ -814,12 +816,15 @@ export function AIWritingWorkspace() {
             variant="primary"
             size="md"
             disabled={!aiConsentAccepted || isLoading}
-            isLoading={isLoading}
-            onClick={handleExecute}
+            isLoading={activeAction === "generate"}
+            onClick={() => handleExecute("generate")}
+            className="w-full sm:w-auto shrink-0"
           >
-            <Sparkles className="w-4 h-4 mr-1.5" />
+            <Sparkles className="w-4 h-4" />
             <span>
-              {isLoading ? activeTabInfo.loadingText : "Generate with Gemini"}
+              {activeAction === "generate"
+                ? "Generating..."
+                : "Generate with AI"}
             </span>
           </Button>
         </div>
@@ -827,19 +832,24 @@ export function AIWritingWorkspace() {
 
       {/* Error State */}
       {error && (
-        <div className="clay-card-sm p-4 bg-red-50/90 border border-red-200 text-red-700 text-xs flex items-center justify-between gap-3">
-          <div className="flex items-center gap-2.5">
-            <AlertCircle className="w-4 h-4 text-red-600 shrink-0" />
+        <div
+          role="alert"
+          className="clay-card-sm p-4 bg-red-50/90 border border-red-200 text-red-800 text-xs sm:text-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3"
+        >
+          <div className="flex items-start gap-2.5">
+            <AlertCircle className="w-4 h-4 text-red-700 shrink-0 mt-0.5" />
             <span>{error}</span>
           </div>
           <Button
             type="button"
             variant="secondary"
             size="sm"
+            isLoading={activeAction === "retry"}
             disabled={!aiConsentAccepted || isLoading}
-            onClick={handleExecute}
+            onClick={() => handleExecute("retry")}
+            className="shrink-0 self-end sm:self-center"
           >
-            Retry
+            <span>{activeAction === "retry" ? "Retrying..." : "Try Again"}</span>
           </Button>
         </div>
       )}
@@ -854,10 +864,10 @@ export function AIWritingWorkspace() {
               {response.missing_information.length > 0 && (
                 <div>
                   <p className="font-bold text-[#292735] flex items-center gap-1.5">
-                    <Info className="w-3.5 h-3.5 text-[#8B7CF6]" />
+                    <Info className="w-3.5 h-3.5 text-[#6C5BD8]" />
                     <span>Helpful Context You Can Add:</span>
                   </p>
-                  <ul className="list-disc list-inside text-[#777482] mt-1 space-y-0.5">
+                  <ul className="list-disc list-inside text-[#595566] mt-1 space-y-0.5">
                     {response.missing_information.map((m, i) => (
                       <li key={i}>{m}</li>
                     ))}
@@ -865,7 +875,7 @@ export function AIWritingWorkspace() {
                 </div>
               )}
               {response.warnings.map((w, i) => (
-                <p key={i} className="text-[#777482] italic">
+                <p key={i} className="text-[#595566] italic">
                   Note: {w}
                 </p>
               ))}
@@ -883,10 +893,10 @@ export function AIWritingWorkspace() {
                     className="clay-card-sm p-4 sm:p-5 bg-white space-y-3"
                   >
                     <div>
-                      <span className="text-xs font-bold uppercase tracking-wider text-[#8B7CF6]">
+                      <span className="text-xs font-bold uppercase tracking-wider text-[#6C5BD8]">
                         {group.category} (Suggestions)
                       </span>
-                      <p className="text-xs text-[#777482] mt-0.5">
+                      <p className="text-xs text-[#595566] mt-0.5">
                         {group.reason}
                       </p>
                     </div>
@@ -942,9 +952,10 @@ export function AIWritingWorkspace() {
                 hasExistingContent={targetMeta.hasExisting}
                 targetFieldName={targetMeta.fieldName}
                 isLoading={isLoading}
+                isRegenerating={activeAction === `regenerate-${idx}`}
                 regenerateDisabled={!aiConsentAccepted}
                 onApply={(text) => applyResultToTarget(text)}
-                onRegenerate={handleExecute}
+                onRegenerate={() => handleExecute(`regenerate-${idx}`)}
                 onCancel={() => setResponse(null)}
               />
             ))}

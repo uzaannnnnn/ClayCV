@@ -25,8 +25,8 @@ export function Hero() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
           {/* Left Column: Value Proposition & CTAs */}
           <div className="lg:col-span-6 space-y-6 text-center lg:text-left">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full clay-card-sm bg-[#FAF8F5] text-xs font-semibold text-[#8B7CF6]">
-              <Sparkles className="w-4 h-4 text-[#8B7CF6]" />
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full clay-card-sm bg-[#FAF8F5] text-xs font-semibold text-[#6C5BD8]">
+              <Sparkles className="w-4 h-4 text-[#6C5BD8]" />
               <span>ATS-First • 100% Client-Side • No Account Required</span>
             </div>
 
@@ -37,7 +37,7 @@ export function Hero() {
               </span>
             </h1>
 
-            <p className="text-base sm:text-lg text-[#777482] max-w-xl mx-auto lg:mx-0 leading-relaxed">
+            <p className="text-base sm:text-lg text-[#595566] max-w-xl mx-auto lg:mx-0 leading-relaxed">
               Create a professional, ATS-friendly CV in minutes. No account, no
               hassle, just your next opportunity.
             </p>
@@ -66,7 +66,7 @@ export function Hero() {
             </div>
 
             {/* Micro guarantees */}
-            <div className="pt-4 flex flex-wrap items-center justify-center lg:justify-start gap-6 text-xs font-medium text-[#777482]">
+            <div className="pt-4 flex flex-wrap items-center justify-center lg:justify-start gap-6 text-xs font-medium text-[#595566]">
               <div className="flex items-center gap-1.5">
                 <CheckCircle2 className="w-4 h-4 text-[#8B7CF6]" />
                 <span>3 ATS-Optimized Templates</span>
@@ -103,7 +103,7 @@ export function Hero() {
                   <div className="w-3 h-3 rounded-full bg-[#FFD6C2] shadow-inner" />
                   <div className="w-3 h-3 rounded-full bg-[#F8E9BD] shadow-inner" />
                   <div className="w-3 h-3 rounded-full bg-[#D7EDE1] shadow-inner" />
-                  <span className="text-xs font-medium text-[#777482] ml-2">
+                  <span className="text-xs font-medium text-[#595566] ml-2">
                     alex-morgan-cv.pdf
                   </span>
                 </div>
@@ -152,8 +152,8 @@ export function Hero() {
                     <div>
                       <div className="flex justify-between items-baseline font-semibold text-[#1A1A1A]">
                         <span>Lead UI/UX Engineer • Starlight Digital</span>
-                        <span className="text-[10px] text-[#777482]">
-                          Mar 2022 — Present
+                        <span className="text-[10px] text-[#595566]">
+                          Mar 2022 - Present
                         </span>
                       </div>
                       <p className="text-[10px] text-[#555555]">

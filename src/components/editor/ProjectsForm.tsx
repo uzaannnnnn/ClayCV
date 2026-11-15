@@ -32,11 +32,11 @@ export function ProjectsForm() {
     <div className="space-y-5 pt-2">
       {projects.length === 0 ? (
         <div className="text-center py-6 px-4 border border-dashed border-[rgba(70,65,90,0.15)] rounded-[18px] bg-[#FAF8F5]">
-          <FolderGit2 className="w-8 h-8 text-[#A29FAC] mx-auto mb-2" />
+          <FolderGit2 className="w-8 h-8 text-[#6D697A] mx-auto mb-2" />
           <p className="text-sm font-semibold text-[#292735]">
             No projects added
           </p>
-          <p className="text-xs text-[#777482] mt-0.5 mb-4">
+          <p className="text-xs text-[#595566] mt-0.5 mb-4">
             Showcase personal open-source projects, apps, client deliverables, or case studies.
           </p>
           <Button
@@ -45,8 +45,8 @@ export function ProjectsForm() {
             size="sm"
             onClick={() => addProject()}
           >
-            <Plus className="w-4 h-4 mr-1.5" />
-            Add First Project
+            <Plus className="w-4 h-4" />
+            <span>Add First Project</span>
           </Button>
         </div>
       ) : (
@@ -58,13 +58,13 @@ export function ProjectsForm() {
             >
               {/* Item Header */}
               <div className="flex items-center justify-between pb-2 border-b border-gray-100">
-                <span className="text-xs font-bold text-[#8B7CF6]">
+                <span className="text-xs font-bold text-[#6C5BD8]">
                   PROJECT #{idx + 1}
                 </span>
                 <button
                   type="button"
                   onClick={() => removeProject(item.id)}
-                  className="text-xs text-red-500 hover:text-red-700 flex items-center gap-1 transition-colors px-2 py-1 rounded-[8px] hover:bg-red-50 cursor-pointer"
+                  className="min-h-[36px] text-xs font-medium text-[#B91C1C] hover:text-[#991B1B] flex items-center gap-1 transition-colors px-2.5 py-1 rounded-[10px] hover:bg-red-50 cursor-pointer"
                   title="Remove this project"
                 >
                   <Trash2 className="w-3.5 h-3.5" />
@@ -109,10 +109,10 @@ export function ProjectsForm() {
                   <button
                     type="button"
                     onClick={() => setActiveWorkspace("writing")}
-                    className="inline-flex items-center gap-1 text-xs font-semibold text-[#8B7CF6] hover:text-[#6C5BD8] cursor-pointer"
+                    className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#6C5BD8] hover:text-[#5546BE] cursor-pointer py-1"
                   >
                     <Sparkles className="w-3.5 h-3.5" />
-                    <span>Generate Project Description with AI</span>
+                    <span>Improve with AI</span>
                   </button>
                 </div>
                 <Textarea
@@ -135,8 +135,8 @@ export function ProjectsForm() {
             onClick={() => addProject()}
             className="w-full"
           >
-            <Plus className="w-4 h-4 mr-1.5" />
-            Add Another Project
+            <Plus className="w-4 h-4" />
+            <span>Add Another Project</span>
           </Button>
         </div>
       )}

@@ -33,7 +33,7 @@ export function MonthYearSelect({
   return (
     <div className="w-full space-y-1.5">
       {label && (
-        <label className="block text-xs font-semibold uppercase tracking-wider text-[#777482]">
+        <label className="block text-xs font-semibold uppercase tracking-wider text-[#595566]">
           {label}
         </label>
       )}

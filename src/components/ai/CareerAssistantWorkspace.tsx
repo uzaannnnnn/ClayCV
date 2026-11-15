@@ -65,7 +65,7 @@ const CAREER_TABS: Array<{
 ];
 
 export function CareerAssistantWorkspace() {
-  const { cvData, aiConsentAccepted } = useCVStore();
+  const { cvData, aiConsentAccepted, openConsentModal } = useCVStore();
 
   const [activeTab, setActiveTab] = useState<CareerOperation>("cover_letter");
   const [targetJobTitle, setTargetJobTitle] = useState(
@@ -79,7 +79,10 @@ export function CareerAssistantWorkspace() {
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
   const [isDownloadingPdf, setIsDownloadingPdf] = useState(false);
 
-  const [isLoading, setIsLoading] = useState(false);
+  const [activeAction, setActiveAction] = useState<
+    "generate" | "retry" | "regenerate" | null
+  >(null);
+  const isLoading = activeAction !== null;
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<CareerResponseData | null>(null);
 
@@ -93,11 +96,11 @@ export function CareerAssistantWorkspace() {
     }
   };
 
-  const handleExecute = async () => {
+  const handleExecute = async (
+    source: "generate" | "retry" | "regenerate" = "generate"
+  ) => {
     if (!aiConsentAccepted) {
-      setError(
-        "Please accept the Google Gemini Privacy Consent above before using the Career Assistant."
-      );
+      openConsentModal();
       return;
     }
 
@@ -106,8 +109,10 @@ export function CareerAssistantWorkspace() {
       return;
     }
 
-    setError(null);
-    setIsLoading(true);
+    if (source === "generate") {
+      setError(null);
+    }
+    setActiveAction(source);
 
     try {
       const res = await callCareerAI({
@@ -122,6 +127,7 @@ export function CareerAssistantWorkspace() {
         userDraftOrNotes: userDraftOrNotes.trim(),
       });
       setResult(res.data);
+      setError(null);
       if (activeTab === "cover_letter") {
         setEditableCoverLetter(res.data.content);
       }
@@ -132,7 +138,7 @@ export function CareerAssistantWorkspace() {
           : "Failed to run Career Assistant operation."
       );
     } finally {
-      setIsLoading(false);
+      setActiveAction(null);
     }
   };
 
@@ -165,14 +171,14 @@ export function CareerAssistantWorkspace() {
       <div className="clay-card p-3 sm:p-4 bg-[#FAF8F5]">
         <div className="flex items-center justify-between mb-2.5 px-1">
           <div className="flex items-center gap-2">
-            <Briefcase className="w-4 h-4 text-[#8B7CF6]" />
+            <Briefcase className="w-4 h-4 text-[#6C5BD8]" />
             <h2 className="text-sm font-bold text-[#292735]">
               AI Career Assistant
             </h2>
           </div>
-          <span className="text-[11px] font-semibold text-[#777482]">
+          <span className="text-xs font-semibold text-[#595566]">
             Language:{" "}
-            <strong className="text-[#8B7CF6]">
+            <strong className="text-[#6C5BD8]">
               {cvData.language === "id" ? "Bahasa Indonesia" : "English"}
             </strong>
           </span>
@@ -192,10 +198,10 @@ export function CareerAssistantWorkspace() {
                   setError(null);
                 }}
                 className={cn(
-                  "flex items-center gap-1.5 px-3 py-2 rounded-[12px] text-xs font-bold transition-all cursor-pointer",
+                  "min-h-[38px] flex items-center gap-1.5 px-3 py-1.5 rounded-[12px] text-xs font-bold transition-all cursor-pointer",
                   isSelected
-                    ? "bg-[#8B7CF6] text-white shadow-sm"
-                    : "bg-white/80 text-[#777482] hover:text-[#292735] hover:bg-white"
+                    ? "bg-[#6C5BD8] text-white shadow-sm"
+                    : "bg-white/85 text-[#595566] hover:text-[#292735] hover:bg-white"
                 )}
               >
                 <Icon className="w-3.5 h-3.5" />
@@ -217,9 +223,9 @@ export function CareerAssistantWorkspace() {
                   ? "Tailored Cover Letter Generator"
                   : "Role & CV Interview Question Generator"}
               </h3>
-              <p className="text-xs text-[#777482] mt-0.5">
+              <p className="text-xs text-[#595566] mt-0.5">
                 {activeTab === "cover_letter"
-                  ? "Generates an editable, truthful cover letter aligned with your CV and target role, ready to copy or export as an A4 PDF."
+                  ? "Creates an editable cover letter matched to your CV and target role, ready to copy or download as a PDF."
                   : "Generates General, Behavioral, Technical, and Experience-Based questions tailored to your CV."}
               </p>
             </div>
@@ -255,7 +261,7 @@ export function CareerAssistantWorkspace() {
               <h3 className="text-base font-bold text-[#292735]">
                 STAR Interview Answer Coach
               </h3>
-              <p className="text-xs text-[#777482] mt-0.5">
+              <p className="text-xs text-[#595566] mt-0.5">
                 Structures your real CV experience into Situation, Task, Action,
                 and Result (STAR) format without inventing personal stories.
               </p>
@@ -284,7 +290,7 @@ export function CareerAssistantWorkspace() {
               <h3 className="text-base font-bold text-[#292735]">
                 LinkedIn Headline & About Section Generator
               </h3>
-              <p className="text-xs text-[#777482] mt-0.5">
+              <p className="text-xs text-[#595566] mt-0.5">
                 Creates 3 professional LinkedIn About & Headline variations in{" "}
                 {cvData.language === "id" ? "Bahasa Indonesia" : "English"}{" "}
                 using your actual CV background.
@@ -305,7 +311,7 @@ export function CareerAssistantWorkspace() {
             <h3 className="text-base font-bold text-[#292735]">
               Career Path & Job Position Recommendations
             </h3>
-            <p className="text-xs text-[#777482] mt-0.5">
+            <p className="text-xs text-[#595566] mt-0.5">
               Analyzes your skills, education, work experience, and projects to
               recommend matching job titles, explain why they fit, and highlight
               growth skills.
@@ -313,14 +319,16 @@ export function CareerAssistantWorkspace() {
           </div>
         )}
 
-        <div className="flex items-center justify-between pt-2 border-t border-gray-100">
-          <span className="text-[11px] text-[#777482]">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-2 border-t border-gray-100">
+          <span className="text-xs text-[#595566]">
             {!aiConsentAccepted ? (
               <span className="text-[#6C5BD8] font-medium">
-                Grant privacy consent above to enable AI Career Assistant generation.
+                Please agree to the privacy notice above to use the Career Assistant.
               </span>
+            ) : isLoading ? (
+              activeTabInfo.loadingText
             ) : (
-              `Grounded strictly in your active CV (${cvData.title})`
+              `Based on your active CV (${cvData.title})`
             )}
           </span>
           <Button
@@ -328,31 +336,39 @@ export function CareerAssistantWorkspace() {
             variant="primary"
             size="md"
             disabled={!aiConsentAccepted || isLoading}
-            isLoading={isLoading}
-            onClick={handleExecute}
+            isLoading={activeAction === "generate"}
+            onClick={() => handleExecute("generate")}
+            className="w-full sm:w-auto shrink-0"
           >
-            <Sparkles className="w-4 h-4 mr-1.5" />
+            <Sparkles className="w-4 h-4" />
             <span>
-              {isLoading ? activeTabInfo.loadingText : "Generate with Gemini"}
+              {activeAction === "generate"
+                ? "Generating..."
+                : "Generate with AI"}
             </span>
           </Button>
         </div>
       </div>
 
       {error && (
-        <div className="clay-card-sm p-4 bg-red-50/90 border border-red-200 text-red-700 text-xs flex items-center justify-between gap-3">
-          <div className="flex items-center gap-2.5">
-            <AlertCircle className="w-4 h-4 text-red-600 shrink-0" />
+        <div
+          role="alert"
+          className="clay-card-sm p-4 bg-red-50/90 border border-red-200 text-red-800 text-xs sm:text-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3"
+        >
+          <div className="flex items-start gap-2.5">
+            <AlertCircle className="w-4 h-4 text-red-700 shrink-0 mt-0.5" />
             <span>{error}</span>
           </div>
           <Button
             type="button"
             variant="secondary"
             size="sm"
+            isLoading={activeAction === "retry"}
             disabled={!aiConsentAccepted || isLoading}
-            onClick={handleExecute}
+            onClick={() => handleExecute("retry")}
+            className="shrink-0 self-end sm:self-center"
           >
-            Retry
+            <span>{activeAction === "retry" ? "Retrying..." : "Try Again"}</span>
           </Button>
         </div>
       )}
@@ -365,12 +381,11 @@ export function CareerAssistantWorkspace() {
             <div className="clay-card p-5 sm:p-6 bg-white space-y-4">
               <div className="flex flex-wrap items-center justify-between gap-2 border-b border-gray-100 pb-3">
                 <div>
-                  <span className="text-xs font-bold uppercase tracking-wider text-[#8B7CF6]">
+                  <span className="text-xs font-bold uppercase tracking-wider text-[#6C5BD8]">
                     Editable Cover Letter
                   </span>
-                  <p className="text-[11px] text-[#777482]">
-                    Review and customize before copying or downloading as A4
-                    PDF.
+                  <p className="text-xs text-[#595566]">
+                    Review and customize before copying or downloading as a PDF.
                   </p>
                 </div>
 
@@ -385,12 +400,12 @@ export function CareerAssistantWorkspace() {
                   >
                     {copiedKey === "cover-letter" ? (
                       <>
-                        <Check className="w-3.5 h-3.5 mr-1 text-emerald-600" />
+                        <Check className="w-3.5 h-3.5 text-emerald-600" />
                         <span>Copied</span>
                       </>
                     ) : (
                       <>
-                        <Copy className="w-3.5 h-3.5 mr-1" />
+                        <Copy className="w-3.5 h-3.5" />
                         <span>Copy</span>
                       </>
                     )}
@@ -400,11 +415,16 @@ export function CareerAssistantWorkspace() {
                     type="button"
                     variant="ghost"
                     size="sm"
-                    onClick={handleExecute}
+                    isLoading={activeAction === "regenerate"}
+                    onClick={() => handleExecute("regenerate")}
                     disabled={!aiConsentAccepted || isLoading}
                   >
-                    <RefreshCw className="w-3.5 h-3.5 mr-1" />
-                    <span>Regenerate</span>
+                    <RefreshCw className="w-3.5 h-3.5" />
+                    <span>
+                      {activeAction === "regenerate"
+                        ? "Trying again..."
+                        : "Try again"}
+                    </span>
                   </Button>
 
                   <Button
@@ -414,8 +434,10 @@ export function CareerAssistantWorkspace() {
                     isLoading={isDownloadingPdf}
                     onClick={handleDownloadCoverLetter}
                   >
-                    <Download className="w-3.5 h-3.5 mr-1" />
-                    <span>Download PDF</span>
+                    <Download className="w-3.5 h-3.5" />
+                    <span>
+                      {isDownloadingPdf ? "Downloading..." : "Download PDF"}
+                    </span>
                   </Button>
                 </div>
               </div>
@@ -457,8 +479,8 @@ export function CareerAssistantWorkspace() {
                     <p className="text-sm font-bold text-[#292735]">
                       Q{idx + 1}: {q.question}
                     </p>
-                    <p className="text-xs text-[#777482]">
-                      <strong>Why interviewers ask this:</strong> {q.why_asked}
+                    <p className="text-xs text-[#595566]">
+                      <strong className="text-[#292735]">Why interviewers ask this:</strong> {q.why_asked}
                     </p>
                     <p className="text-xs text-[#292735] bg-[#FAF8F5] p-2.5 rounded-[10px]">
                       <strong>Preparation Tip:</strong> {q.preparation_tip}
@@ -472,7 +494,7 @@ export function CareerAssistantWorkspace() {
           {result.operation === "interview_answer" && result.star_answer && (
             <div className="clay-card p-5 sm:p-6 bg-white space-y-4">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-bold uppercase tracking-wider text-[#8B7CF6]">
+                <span className="text-xs font-bold uppercase tracking-wider text-[#6C5BD8]">
                   Structured STAR Answer
                 </span>
                 <Button
@@ -492,28 +514,28 @@ export function CareerAssistantWorkspace() {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
                 <div className="p-3.5 rounded-[14px] bg-[#FAF8F5]">
-                  <span className="font-bold text-[#8B7CF6] block mb-1">
-                    S — Situation
+                  <span className="font-bold text-[#6C5BD8] block mb-1">
+                    1. Situation (Context)
                   </span>
                   <p className="text-[#292735]">
                     {result.star_answer.situation}
                   </p>
                 </div>
                 <div className="p-3.5 rounded-[14px] bg-[#FAF8F5]">
-                  <span className="font-bold text-[#8B7CF6] block mb-1">
-                    T — Task
+                  <span className="font-bold text-[#6C5BD8] block mb-1">
+                    2. Task (Goal)
                   </span>
                   <p className="text-[#292735]">{result.star_answer.task}</p>
                 </div>
                 <div className="p-3.5 rounded-[14px] bg-[#FAF8F5]">
-                  <span className="font-bold text-[#8B7CF6] block mb-1">
-                    A — Action
+                  <span className="font-bold text-[#6C5BD8] block mb-1">
+                    3. Action (Steps Taken)
                   </span>
                   <p className="text-[#292735]">{result.star_answer.action}</p>
                 </div>
                 <div className="p-3.5 rounded-[14px] bg-[#FAF8F5]">
-                  <span className="font-bold text-[#8B7CF6] block mb-1">
-                    R — Result
+                  <span className="font-bold text-[#6C5BD8] block mb-1">
+                    4. Result (Outcome)
                   </span>
                   <p className="text-[#292735]">{result.star_answer.result}</p>
                 </div>
@@ -550,7 +572,7 @@ export function CareerAssistantWorkspace() {
                     className="clay-card-sm p-4 sm:p-5 bg-white space-y-3"
                   >
                     <div className="flex items-center justify-between gap-2">
-                      <span className="text-xs font-bold uppercase tracking-wider text-[#8B7CF6]">
+                      <span className="text-xs font-bold uppercase tracking-wider text-[#6C5BD8]">
                         {variant.title}
                       </span>
                       <Button
@@ -570,7 +592,7 @@ export function CareerAssistantWorkspace() {
                       </Button>
                     </div>
                     <div className="p-3 rounded-[12px] bg-[#FAF8F5] text-xs">
-                      <span className="text-[10px] font-bold uppercase text-[#777482] block">
+                      <span className="text-[11px] font-bold uppercase text-[#595566] block">
                         Suggested Headline
                       </span>
                       <p className="font-semibold text-[#292735] mt-0.5">
@@ -611,7 +633,7 @@ export function CareerAssistantWorkspace() {
                         {job.fit_level}
                       </span>
                     </div>
-                    <p className="text-xs text-[#777482]">{job.reasoning}</p>
+                    <p className="text-xs text-[#595566]">{job.reasoning}</p>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
                       <div className="p-3 rounded-[12px] bg-[#FAF8F5]">
                         <span className="font-bold text-emerald-700 block mb-1">

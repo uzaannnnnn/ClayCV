@@ -33,7 +33,7 @@ export function Footer() {
               Clay<span className="text-[#8B7CF6]">CV</span>
             </span>
           </Link>
-          <p className="text-xs text-[#777482] max-w-sm">
+          <p className="text-xs text-[#595566] max-w-sm">
             A tactile, claymorphism-inspired web resume builder designed for
             frictionless career growth.
           </p>
@@ -41,7 +41,7 @@ export function Footer() {
 
         {/* Privacy Note Statement (Strictly required) */}
         <div className="flex items-center gap-3 px-4 py-2.5 rounded-[16px] clay-card-sm bg-[#FAF8F5] max-w-md text-xs text-[#555555]">
-          <Shield className="w-5 h-5 text-[#8B7CF6] shrink-0" />
+          <Shield className="w-5 h-5 text-[#6C5BD8] shrink-0" />
           <p>
             Your CV is stored locally in this browser. We do not upload your
             personal information to a server.
@@ -49,11 +49,11 @@ export function Footer() {
         </div>
 
         {/* Copyright */}
-        <div className="text-xs text-[#777482] text-center md:text-right">
+        <div className="text-xs text-[#595566] text-center md:text-right">
           <p>
             © <span ref={yearRef}>2026</span> ClayCV. All rights reserved.
           </p>
-          <p className="mt-0.5 text-[11px] text-[#A29FAC]">
+          <p className="mt-0.5 text-[11px] text-[#595566]">
             Client-Side Architecture
           </p>
         </div>

@@ -10,13 +10,13 @@ export function TemplatesSection() {
   return (
     <section id="templates" className="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
       <div className="text-center max-w-2xl mx-auto mb-16 space-y-3">
-        <h2 className="text-xs font-bold uppercase tracking-widest text-[#8B7CF6]">
+        <h2 className="text-xs font-bold uppercase tracking-widest text-[#6C5BD8]">
           100% ATS-Compliant Standards
         </h2>
         <p className="text-3xl sm:text-4xl font-extrabold text-[#292735] tracking-tight">
           Three Dedicated ATS Templates
         </p>
-        <p className="text-sm sm:text-base text-[#777482]">
+        <p className="text-sm sm:text-base text-[#595566]">
           Single-column text-first layouts engineered to parse cleanly in any
           Applicant Tracking System while maintaining immaculate typography.
         </p>
@@ -28,14 +28,14 @@ export function TemplatesSection() {
           <div>
             <div className="flex items-center justify-between mb-3">
               <Badge variant="purple">Contemporary</Badge>
-              <span className="text-[11px] font-semibold text-[#8B7CF6]">Tech & Digital</span>
+              <span className="text-[11px] font-semibold text-[#6C5BD8]">Tech & Digital</span>
             </div>
 
             <h3 className="text-xl font-bold text-[#292735] mb-2">
               ATS Modern
             </h3>
 
-            <p className="text-xs text-[#777482] mb-5 leading-relaxed">
+            <p className="text-xs text-[#595566] mb-5 leading-relaxed">
               Modern sans-serif typography, subtle purple accent dividing rules, and generous whitespace.
             </p>
 
@@ -94,7 +94,7 @@ export function TemplatesSection() {
           <Link href="/builder?template=modern" className="w-full">
             <Button variant="primary" size="sm" className="w-full">
               <span>Use ATS Modern</span>
-              <ArrowRight className="w-4 h-4 ml-1" />
+              <ArrowRight className="w-4 h-4" />
             </Button>
           </Link>
         </div>
@@ -111,7 +111,7 @@ export function TemplatesSection() {
               ATS Classic
             </h3>
 
-            <p className="text-xs text-[#777482] mb-5 leading-relaxed">
+            <p className="text-xs text-[#595566] mb-5 leading-relaxed">
               Traditional serif typography, centered formal header, horizontal rules, and strict grayscale.
             </p>
 
@@ -134,7 +134,7 @@ export function TemplatesSection() {
                   Work Experience
                 </p>
                 <p className="text-[10px] font-semibold text-black font-sans">
-                  Vanguard Partners — Senior Analyst
+                  Vanguard Partners • Senior Analyst
                 </p>
                 <p className="text-[9px] text-gray-700 font-sans">
                   Led quantitative portfolio risk models for $400M funds.
@@ -170,7 +170,7 @@ export function TemplatesSection() {
           <Link href="/builder?template=classic" className="w-full">
             <Button variant="secondary" size="sm" className="w-full">
               <span>Use ATS Classic</span>
-              <ArrowRight className="w-4 h-4 ml-1" />
+              <ArrowRight className="w-4 h-4" />
             </Button>
           </Link>
         </div>
@@ -187,7 +187,7 @@ export function TemplatesSection() {
               ATS Minimal
             </h3>
 
-            <p className="text-xs text-[#777482] mb-5 leading-relaxed">
+            <p className="text-xs text-[#595566] mb-5 leading-relaxed">
               Extremely compact, efficient black-and-white spacing, with high information density.
             </p>
 
@@ -210,7 +210,7 @@ export function TemplatesSection() {
                   Experience
                 </p>
                 <p className="text-[10px] font-bold text-black">
-                  DevOps Engineer — CloudScale [Full-time, Remote]
+                  DevOps Engineer • CloudScale [Full-time, Remote]
                 </p>
                 <p className="text-[9px] text-black">
                   Automated CI/CD pipelines across 60+ microservices.
@@ -246,7 +246,7 @@ export function TemplatesSection() {
           <Link href="/builder?template=minimal" className="w-full">
             <Button variant="secondary" size="sm" className="w-full">
               <span>Use ATS Minimal</span>
-              <ArrowRight className="w-4 h-4 ml-1" />
+              <ArrowRight className="w-4 h-4" />
             </Button>
           </Link>
         </div>

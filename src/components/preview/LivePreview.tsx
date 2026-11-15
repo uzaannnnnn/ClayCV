@@ -51,8 +51,8 @@ export function LivePreview() {
                 className={cn(
                   "px-3 py-1.5 text-xs font-bold rounded-[12px] transition-all cursor-pointer select-none",
                   isSelected
-                    ? "bg-white text-[#8B7CF6] shadow-[-2px_-2px_5px_rgba(255,255,255,0.9),2px_2px_5px_rgba(163,157,147,0.2)]"
-                    : "text-[#777482] hover:text-[#292735]"
+                    ? "bg-white text-[#6C5BD8] shadow-[-2px_-2px_5px_rgba(255,255,255,0.9),2px_2px_5px_rgba(163,157,147,0.2)]"
+                    : "text-[#595566] hover:text-[#292735]"
                 )}
               >
                 {tpl.label}
@@ -62,23 +62,23 @@ export function LivePreview() {
         </div>
 
         {/* Zoom Controls */}
-        <div className="flex items-center gap-1 bg-[#FAF8F5] p-1 rounded-[14px] border border-[rgba(70,65,90,0.08)] shadow-sm text-xs text-[#777482]">
+        <div className="flex items-center gap-1 bg-[#FAF8F5] p-1 rounded-[14px] border border-[rgba(70,65,90,0.08)] shadow-sm text-xs text-[#595566]">
           <button
             type="button"
             onClick={handleZoomOut}
-            className="p-1.5 hover:text-[#292735] rounded-[10px] hover:bg-[#EAE6DE]/60 transition-colors cursor-pointer"
+            className="min-h-[34px] min-w-[34px] flex items-center justify-center hover:text-[#292735] rounded-[10px] hover:bg-[#EAE6DE]/60 transition-colors cursor-pointer"
             title="Zoom out"
             aria-label="Zoom out"
           >
             <ZoomOut className="w-3.5 h-3.5" />
           </button>
-          <span className="px-1.5 font-mono text-[11px] font-semibold min-w-[38px] text-center">
+          <span className="px-1.5 font-mono text-[11px] font-semibold min-w-[38px] text-center text-[#292735]">
             {Math.round(scale * 100)}%
           </span>
           <button
             type="button"
             onClick={handleZoomIn}
-            className="p-1.5 hover:text-[#292735] rounded-[10px] hover:bg-[#EAE6DE]/60 transition-colors cursor-pointer"
+            className="min-h-[34px] min-w-[34px] flex items-center justify-center hover:text-[#292735] rounded-[10px] hover:bg-[#EAE6DE]/60 transition-colors cursor-pointer"
             title="Zoom in"
             aria-label="Zoom in"
           >
@@ -88,7 +88,7 @@ export function LivePreview() {
             <button
               type="button"
               onClick={handleResetZoom}
-              className="p-1.5 hover:text-[#292735] rounded-[10px] hover:bg-[#EAE6DE]/60 transition-colors ml-0.5 cursor-pointer"
+              className="min-h-[34px] min-w-[34px] flex items-center justify-center hover:text-[#292735] rounded-[10px] hover:bg-[#EAE6DE]/60 transition-colors ml-0.5 cursor-pointer"
               title="Reset zoom to 85%"
               aria-label="Reset zoom"
             >

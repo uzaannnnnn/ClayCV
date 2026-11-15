@@ -18,11 +18,11 @@ export function EducationForm() {
     <div className="space-y-5 pt-2">
       {education.length === 0 ? (
         <div className="text-center py-6 px-4 border border-dashed border-[rgba(70,65,90,0.15)] rounded-[18px] bg-[#FAF8F5]">
-          <GraduationCap className="w-8 h-8 text-[#A29FAC] mx-auto mb-2" />
+          <GraduationCap className="w-8 h-8 text-[#6D697A] mx-auto mb-2" />
           <p className="text-sm font-semibold text-[#292735]">
             No education records added
           </p>
-          <p className="text-xs text-[#777482] mt-0.5 mb-4">
+          <p className="text-xs text-[#595566] mt-0.5 mb-4">
             Add degrees, universities, or academic institutions attended.
           </p>
           <Button
@@ -31,8 +31,8 @@ export function EducationForm() {
             size="sm"
             onClick={() => addEducation()}
           >
-            <Plus className="w-4 h-4 mr-1.5" />
-            Add Education
+            <Plus className="w-4 h-4" />
+            <span>Add Education</span>
           </Button>
         </div>
       ) : (
@@ -53,13 +53,13 @@ export function EducationForm() {
               >
                 {/* Item Header */}
                 <div className="flex items-center justify-between pb-2 border-b border-gray-100">
-                  <span className="text-xs font-bold text-[#8B7CF6]">
+                  <span className="text-xs font-bold text-[#6C5BD8]">
                     EDUCATION #{idx + 1}
                   </span>
                   <button
                     type="button"
                     onClick={() => removeEducation(item.id)}
-                    className="text-xs text-red-500 hover:text-red-700 flex items-center gap-1 transition-colors px-2 py-1 rounded-[8px] hover:bg-red-50 cursor-pointer"
+                    className="min-h-[36px] text-xs font-medium text-[#B91C1C] hover:text-[#991B1B] flex items-center gap-1 transition-colors px-2.5 py-1 rounded-[10px] hover:bg-red-50 cursor-pointer"
                     title="Remove this education entry"
                   >
                     <Trash2 className="w-3.5 h-3.5" />
@@ -158,7 +158,7 @@ export function EducationForm() {
 
                 {/* Optional Academic Fields */}
                 <div className="pt-2 border-t border-gray-100 space-y-3">
-                  <p className="text-[11px] font-bold uppercase tracking-wider text-[#777482]">
+                  <p className="text-[11px] font-bold uppercase tracking-wider text-[#595566]">
                     Optional Academic Details (Only rendered when filled)
                   </p>
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
@@ -216,8 +216,8 @@ export function EducationForm() {
             onClick={() => addEducation()}
             className="w-full"
           >
-            <Plus className="w-4 h-4 mr-1.5" />
-            Add Another Education
+            <Plus className="w-4 h-4" />
+            <span>Add Another Education</span>
           </Button>
         </div>
       )}

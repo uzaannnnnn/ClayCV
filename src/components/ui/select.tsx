@@ -102,7 +102,7 @@ export function Select({
         <label
           htmlFor={selectId}
           className={cn(
-            "block text-xs font-semibold uppercase tracking-wider text-[#777482]",
+            "block text-xs font-semibold uppercase tracking-wider text-[#595566]",
             labelClassName
           )}
         >
@@ -131,15 +131,15 @@ export function Select({
           <span
             className={cn(
               "truncate flex-1 mr-2",
-              selectedOption ? "text-[#292735]" : "text-[#A29FAC]/80"
+              selectedOption ? "text-[#292735]" : "text-[#6D697A]"
             )}
           >
             {selectedOption ? selectedOption.label : placeholder}
           </span>
           <ChevronDown
             className={cn(
-              "w-4 h-4 text-[#777482] transition-transform duration-200 shrink-0",
-              isOpen && "rotate-180 text-[#8B7CF6]"
+              "w-4 h-4 text-[#595566] transition-transform duration-200 shrink-0",
+              isOpen && "rotate-180 text-[#6C5BD8]"
             )}
           />
         </button>

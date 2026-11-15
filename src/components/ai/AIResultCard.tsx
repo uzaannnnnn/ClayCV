@@ -19,6 +19,7 @@ export interface AIResultCardProps {
   hasExistingContent: boolean;
   targetFieldName: string;
   isLoading?: boolean;
+  isRegenerating?: boolean;
   regenerateDisabled?: boolean;
   onApply: (content: string) => void;
   onRegenerate?: () => void;
@@ -32,6 +33,7 @@ export function AIResultCard({
   hasExistingContent,
   targetFieldName,
   isLoading = false,
+  isRegenerating = false,
   regenerateDisabled = false,
   onApply,
   onRegenerate,
@@ -66,15 +68,15 @@ export function AIResultCard({
       <div className="clay-card-sm p-4 sm:p-5 bg-white border border-[rgba(70,65,90,0.1)] space-y-3.5 transition-all">
         <div className="flex items-center justify-between gap-2 border-b border-gray-100 pb-2.5">
           <div>
-            <span className="text-xs font-bold uppercase tracking-wider text-[#8B7CF6]">
+            <span className="text-xs font-bold uppercase tracking-wider text-[#6C5BD8]">
               {title}
             </span>
             {subtitle && (
-              <p className="text-[11px] text-[#777482] mt-0.5">{subtitle}</p>
+              <p className="text-[11px] text-[#595566] mt-0.5">{subtitle}</p>
             )}
           </div>
           {applied && (
-            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 text-[11px] font-semibold">
+            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-[#E6F6ED] text-[#227248] text-[11px] font-semibold">
               <Check className="w-3 h-3" />
               Applied to {targetFieldName}
             </span>
@@ -91,17 +93,17 @@ export function AIResultCard({
               type="button"
               variant="primary"
               size="sm"
-              disabled={isLoading}
+              disabled={isLoading || isRegenerating}
               onClick={handleApplyOrReplace}
             >
               {hasExistingContent ? (
                 <>
-                  <Replace className="w-3.5 h-3.5 mr-1" />
+                  <Replace className="w-3.5 h-3.5" />
                   <span>Replace {targetFieldName}</span>
                 </>
               ) : (
                 <>
-                  <ArrowRightCircle className="w-3.5 h-3.5 mr-1" />
+                  <ArrowRightCircle className="w-3.5 h-3.5" />
                   <span>Apply to {targetFieldName}</span>
                 </>
               )}
@@ -115,12 +117,12 @@ export function AIResultCard({
             >
               {copied ? (
                 <>
-                  <Check className="w-3.5 h-3.5 mr-1 text-emerald-600" />
+                  <Check className="w-3.5 h-3.5 text-emerald-600" />
                   <span>Copied</span>
                 </>
               ) : (
                 <>
-                  <Copy className="w-3.5 h-3.5 mr-1" />
+                  <Copy className="w-3.5 h-3.5" />
                   <span>Copy</span>
                 </>
               )}
@@ -131,11 +133,12 @@ export function AIResultCard({
                 type="button"
                 variant="ghost"
                 size="sm"
-                disabled={isLoading || regenerateDisabled}
+                isLoading={isRegenerating}
+                disabled={isLoading || isRegenerating || regenerateDisabled}
                 onClick={onRegenerate}
               >
-                <RefreshCw className="w-3.5 h-3.5 mr-1" />
-                <span>Regenerate</span>
+                <RefreshCw className="w-3.5 h-3.5" />
+                <span>{isRegenerating ? "Trying again..." : "Try again"}</span>
               </Button>
             )}
           </div>
@@ -146,9 +149,9 @@ export function AIResultCard({
               variant="ghost"
               size="sm"
               onClick={onCancel}
-              className="text-[#777482] hover:text-red-600"
+              className="text-[#595566] hover:text-red-600"
             >
-              <X className="w-3.5 h-3.5 mr-1" />
+              <X className="w-3.5 h-3.5" />
               <span>Cancel</span>
             </Button>
           )}

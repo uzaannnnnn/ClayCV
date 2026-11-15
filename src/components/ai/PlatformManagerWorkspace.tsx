@@ -18,7 +18,21 @@ import {
   CheckCircle2,
   RotateCcw,
   Plus,
+  HardDrive,
 } from "lucide-react";
+
+const FEATURE_LABELS: Record<string, string> = {
+  writing: "AI Writing",
+  matching: "Job Matcher",
+  analysis: "CV Analyzer",
+  career: "Career Assistant",
+};
+
+function formatOperationName(op: string): string {
+  return op
+    .replace(/_/g, " ")
+    .replace(/\b\w/g, (c) => c.toUpperCase());
+}
 
 export function PlatformManagerWorkspace() {
   const {
@@ -39,7 +53,10 @@ export function PlatformManagerWorkspace() {
 
   const [newProfileTitle, setNewProfileTitle] = useState("");
   const [snapshotLabel, setSnapshotLabel] = useState("");
-  const [importMessage, setImportMessage] = useState<string | null>(null);
+  const [importMessage, setImportMessage] = useState<{
+    type: "success" | "error";
+    text: string;
+  } | null>(null);
   const [pendingDeleteProfile, setPendingDeleteProfile] = useState<{
     id: string;
     title: string;
@@ -77,17 +94,22 @@ export function PlatformManagerWorkspace() {
           typeof parsed.personalInfo !== "object" ||
           typeof parsed.personalInfo.fullName !== "string"
         ) {
-          setImportMessage(
-            "Error: Invalid ClayCV JSON backup file (missing required personalInfo fields)."
-          );
+          setImportMessage({
+            type: "error",
+            text: "This file does not look like a valid ClayCV JSON backup. Your current CV was not changed.",
+          });
           return;
         }
         importCVData(parsed);
-        setImportMessage(
-          `Successfully restored CV backup: "${parsed.title || "Imported CV"}"`
-        );
+        setImportMessage({
+          type: "success",
+          text: `Restored CV backup: "${parsed.title || "Imported CV"}"`,
+        });
       } catch {
-        setImportMessage("Error: Could not parse JSON file.");
+        setImportMessage({
+          type: "error",
+          text: "Could not read this JSON file. Please check the file and try again.",
+        });
       }
     };
     reader.readAsText(file);
@@ -96,20 +118,22 @@ export function PlatformManagerWorkspace() {
 
   return (
     <div className="space-y-5 pb-12">
-      {/* Full Privacy Notice & Consent Control */}
-      <AIPrivacyConsentBanner />
+      {/* Compact Privacy Status Bar */}
+      <AIPrivacyConsentBanner compact />
 
-      {/* 1. Multiple CV Profiles */}
+      {/* 1. My CVs */}
       <div className="clay-card p-5 sm:p-6 space-y-4">
-        <div className="flex items-center justify-between flex-wrap gap-2">
-          <div className="flex items-center gap-2">
-            <FolderKanban className="w-5 h-5 text-[#8B7CF6]" />
+        <div className="flex items-start justify-between flex-wrap gap-3">
+          <div className="flex items-start gap-2.5 min-w-0 flex-1">
+            <div className="w-9 h-9 rounded-[12px] bg-[#EFEAFF] text-[#6C5BD8] flex items-center justify-center shrink-0 mt-0.5">
+              <FolderKanban className="w-5 h-5" />
+            </div>
             <div>
-              <h3 className="text-base font-bold text-[#292735]">
-                Multiple CV Profiles ({profiles.length})
-              </h3>
-              <p className="text-xs text-[#777482]">
-                Maintain tailored CVs for different roles or languages locally
+              <h2 className="text-base font-bold text-[#292735]">
+                My CVs ({profiles.length})
+              </h2>
+              <p className="text-xs text-[#595566] leading-relaxed">
+                Keep tailored CVs for different roles or languages saved safely
                 in your browser.
               </p>
             </div>
@@ -120,16 +144,18 @@ export function PlatformManagerWorkspace() {
             variant="secondary"
             size="sm"
             onClick={() => duplicateProfile(cvData.id)}
+            className="shrink-0"
           >
-            <CopyPlus className="w-3.5 h-3.5 mr-1.5" />
-            <span>Duplicate Active CV</span>
+            <CopyPlus className="w-3.5 h-3.5" />
+            <span>Duplicate CV</span>
           </Button>
         </div>
 
         <div className="flex flex-col sm:flex-row gap-2.5">
           <div className="flex-1">
             <Input
-              placeholder="New CV Profile Title (e.g. Frontend Engineer - ID)"
+              aria-label="New CV name"
+              placeholder="New CV name (e.g. Frontend Engineer - ID)"
               value={newProfileTitle}
               onChange={(e) => setNewProfileTitle(e.target.value)}
             />
@@ -141,9 +167,10 @@ export function PlatformManagerWorkspace() {
               createProfile(newProfileTitle);
               setNewProfileTitle("");
             }}
+            className="shrink-0"
           >
-            <Plus className="w-4 h-4 mr-1" />
-            <span>Create New Profile</span>
+            <Plus className="w-4 h-4" />
+            <span>Create New CV</span>
           </Button>
         </div>
 
@@ -165,12 +192,12 @@ export function PlatformManagerWorkspace() {
                       {prof.title}
                     </p>
                     {isActive && (
-                      <span className="px-2 py-0.5 rounded-full bg-[#EFEAFF] text-[#6C5BD8] text-[10px] font-bold">
+                      <span className="px-2 py-0.5 rounded-full bg-[#EFEAFF] text-[#6C5BD8] text-[10px] font-bold shrink-0">
                         Active
                       </span>
                     )}
                   </div>
-                  <p className="text-[11px] text-[#777482]">
+                  <p className="text-xs text-[#595566] mt-0.5">
                     {prof.language.toUpperCase()} • {prof.template} • Updated{" "}
                     {new Date(prof.updatedAt).toLocaleDateString()}
                   </p>
@@ -184,7 +211,7 @@ export function PlatformManagerWorkspace() {
                       size="sm"
                       onClick={() => switchProfile(prof.id)}
                     >
-                      Switch
+                      Open
                     </Button>
                   )}
                   {profiles.length > 1 && (
@@ -196,9 +223,9 @@ export function PlatformManagerWorkspace() {
                           title: prof.title,
                         })
                       }
-                      className="p-1.5 text-[#777482] hover:text-red-600 rounded-[8px] hover:bg-red-50 cursor-pointer"
-                      title="Delete profile"
-                      aria-label={`Delete profile ${prof.title}`}
+                      className="min-h-[40px] min-w-[40px] flex items-center justify-center text-[#595566] hover:text-[#B91C1C] rounded-[10px] hover:bg-[#FEECEB] cursor-pointer transition-colors"
+                      title="Delete CV"
+                      aria-label={`Delete CV ${prof.title}`}
                     >
                       <Trash2 className="w-4 h-4" />
                     </button>
@@ -212,15 +239,17 @@ export function PlatformManagerWorkspace() {
 
       {/* 2. CV Version History */}
       <div className="clay-card p-5 sm:p-6 space-y-4">
-        <div className="flex items-center gap-2">
-          <History className="w-5 h-5 text-[#8B7CF6]" />
+        <div className="flex items-start gap-2.5">
+          <div className="w-9 h-9 rounded-[12px] bg-[#EFEAFF] text-[#6C5BD8] flex items-center justify-center shrink-0 mt-0.5">
+            <History className="w-5 h-5" />
+          </div>
           <div>
             <h3 className="text-base font-bold text-[#292735]">
               CV Version History ({versionHistory.length})
             </h3>
-            <p className="text-xs text-[#777482]">
-              Save snapshots before making major edits or applying AI
-              recommendations, and restore anytime.
+            <p className="text-xs text-[#595566] leading-relaxed">
+              Save checkpoints before big edits so you can return to an earlier
+              version anytime.
             </p>
           </div>
         </div>
@@ -228,7 +257,8 @@ export function PlatformManagerWorkspace() {
         <div className="flex flex-col sm:flex-row gap-2.5">
           <div className="flex-1">
             <Input
-              placeholder="Snapshot note (e.g. Before tailoring for Stripe role)"
+              aria-label="Version snapshot label"
+              placeholder="Checkpoint note (e.g. Before tailoring for product role)"
               value={snapshotLabel}
               onChange={(e) => setSnapshotLabel(e.target.value)}
             />
@@ -240,15 +270,16 @@ export function PlatformManagerWorkspace() {
               saveVersionSnapshot(snapshotLabel);
               setSnapshotLabel("");
             }}
+            className="shrink-0"
           >
-            <CheckCircle2 className="w-4 h-4 mr-1.5 text-[#8B7CF6]" />
+            <CheckCircle2 className="w-4 h-4 text-[#6C5BD8]" />
             <span>Save Snapshot</span>
           </Button>
         </div>
 
         {versionHistory.length === 0 ? (
-          <p className="text-xs text-[#777482] italic">
-            No snapshots saved yet. Click &ldquo;Save Snapshot&rdquo; to create
+          <p className="text-xs text-[#595566] italic">
+            No saved checkpoints yet. Click &ldquo;Save Snapshot&rdquo; to create
             a restore point.
           </p>
         ) : (
@@ -256,29 +287,30 @@ export function PlatformManagerWorkspace() {
             {versionHistory.map((ver) => (
               <div
                 key={ver.id}
-                className="p-3 rounded-[14px] bg-[#FAF8F5] border border-[rgba(70,65,90,0.08)] flex items-center justify-between gap-2 text-xs"
+                className="p-3 rounded-[14px] bg-[#FAF8F5] border border-[rgba(70,65,90,0.08)] flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs"
               >
                 <div>
                   <p className="font-bold text-[#292735]">{ver.label}</p>
-                  <p className="text-[11px] text-[#777482]">
+                  <p className="text-xs text-[#595566]">
                     {new Date(ver.createdAt).toLocaleString()}
                   </p>
                 </div>
-                <div className="flex items-center gap-1.5">
+                <div className="flex items-center gap-1.5 self-end sm:self-center">
                   <Button
                     type="button"
                     variant="secondary"
                     size="sm"
                     onClick={() => restoreVersionSnapshot(ver.id)}
                   >
-                    <RotateCcw className="w-3.5 h-3.5 mr-1" />
+                    <RotateCcw className="w-3.5 h-3.5" />
                     <span>Restore</span>
                   </Button>
                   <button
                     type="button"
                     onClick={() => deleteVersionSnapshot(ver.id)}
-                    className="p-1.5 text-[#777482] hover:text-red-600 rounded-[8px] cursor-pointer"
+                    className="min-h-[38px] min-w-[38px] flex items-center justify-center text-[#595566] hover:text-[#B91C1C] rounded-[10px] hover:bg-[#FEECEB] cursor-pointer transition-colors"
                     title="Delete snapshot"
+                    aria-label={`Delete snapshot ${ver.label}`}
                   >
                     <Trash2 className="w-4 h-4" />
                   </button>
@@ -289,14 +321,14 @@ export function PlatformManagerWorkspace() {
         )}
       </div>
 
-      {/* 3. JSON Backup & Restore */}
+      {/* 3. Backup & Import CV */}
       <div className="clay-card p-5 sm:p-6 space-y-3">
         <h3 className="text-base font-bold text-[#292735]">
-          Local JSON Backup & Restore
+          Backup & Import CV
         </h3>
-        <p className="text-xs text-[#777482]">
-          Export your CV data to a portable JSON file or restore from an
-          existing backup.
+        <p className="text-xs text-[#595566] leading-relaxed">
+          Download a backup copy of your active CV or import one you saved
+          earlier.
         </p>
 
         <input
@@ -314,8 +346,8 @@ export function PlatformManagerWorkspace() {
             size="sm"
             onClick={handleExportJSON}
           >
-            <Download className="w-4 h-4 mr-1.5 text-[#8B7CF6]" />
-            <span>Export Active CV (.json)</span>
+            <Download className="w-4 h-4 text-[#6C5BD8]" />
+            <span>Export Backup (.json)</span>
           </Button>
 
           <Button
@@ -324,29 +356,72 @@ export function PlatformManagerWorkspace() {
             size="sm"
             onClick={() => fileInputRef.current?.click()}
           >
-            <Upload className="w-4 h-4 mr-1.5 text-[#8B7CF6]" />
-            <span>Import Backup (.json)</span>
+            <Upload className="w-4 h-4 text-[#6C5BD8]" />
+            <span>Import CV (.json)</span>
           </Button>
         </div>
 
         {importMessage && (
-          <p className="text-xs font-semibold text-[#6C5BD8] pt-1">
-            {importMessage}
-          </p>
+          <div
+            role={importMessage.type === "error" ? "alert" : "status"}
+            className={`text-xs font-medium px-3.5 py-2.5 rounded-[12px] border ${
+              importMessage.type === "error"
+                ? "bg-[#FEECEB] text-[#B91C1C] border-red-200"
+                : "bg-[#E6F6ED] text-[#227248] border-emerald-200"
+            }`}
+          >
+            {importMessage.text}
+          </div>
         )}
       </div>
 
-      {/* 4. AI Usage History & Management */}
+      {/* 4. Storage Summary */}
       <div className="clay-card p-5 sm:p-6 space-y-3">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Activity className="w-5 h-5 text-[#8B7CF6]" />
+        <div className="flex items-start gap-2.5">
+          <div className="w-9 h-9 rounded-[12px] bg-[#E6F6ED] text-[#227248] flex items-center justify-center shrink-0 mt-0.5">
+            <HardDrive className="w-4 h-4" />
+          </div>
+          <div>
+            <h3 className="text-base font-bold text-[#292735]">
+              Stored in Your Browser
+            </h3>
+            <p className="text-xs text-[#595566] leading-relaxed">
+              Your CVs, saved checkpoints, and uploaded certificates are stored
+              privately on your device without an account.
+            </p>
+          </div>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+          <div className="p-3 rounded-[14px] bg-[#FAF8F5] border border-[rgba(70,65,90,0.08)]">
+            <p className="font-bold text-[#292735]">Saved CVs & History</p>
+            <p className="text-[#595566] mt-0.5">
+              {profiles.length} CV{profiles.length === 1 ? "" : "s"} •{" "}
+              {versionHistory.length} snapshot
+              {versionHistory.length === 1 ? "" : "s"}
+            </p>
+          </div>
+          <div className="p-3 rounded-[14px] bg-[#FAF8F5] border border-[rgba(70,65,90,0.08)]">
+            <p className="font-bold text-[#292735]">Uploaded Certificates</p>
+            <p className="text-[#595566] mt-0.5">
+              Stored in browser file storage on this device
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* 5. Recent AI Activity */}
+      <div className="clay-card p-5 sm:p-6 space-y-3">
+        <div className="flex items-start justify-between gap-2">
+          <div className="flex items-start gap-2.5">
+            <div className="w-9 h-9 rounded-[12px] bg-[#EFEAFF] text-[#6C5BD8] flex items-center justify-center shrink-0 mt-0.5">
+              <Activity className="w-5 h-5" />
+            </div>
             <div>
               <h3 className="text-base font-bold text-[#292735]">
-                AI Usage History ({aiUsageHistory.length})
+                Recent AI Activity ({aiUsageHistory.length})
               </h3>
-              <p className="text-xs text-[#777482]">
-                Local log of your explicit Google Gemini API requests.
+              <p className="text-xs text-[#595566]">
+                A private log of AI actions run in this browser.
               </p>
             </div>
           </div>
@@ -363,36 +438,36 @@ export function PlatformManagerWorkspace() {
         </div>
 
         {aiUsageHistory.length === 0 ? (
-          <p className="text-xs text-[#777482] italic">
-            No AI operations executed in this session yet.
+          <p className="text-xs text-[#595566] italic">
+            No AI actions have been run yet.
           </p>
         ) : (
           <div className="space-y-2 max-h-56 overflow-y-auto pr-1">
             {aiUsageHistory.map((item) => (
               <div
                 key={item.id}
-                className="p-2.5 rounded-[12px] bg-[#FAF8F5] text-xs flex items-center justify-between gap-2"
+                className="p-3 rounded-[12px] bg-[#FAF8F5] text-xs flex items-center justify-between gap-2"
               >
-                <div>
-                  <span className="font-bold text-[#292735] uppercase">
-                    [{item.feature}]
-                  </span>{" "}
-                  <span>{item.operation.replace(/_/g, " ")}</span>
-                  <span className="text-[11px] text-[#777482] ml-2">
-                    ({item.model})
+                <div className="min-w-0">
+                  <span className="font-bold text-[#292735]">
+                    {FEATURE_LABELS[item.feature] || "AI Tool"}
+                  </span>
+                  <span className="text-[#595566]">
+                    {" "}
+                    • {formatOperationName(item.operation)}
                   </span>
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 shrink-0">
                   <span
-                    className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                    className={`px-2 py-0.5 rounded-full text-[11px] font-bold ${
                       item.status === "success"
-                        ? "bg-emerald-50 text-emerald-700"
-                        : "bg-red-50 text-red-700"
+                        ? "bg-[#E6F6ED] text-[#227248]"
+                        : "bg-[#FEECEB] text-[#B91C1C]"
                     }`}
                   >
-                    {item.status}
+                    {item.status === "success" ? "Done" : "Failed"}
                   </span>
-                  <span className="text-[10px] text-[#777482]">
+                  <span className="text-xs text-[#595566]">
                     {new Date(item.timestamp).toLocaleTimeString()}
                   </span>
                 </div>
@@ -405,13 +480,13 @@ export function PlatformManagerWorkspace() {
       <Dialog
         isOpen={Boolean(pendingDeleteProfile)}
         onClose={() => setPendingDeleteProfile(null)}
-        title="Delete CV Profile"
+        title="Delete CV?"
         description={
           pendingDeleteProfile
-            ? `Are you sure you want to permanently delete "${pendingDeleteProfile.title}" from local storage? This action cannot be undone.`
+            ? `Are you sure you want to permanently delete "${pendingDeleteProfile.title}" from this browser? This action cannot be undone.`
             : ""
         }
-        confirmLabel="Delete Profile"
+        confirmLabel="Delete CV"
         cancelLabel="Cancel"
         isDestructive
         onConfirm={() => {
@@ -423,4 +498,3 @@ export function PlatformManagerWorkspace() {
     </div>
   );
 }
-

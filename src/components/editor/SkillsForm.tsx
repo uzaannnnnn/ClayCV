@@ -65,9 +65,9 @@ export function SkillsForm() {
             type="button"
             variant="primary"
             onClick={() => handleAddSkill()}
-            className="w-full sm:w-auto shrink-0 h-11"
+            className="w-full sm:w-auto shrink-0"
           >
-            <Plus className="w-4 h-4 mr-1" />
+            <Plus className="w-4 h-4" />
             <span>Add Skill</span>
           </Button>
         </div>
@@ -75,24 +75,24 @@ export function SkillsForm() {
 
       {/* Skills Pill List */}
       <div>
-        <div className="flex items-center justify-between mb-2.5">
-          <label className="block text-xs font-semibold uppercase tracking-wider text-[#777482]">
+        <div className="flex items-center justify-between mb-2.5 gap-2">
+          <label className="block text-xs font-semibold uppercase tracking-wider text-[#595566]">
             Added Skills ({skills.length})
           </label>
           <button
             type="button"
             onClick={() => setActiveWorkspace("writing")}
-            className="inline-flex items-center gap-1 text-xs font-semibold text-[#8B7CF6] hover:text-[#6C5BD8] cursor-pointer"
+            className="inline-flex items-center gap-1 text-xs font-semibold text-[#6C5BD8] hover:text-[#5546BE] cursor-pointer py-1"
           >
             <Sparkles className="w-3.5 h-3.5" />
-            <span>Get AI Skill Suggestions</span>
+            <span>Suggest Skills with AI</span>
           </button>
         </div>
 
         {skills.length === 0 ? (
           <div className="text-center py-6 border border-dashed border-[rgba(70,65,90,0.15)] rounded-[18px] bg-[#FAF8F5]">
-            <Wrench className="w-7 h-7 text-[#A29FAC] mx-auto mb-1.5" />
-            <p className="text-xs text-[#777482]">
+            <Wrench className="w-7 h-7 text-[#6D697A] mx-auto mb-1.5" />
+            <p className="text-xs text-[#595566]">
               No skills added yet. Type a skill above and press Add or Enter.
             </p>
           </div>
@@ -107,7 +107,7 @@ export function SkillsForm() {
                 <button
                   type="button"
                   onClick={() => removeSkill(skill.id)}
-                  className="text-[#777482] hover:text-red-500 rounded-full p-0.5 transition-colors focus:outline-none cursor-pointer"
+                  className="text-[#595566] hover:text-[#B91C1C] rounded-full p-1 transition-colors focus:outline-none cursor-pointer"
                   aria-label={`Remove ${skill.name}`}
                 >
                   <X className="w-3.5 h-3.5" />

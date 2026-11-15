@@ -83,25 +83,25 @@ function SortableItem({
           type="button"
           {...attributes}
           {...listeners}
-          className="text-[#A29FAC] hover:text-[#292735] p-1 rounded cursor-grab active:cursor-grabbing focus:outline-none"
+          className="text-[#595566] hover:text-[#292735] p-1.5 rounded cursor-grab active:cursor-grabbing focus:outline-none"
           title="Drag to reorder"
           aria-label={`Drag handle for ${label}`}
         >
           <GripVertical className="w-4 h-4" />
         </button>
 
-        <div className="w-8 h-8 rounded-[10px] bg-[#FAF8F5] text-[#8B7CF6] flex items-center justify-center shrink-0 shadow-sm border border-[rgba(70,65,90,0.06)]">
+        <div className="w-8 h-8 rounded-[10px] bg-[#FAF8F5] text-[#6C5BD8] flex items-center justify-center shrink-0 shadow-sm border border-[rgba(70,65,90,0.06)]">
           <Icon className="w-4 h-4" />
         </div>
 
         <div className="min-w-0">
           <p className="text-xs sm:text-sm font-bold text-[#292735] truncate">
-            <span className="text-[#8B7CF6] mr-1.5 font-mono text-xs">
+            <span className="text-[#6C5BD8] mr-1.5 font-mono text-xs">
               0{index + 1}.
             </span>
             {label}
           </p>
-          <p className="text-[10px] text-[#777482] truncate">{sublabel}</p>
+          <p className="text-xs text-[#595566] truncate">{sublabel}</p>
         </div>
       </div>
 
@@ -111,7 +111,7 @@ function SortableItem({
           type="button"
           disabled={index === 0}
           onClick={onMoveUp}
-          className="p-1.5 text-[#777482] hover:text-[#292735] disabled:opacity-30 disabled:cursor-not-allowed hover:bg-[#FAF8F5] rounded-[8px] transition-colors cursor-pointer"
+          className="min-h-[38px] min-w-[38px] flex items-center justify-center text-[#595566] hover:text-[#292735] disabled:opacity-30 disabled:cursor-not-allowed hover:bg-[#FAF8F5] rounded-[10px] transition-colors cursor-pointer"
           title="Move section up"
           aria-label={`Move ${label} up`}
         >
@@ -121,7 +121,7 @@ function SortableItem({
           type="button"
           disabled={index === total - 1}
           onClick={onMoveDown}
-          className="p-1.5 text-[#777482] hover:text-[#292735] disabled:opacity-30 disabled:cursor-not-allowed hover:bg-[#FAF8F5] rounded-[8px] transition-colors cursor-pointer"
+          className="min-h-[38px] min-w-[38px] flex items-center justify-center text-[#595566] hover:text-[#292735] disabled:opacity-30 disabled:cursor-not-allowed hover:bg-[#FAF8F5] rounded-[10px] transition-colors cursor-pointer"
           title="Move section down"
           aria-label={`Move ${label} down`}
         >
@@ -203,13 +203,13 @@ export function SectionOrderManager() {
   return (
     <div className="space-y-4 pt-2">
       <div className="flex items-center justify-between pb-1">
-        <p className="text-xs text-[#777482]">
+        <p className="text-xs text-[#595566]">
           Drag sections or use the arrows to reorder. Personal details remain fixed at the top as the document header.
         </p>
         <button
           type="button"
           onClick={handleResetOrder}
-          className="inline-flex items-center gap-1 text-[11px] font-bold text-[#8B7CF6] hover:underline cursor-pointer shrink-0 ml-2"
+          className="inline-flex items-center gap-1 text-xs font-bold text-[#6C5BD8] hover:underline cursor-pointer shrink-0 ml-2 py-1"
         >
           <RotateCcw className="w-3 h-3" />
           <span>Reset Order</span>

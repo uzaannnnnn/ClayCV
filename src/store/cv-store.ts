@@ -45,6 +45,8 @@ interface CVStoreState {
   aiUsageHistory: AIUsageRecord[];
   aiConsentAccepted: boolean;
   aiConsentTimestamp: string | null;
+  isConsentModalOpen: boolean;
+  consentModalDismissed: boolean;
   activeWorkspace: WorkspaceTab;
   saveStatus: SaveStatus;
   activeSection: string;
@@ -54,6 +56,8 @@ interface CVStoreState {
   setHasHydrated: (hydrated: boolean) => void;
   setActiveWorkspace: (workspace: WorkspaceTab) => void;
   setAIConsent: (accepted: boolean) => void;
+  openConsentModal: () => void;
+  closeConsentModal: () => void;
   recordAIUsage: (entry: Omit<AIUsageRecord, "id" | "timestamp">) => void;
   clearAIUsageHistory: () => void;
 
@@ -132,6 +136,8 @@ export const useCVStore = create<CVStoreState>()(
         aiUsageHistory: [],
         aiConsentAccepted: false,
         aiConsentTimestamp: null,
+        isConsentModalOpen: false,
+        consentModalDismissed: false,
         activeWorkspace: "builder",
         saveStatus: "saved",
         activeSection: "personal",
@@ -141,9 +147,19 @@ export const useCVStore = create<CVStoreState>()(
         setActiveWorkspace: (workspace) => set({ activeWorkspace: workspace }),
 
         setAIConsent: (accepted) =>
-          set({
+          set((state) => ({
             aiConsentAccepted: accepted,
             aiConsentTimestamp: accepted ? new Date().toISOString() : null,
+            isConsentModalOpen: accepted ? false : state.isConsentModalOpen,
+            consentModalDismissed: accepted ? false : state.consentModalDismissed,
+          })),
+
+        openConsentModal: () => set({ isConsentModalOpen: true }),
+
+        closeConsentModal: () =>
+          set({
+            isConsentModalOpen: false,
+            consentModalDismissed: true,
           }),
 
         recordAIUsage: (entry) =>
@@ -225,10 +241,10 @@ export const useCVStore = create<CVStoreState>()(
             cvId: current.id,
             label:
               label?.trim() ||
-              `${current.title} — ${new Date().toLocaleTimeString([], {
+              `${current.title} (${new Date().toLocaleTimeString([], {
                 hour: "2-digit",
                 minute: "2-digit",
-              })}`,
+              })})`,
             createdAt: new Date().toISOString(),
             snapshot: JSON.parse(JSON.stringify(current)),
           };
@@ -608,6 +624,16 @@ export const useCVStore = create<CVStoreState>()(
     {
       name: "claycv-storage",
       version: 3,
+      partialize: (state) => ({
+        cvData: state.cvData,
+        profiles: state.profiles,
+        versionHistory: state.versionHistory,
+        aiUsageHistory: state.aiUsageHistory,
+        aiConsentAccepted: state.aiConsentAccepted,
+        aiConsentTimestamp: state.aiConsentTimestamp,
+        activeWorkspace: state.activeWorkspace,
+        activeSection: state.activeSection,
+      }),
       storage: createJSONStorage(() => {
         if (
           typeof window !== "undefined" &&

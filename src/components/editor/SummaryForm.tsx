@@ -18,10 +18,10 @@ export function SummaryForm() {
           variant="ghost"
           size="sm"
           onClick={() => setActiveWorkspace("writing")}
-          className="text-xs text-[#8B7CF6] hover:text-[#6C5BD8] h-7 px-2.5"
+          className="text-xs text-[#6C5BD8] hover:text-[#5546BE] px-3"
         >
-          <Sparkles className="w-3.5 h-3.5 mr-1" />
-          <span>Generate / Improve with Gemini AI</span>
+          <Sparkles className="w-3.5 h-3.5" />
+          <span>Improve with AI</span>
         </Button>
       </div>
       <Textarea

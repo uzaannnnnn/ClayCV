@@ -474,7 +474,7 @@ export async function executeCVAnalysis(
     deterministic_score: deterministic.score,
     ai_quality_score: aiScore,
     methodology_explanation:
-      "Overall ATS & CV Score combines 50% deterministic structural/completeness checks (contact fields, dates, section headings, single-column A4 formatting) and 50% Google Gemini qualitative analysis (action verbs, clarity, impact specificity, and keyword relevance). Scores are informational estimates and cannot guarantee acceptance by all ATS platforms.",
+      "Overall ATS & CV Score combines 50% basic CV checks (contact details, dates, section headings, single-column A4 layout) and 50% Google Gemini writing review (action verbs, clarity, impact specificity, and keyword relevance). Scores are helpful guidance and cannot guarantee acceptance by all ATS platforms.",
     categories: mergedCategories,
     critical_issues: [
       ...deterministic.criticalIssues,

@@ -23,15 +23,16 @@ export function FinalCTA() {
             Ready to Build Your Next CV?
           </h2>
 
-          <p className="text-base sm:text-lg text-[#777482] leading-relaxed">
-            No signup. No paywall. Download your recruiter-ready PDF in seconds.
+          <p className="text-base sm:text-lg text-[#595566] leading-relaxed">
+            No sign-up wall and no credit card required. Open the builder and
+            download your recruiter-ready PDF in seconds.
           </p>
 
           <div className="pt-2 flex justify-center">
             <Link href="/builder">
               <Button variant="primary" size="lg" className="px-8 shadow-xl">
-                <span>Start Building — It&apos;s Free</span>
-                <ArrowRight className="w-5 h-5 ml-1" />
+                <span>Start Building for Free</span>
+                <ArrowRight className="w-5 h-5" />
               </Button>
             </Link>
           </div>

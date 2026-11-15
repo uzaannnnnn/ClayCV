@@ -35,13 +35,13 @@ export function HowItWorks() {
     <section id="how-it-works" className="py-20 px-4 sm:px-6 lg:px-8 bg-[#EAE6DE]/40">
       <div className="max-w-7xl mx-auto">
         <div className="text-center max-w-2xl mx-auto mb-16 space-y-3">
-          <h2 className="text-xs font-bold uppercase tracking-widest text-[#8B7CF6]">
+          <h2 className="text-xs font-bold uppercase tracking-widest text-[#6C5BD8]">
             Fast 3-Step Journey
           </h2>
           <p className="text-3xl sm:text-4xl font-extrabold text-[#292735] tracking-tight">
             How ClayCV Works
           </p>
-          <p className="text-sm sm:text-base text-[#777482]">
+          <p className="text-sm sm:text-base text-[#595566]">
             From zero to an executive-ready resume in under five minutes.
           </p>
         </div>
@@ -69,7 +69,7 @@ export function HowItWorks() {
                   <h3 className="text-xl font-bold text-[#292735] mb-3">
                     {item.title}
                   </h3>
-                  <p className="text-sm text-[#777482] leading-relaxed">
+                  <p className="text-sm text-[#595566] leading-relaxed">
                     {item.description}
                   </p>
                 </div>

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { useCVStore } from "@/store/cv-store";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -18,6 +18,19 @@ export function CertificationsForm() {
     useCVStore();
   const { certifications, language } = cvData;
   const fileInputRefs = useRef<Record<string, HTMLInputElement | null>>({});
+  const [uploadErrors, setUploadErrors] = useState<Record<string, string>>({});
+
+  const setCertError = (certId: string, msg: string | null) => {
+    setUploadErrors((prev) => {
+      const next = { ...prev };
+      if (msg) {
+        next[certId] = msg;
+      } else {
+        delete next[certId];
+      }
+      return next;
+    });
+  };
 
   const handleFileUpload = async (
     certId: string,
@@ -26,10 +39,10 @@ export function CertificationsForm() {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    // Check size limit: 10MB
     const MAX_SIZE = 10 * 1024 * 1024;
     if (file.size > MAX_SIZE) {
-      alert("File is too large. Maximum certificate size is 10 MB.");
+      setCertError(certId, "File is too large. Maximum certificate size is 10 MB.");
+      e.target.value = "";
       return;
     }
 
@@ -40,10 +53,12 @@ export function CertificationsForm() {
       "image/jpg",
     ];
     if (!allowedTypes.includes(file.type)) {
-      alert("Only PDF, PNG, JPG, and JPEG files are supported.");
+      setCertError(certId, "Only PDF, PNG, JPG, and JPEG files are supported.");
+      e.target.value = "";
       return;
     }
 
+    setCertError(certId, null);
     const attachmentId = generateId();
     try {
       await saveCertificateFile(attachmentId, file);
@@ -55,7 +70,7 @@ export function CertificationsForm() {
       });
     } catch (err) {
       console.error("IndexedDB error:", err);
-      alert("Failed to save certificate attachment locally.");
+      setCertError(certId, "Could not save this file in browser storage. Please try again.");
     }
   };
 
@@ -63,6 +78,7 @@ export function CertificationsForm() {
     if (attachmentId) {
       await deleteCertificateFile(attachmentId);
     }
+    setCertError(certId, null);
     updateCertification(certId, {
       attachmentId: undefined,
       attachmentName: undefined,
@@ -75,11 +91,11 @@ export function CertificationsForm() {
     <div className="space-y-5 pt-2">
       {certifications.length === 0 ? (
         <div className="text-center py-6 px-4 border border-dashed border-[rgba(70,65,90,0.15)] rounded-[18px] bg-[#FAF8F5]">
-          <Award className="w-8 h-8 text-[#A29FAC] mx-auto mb-2" />
+          <Award className="w-8 h-8 text-[#6D697A] mx-auto mb-2" />
           <p className="text-sm font-semibold text-[#292735]">
             No certifications added
           </p>
-          <p className="text-xs text-[#777482] mt-0.5 mb-4">
+          <p className="text-xs text-[#595566] mt-0.5 mb-4">
             Add industry credentials, licenses, or course certificates.
           </p>
           <Button
@@ -88,8 +104,8 @@ export function CertificationsForm() {
             size="sm"
             onClick={() => addCertification()}
           >
-            <Plus className="w-4 h-4 mr-1.5" />
-            Add First Certification
+            <Plus className="w-4 h-4" />
+            <span>Add First Certification</span>
           </Button>
         </div>
       ) : (
@@ -101,13 +117,13 @@ export function CertificationsForm() {
             >
               {/* Header */}
               <div className="flex items-center justify-between pb-2 border-b border-gray-100">
-                <span className="text-xs font-bold text-[#8B7CF6]">
+                <span className="text-xs font-bold text-[#6C5BD8]">
                   CERTIFICATE #{idx + 1}
                 </span>
                 <button
                   type="button"
                   onClick={() => removeCertification(item.id)}
-                  className="text-xs text-red-500 hover:text-red-700 flex items-center gap-1 transition-colors px-2 py-1 rounded-[8px] hover:bg-red-50 cursor-pointer"
+                  className="min-h-[36px] text-xs font-medium text-[#B91C1C] hover:text-[#991B1B] flex items-center gap-1 transition-colors px-2.5 py-1 rounded-[10px] hover:bg-red-50 cursor-pointer"
                   title="Remove this certificate"
                 >
                   <Trash2 className="w-3.5 h-3.5" />
@@ -182,7 +198,7 @@ export function CertificationsForm() {
                       expiryYear: e.target.checked ? null : item.expiryYear,
                     })
                   }
-                  className="w-4 h-4 rounded text-[#8B7CF6] focus:ring-[#8B7CF6] cursor-pointer"
+                  className="w-4 h-4 rounded text-[#6C5BD8] focus:ring-[#6C5BD8] cursor-pointer"
                 />
                 <label
                   htmlFor={`no-expiry-${item.id}`}
@@ -196,7 +212,7 @@ export function CertificationsForm() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 sm:gap-4 items-start">
                 <Input
                   label="Credential ID"
-                  labelClassName="block text-[11px] font-bold uppercase tracking-wider text-[#777482] truncate whitespace-nowrap"
+                  labelClassName="block text-[11px] font-bold uppercase tracking-wider text-[#595566] truncate whitespace-nowrap"
                   placeholder="e.g. AWS-839210-SAA"
                   value={item.credentialId}
                   onChange={(e) =>
@@ -207,7 +223,7 @@ export function CertificationsForm() {
                 />
                 <Input
                   label="Credential URL"
-                  labelClassName="block text-[11px] font-bold uppercase tracking-wider text-[#777482] truncate whitespace-nowrap"
+                  labelClassName="block text-[11px] font-bold uppercase tracking-wider text-[#595566] truncate whitespace-nowrap"
                   placeholder="e.g. https://www.credly.com/badges/..."
                   value={item.credentialUrl}
                   onChange={(e) =>
@@ -218,10 +234,10 @@ export function CertificationsForm() {
                 />
               </div>
 
-              {/* Local File Attachment (IndexedDB) */}
-              <div className="pt-2 border-t border-gray-100">
-                <label className="block text-xs font-semibold uppercase tracking-wider text-[#777482] mb-1.5">
-                  Certificate Attachment (Stored locally in IndexedDB)
+              {/* Local File Attachment */}
+              <div className="pt-2 border-t border-gray-100 space-y-2">
+                <label className="block text-xs font-semibold uppercase tracking-wider text-[#595566]">
+                  Certificate File (Stored in your browser)
                 </label>
 
                 <input
@@ -244,8 +260,8 @@ export function CertificationsForm() {
                         <p className="text-xs font-semibold text-[#292735] truncate">
                           {item.attachmentName}
                         </p>
-                        <p className="text-[10px] text-[#777482]">
-                          {item.attachmentSize ? formatFileSize(item.attachmentSize) : "Attached"} • Stored in browser
+                        <p className="text-xs text-[#595566]">
+                          {item.attachmentSize ? formatFileSize(item.attachmentSize) : "Attached"} • Saved in your browser
                         </p>
                       </div>
                     </div>
@@ -257,16 +273,18 @@ export function CertificationsForm() {
                           item.attachmentId &&
                           downloadCertificateFile(item.attachmentId, item.attachmentName)
                         }
-                        className="p-1.5 text-[#6C5BD8] hover:bg-[#E8E3FF] rounded-[8px] transition-colors cursor-pointer"
+                        className="min-h-[38px] min-w-[38px] flex items-center justify-center text-[#6C5BD8] hover:bg-[#E8E3FF] rounded-[10px] transition-colors cursor-pointer"
                         title="Download original file"
+                        aria-label={`Download ${item.attachmentName}`}
                       >
                         <Download className="w-4 h-4" />
                       </button>
                       <button
                         type="button"
                         onClick={() => handleRemoveFile(item.id, item.attachmentId)}
-                        className="p-1.5 text-red-500 hover:bg-red-50 rounded-[8px] transition-colors cursor-pointer"
+                        className="min-h-[38px] min-w-[38px] flex items-center justify-center text-[#B91C1C] hover:bg-red-50 rounded-[10px] transition-colors cursor-pointer"
                         title="Remove attachment"
+                        aria-label={`Remove attachment ${item.attachmentName}`}
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>
@@ -276,11 +294,17 @@ export function CertificationsForm() {
                   <button
                     type="button"
                     onClick={() => fileInputRefs.current[item.id]?.click()}
-                    className="w-full flex items-center justify-center gap-2 p-3.5 border border-dashed border-[rgba(70,65,90,0.2)] rounded-[14px] bg-[#FAF8F5] hover:bg-[#F4F1EB] text-xs font-medium text-[#777482] hover:text-[#292735] transition-colors cursor-pointer"
+                    className="w-full min-h-[44px] flex items-center justify-center gap-2 p-3.5 border border-dashed border-[rgba(70,65,90,0.22)] rounded-[14px] bg-[#FAF8F5] hover:bg-[#F4F1EB] text-xs font-medium text-[#595566] hover:text-[#292735] transition-colors cursor-pointer"
                   >
-                    <Upload className="w-4 h-4 text-[#8B7CF6]" />
-                    <span>Upload certificate document (PDF, PNG, JPG, max 10MB)</span>
+                    <Upload className="w-4 h-4 text-[#6C5BD8]" />
+                    <span>Upload certificate file (PDF, PNG, JPG, max 10MB)</span>
                   </button>
+                )}
+
+                {uploadErrors[item.id] && (
+                  <p role="alert" className="text-xs text-[#B91C1C] font-medium">
+                    {uploadErrors[item.id]}
+                  </p>
                 )}
               </div>
             </div>
@@ -293,8 +317,8 @@ export function CertificationsForm() {
             onClick={() => addCertification()}
             className="w-full"
           >
-            <Plus className="w-4 h-4 mr-1.5" />
-            Add Another Certification
+            <Plus className="w-4 h-4" />
+            <span>Add Another Certification</span>
           </Button>
         </div>
       )}

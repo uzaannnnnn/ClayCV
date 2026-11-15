@@ -49,6 +49,9 @@ import { AtsModernTemplate } from "../src/components/templates/ats-modern/AtsMod
 import { AtsMinimalTemplate } from "../src/components/templates/ats-minimal/AtsMinimalTemplate";
 import { useCVStore } from "../src/store/cv-store";
 import { callWritingAI } from "../src/lib/ai/client-api";
+import { Sparkles } from "lucide-react";
+import { Button } from "../src/components/ui/button";
+import { AIPrivacyConsentModal } from "../src/components/ai/AIPrivacyConsentBanner";
 import { AIResultCard } from "../src/components/ai/AIResultCard";
 import { AIWritingWorkspace } from "../src/components/ai/AIWritingWorkspace";
 import { JobMatcherWorkspace } from "../src/components/ai/JobMatcherWorkspace";
@@ -691,22 +694,36 @@ async function main() {
     };
 
     const writingDisabledHtml = renderToStaticMarkup(<AIWritingWorkspace />);
-    assert.equal(hasDisabledAttr(writingDisabledHtml, "Generate with Gemini"), true);
-    assert(writingDisabledHtml.includes("Grant privacy consent above"));
+    assert.equal(hasDisabledAttr(writingDisabledHtml, "Generate with AI"), true);
+    assert(writingDisabledHtml.includes("privacy notice"));
 
     const matchingDisabledHtml = renderToStaticMarkup(<JobMatcherWorkspace />);
     assert.equal(hasDisabledAttr(matchingDisabledHtml, "Analyze Job Match"), true);
-    assert(matchingDisabledHtml.includes("Grant privacy consent above"));
+    assert(matchingDisabledHtml.includes("privacy notice"));
 
     const analysisDisabledHtml = renderToStaticMarkup(<ATSAnalyzerWorkspace />);
-    assert.equal(hasDisabledAttr(analysisDisabledHtml, "Run Full Gemini ATS Audit"), true);
-    assert(analysisDisabledHtml.includes("Grant privacy consent above"));
+    assert.equal(hasDisabledAttr(analysisDisabledHtml, "Run AI Review"), true);
+    assert(analysisDisabledHtml.includes("Overall ATS Score"));
+    assert(analysisDisabledHtml.includes("Basic CV Checks"));
+    assert(analysisDisabledHtml.includes("AI Writing Review"));
+    assert(analysisDisabledHtml.includes("Your CV can still be checked without AI"));
 
     const careerDisabledHtml = renderToStaticMarkup(<CareerAssistantWorkspace />);
-    assert.equal(hasDisabledAttr(careerDisabledHtml, "Generate with Gemini"), true);
-    assert(careerDisabledHtml.includes("Grant privacy consent above"));
+    assert.equal(hasDisabledAttr(careerDisabledHtml, "Generate with AI"), true);
+    assert(careerDisabledHtml.includes("privacy notice"));
 
-    // Verify AIResultCard Regenerate button respects regenerateDisabled prop directly
+    // Verify Consent Modal store state & rendered content
+    store.openConsentModal();
+    assert.equal(useCVStore.getState().isConsentModalOpen, true);
+    const consentModalHtml = renderToStaticMarkup(<AIPrivacyConsentModal forceOpen />);
+    assert(consentModalHtml.includes("Your Privacy Matters"));
+    assert(consentModalHtml.includes("Agree &amp; Continue") || consentModalHtml.includes("Agree & Continue"));
+    assert(consentModalHtml.includes("Not Now"));
+    store.closeConsentModal();
+    assert.equal(useCVStore.getState().isConsentModalOpen, false);
+    assert.equal(useCVStore.getState().consentModalDismissed, true);
+
+    // Verify AIResultCard Try again button respects regenerateDisabled prop directly
     const resultCardDisabled = renderToStaticMarkup(
       <AIResultCard
         title="Generated Summary"
@@ -718,7 +735,7 @@ async function main() {
         onRegenerate={() => {}}
       />
     );
-    assert.equal(hasDisabledAttr(resultCardDisabled, "Regenerate"), true);
+    assert.equal(hasDisabledAttr(resultCardDisabled, "Try again"), true);
 
     const resultCardEnabled = renderToStaticMarkup(
       <AIResultCard
@@ -731,7 +748,7 @@ async function main() {
         onRegenerate={() => {}}
       />
     );
-    assert.equal(hasDisabledAttr(resultCardEnabled, "Regenerate"), false);
+    assert.equal(hasDisabledAttr(resultCardEnabled, "Try again"), false);
 
     // Grant & revoke consent toggles reactive Zustand store state cleanly
     store.setAIConsent(true);
@@ -787,6 +804,89 @@ async function main() {
       assert.equal(fetchCalled, false, "fetch must not be invoked when store consent is false");
     } finally {
       globalThis.fetch = origFetch;
+      store.setAIConsent(false);
+    }
+  });
+
+  await runTest("Button loading state renders single spinner without icon duplication and isolates workspaces", () => {
+    const idleHtml = renderToStaticMarkup(
+      <Button variant="primary" size="md">
+        <Sparkles className="w-4 h-4" />
+        <span>Run AI Review</span>
+      </Button>
+    );
+    assert.equal((idleHtml.match(/animate-spin/g) || []).length, 0);
+    assert.equal((idleHtml.match(/<svg/g) || []).length, 1);
+    assert(idleHtml.includes("whitespace-nowrap"));
+    assert(idleHtml.includes("Run AI Review"));
+    assert(!idleHtml.includes("aria-busy=\"true\""));
+
+    const loadingHtml = renderToStaticMarkup(
+      <Button variant="primary" size="md" isLoading={true}>
+        <Sparkles className="w-4 h-4" />
+        <span>Reviewing CV...</span>
+      </Button>
+    );
+    assert.equal((loadingHtml.match(/animate-spin/g) || []).length, 1);
+    assert.equal((loadingHtml.match(/<svg/g) || []).length, 1);
+    assert(loadingHtml.includes("disabled"));
+    assert(loadingHtml.includes("aria-busy=\"true\""));
+    assert(loadingHtml.includes("Reviewing CV..."));
+    assert(!loadingHtml.includes("flex items-center gap-2"));
+
+    const loadingTextHtml = renderToStaticMarkup(
+      <Button variant="secondary" size="sm" isLoading={true} loadingText="Retrying...">
+        <Sparkles className="w-4 h-4" />
+        <span>Try Again</span>
+      </Button>
+    );
+    assert.equal((loadingTextHtml.match(/animate-spin/g) || []).length, 1);
+    assert.equal((loadingTextHtml.match(/<svg/g) || []).length, 1);
+    assert(loadingTextHtml.includes("Retrying..."));
+    assert(!loadingTextHtml.includes("Try Again"));
+
+    // Regenerating an AIResultCard only spins its own Try again button
+    const regeneratingCardHtml = renderToStaticMarkup(
+      <AIResultCard
+        title="Generated Summary"
+        content="Test content"
+        hasExistingContent={false}
+        targetFieldName="Professional Summary"
+        isLoading={true}
+        isRegenerating={true}
+        onApply={() => {}}
+        onRegenerate={() => {}}
+      />
+    );
+    assert.equal((regeneratingCardHtml.match(/animate-spin/g) || []).length, 1);
+    assert(regeneratingCardHtml.includes("Trying again..."));
+
+    // All 4 AI workspaces must render zero active spinners on initial mount
+    const store = useCVStore.getState();
+    store.setAIConsent(true);
+    try {
+      const writingHtml = renderToStaticMarkup(<AIWritingWorkspace />);
+      const matchingHtml = renderToStaticMarkup(<JobMatcherWorkspace />);
+      const analysisHtml = renderToStaticMarkup(<ATSAnalyzerWorkspace />);
+      const careerHtml = renderToStaticMarkup(<CareerAssistantWorkspace />);
+
+      for (const [name, html] of [
+        ["AIWritingWorkspace", writingHtml],
+        ["JobMatcherWorkspace", matchingHtml],
+        ["ATSAnalyzerWorkspace", analysisHtml],
+        ["CareerAssistantWorkspace", careerHtml],
+      ] as const) {
+        assert.equal(
+          (html.match(/animate-spin/g) || []).length,
+          0,
+          `${name} must not render loading spinners initially`
+        );
+      }
+      assert(!analysisHtml.includes("Reviewing CV..."));
+      assert(!writingHtml.includes("Generating..."));
+      assert(!matchingHtml.includes("Analyzing Match..."));
+      assert(!careerHtml.includes("Generating..."));
+    } finally {
       store.setAIConsent(false);
     }
   });

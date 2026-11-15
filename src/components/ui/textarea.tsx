@@ -20,7 +20,7 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
         {label && (
           <label
             htmlFor={textareaId}
-            className="block text-xs font-semibold uppercase tracking-wider text-[#777482]"
+            className="block text-xs font-semibold uppercase tracking-wider text-[#595566]"
           >
             {label}
           </label>
@@ -30,15 +30,15 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
           ref={ref}
           rows={rows}
           className={cn(
-            "clay-input w-full px-3.5 py-2.5 text-sm placeholder:text-[#A29FAC]/80 resize-y",
+            "clay-input w-full px-3.5 py-2.5 text-sm placeholder:text-[#6D697A] resize-y",
             error && "border-red-400 focus:border-red-500",
             className
           )}
           {...props}
         />
-        {error && <p className="text-xs text-red-500 font-medium">{error}</p>}
+        {error && <p className="text-xs text-red-600 font-medium">{error}</p>}
         {helperText && !error && (
-          <p className="text-xs text-[#777482]">{helperText}</p>
+          <p className="text-xs text-[#595566]">{helperText}</p>
         )}
       </div>
     );
