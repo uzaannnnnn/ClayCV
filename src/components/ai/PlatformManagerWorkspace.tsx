@@ -117,22 +117,19 @@ export function PlatformManagerWorkspace() {
   };
 
   return (
-    <div className="space-y-5 pb-12">
-      {/* Compact Privacy Status Bar */}
-      <AIPrivacyConsentBanner compact />
-
+    <div className="space-y-4 sm:space-y-5">
       {/* 1. My CVs */}
-      <div className="clay-card p-5 sm:p-6 space-y-4">
+      <div className="clay-card p-4 sm:p-6 space-y-3.5 sm:space-y-4">
         <div className="flex items-start justify-between flex-wrap gap-3">
           <div className="flex items-start gap-2.5 min-w-0 flex-1">
             <div className="w-9 h-9 rounded-[12px] bg-[#EFEAFF] text-[#6C5BD8] flex items-center justify-center shrink-0 mt-0.5">
               <FolderKanban className="w-5 h-5" />
             </div>
             <div>
-              <h2 className="text-base font-bold text-[#292735]">
+              <h2 className="text-sm sm:text-base font-bold text-[#292735]">
                 My CVs ({profiles.length})
               </h2>
-              <p className="text-xs text-[#595566] leading-relaxed">
+              <p className="hidden sm:block text-xs text-[#595566] leading-relaxed">
                 Keep tailored CVs for different roles or languages saved safely
                 in your browser.
               </p>
@@ -238,16 +235,16 @@ export function PlatformManagerWorkspace() {
       </div>
 
       {/* 2. CV Version History */}
-      <div className="clay-card p-5 sm:p-6 space-y-4">
+      <div className="clay-card p-4 sm:p-6 space-y-3.5 sm:space-y-4">
         <div className="flex items-start gap-2.5">
           <div className="w-9 h-9 rounded-[12px] bg-[#EFEAFF] text-[#6C5BD8] flex items-center justify-center shrink-0 mt-0.5">
             <History className="w-5 h-5" />
           </div>
           <div>
-            <h3 className="text-base font-bold text-[#292735]">
+            <h3 className="text-sm sm:text-base font-bold text-[#292735]">
               CV Version History ({versionHistory.length})
             </h3>
-            <p className="text-xs text-[#595566] leading-relaxed">
+            <p className="hidden sm:block text-xs text-[#595566] leading-relaxed">
               Save checkpoints before big edits so you can return to an earlier
               version anytime.
             </p>
@@ -322,11 +319,11 @@ export function PlatformManagerWorkspace() {
       </div>
 
       {/* 3. Backup & Import CV */}
-      <div className="clay-card p-5 sm:p-6 space-y-3">
-        <h3 className="text-base font-bold text-[#292735]">
+      <div className="clay-card p-4 sm:p-6 space-y-3">
+        <h3 className="text-sm sm:text-base font-bold text-[#292735]">
           Backup & Import CV
         </h3>
-        <p className="text-xs text-[#595566] leading-relaxed">
+        <p className="hidden sm:block text-xs text-[#595566] leading-relaxed">
           Download a backup copy of your active CV or import one you saved
           earlier.
         </p>
@@ -376,16 +373,16 @@ export function PlatformManagerWorkspace() {
       </div>
 
       {/* 4. Storage Summary */}
-      <div className="clay-card p-5 sm:p-6 space-y-3">
+      <div className="clay-card p-4 sm:p-6 space-y-3">
         <div className="flex items-start gap-2.5">
           <div className="w-9 h-9 rounded-[12px] bg-[#E6F6ED] text-[#227248] flex items-center justify-center shrink-0 mt-0.5">
             <HardDrive className="w-4 h-4" />
           </div>
           <div>
-            <h3 className="text-base font-bold text-[#292735]">
+            <h3 className="text-sm sm:text-base font-bold text-[#292735]">
               Stored in Your Browser
             </h3>
-            <p className="text-xs text-[#595566] leading-relaxed">
+            <p className="hidden sm:block text-xs text-[#595566] leading-relaxed">
               Your CVs, saved checkpoints, and uploaded certificates are stored
               privately on your device without an account.
             </p>
@@ -410,17 +407,20 @@ export function PlatformManagerWorkspace() {
       </div>
 
       {/* 5. Recent AI Activity */}
-      <div className="clay-card p-5 sm:p-6 space-y-3">
+      <div
+        data-testid="ai-primary-card"
+        className="clay-card p-4 sm:p-6 space-y-3"
+      >
         <div className="flex items-start justify-between gap-2">
           <div className="flex items-start gap-2.5">
             <div className="w-9 h-9 rounded-[12px] bg-[#EFEAFF] text-[#6C5BD8] flex items-center justify-center shrink-0 mt-0.5">
               <Activity className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="text-base font-bold text-[#292735]">
+              <h3 className="text-sm sm:text-base font-bold text-[#292735]">
                 Recent AI Activity ({aiUsageHistory.length})
               </h3>
-              <p className="text-xs text-[#595566]">
+              <p className="hidden sm:block text-xs text-[#595566]">
                 A private log of AI actions run in this browser.
               </p>
             </div>
@@ -476,6 +476,9 @@ export function PlatformManagerWorkspace() {
           </div>
         )}
       </div>
+
+      {/* Compact Privacy Status Bar below cards */}
+      <AIPrivacyConsentBanner compact />
 
       <Dialog
         isOpen={Boolean(pendingDeleteProfile)}

@@ -15,35 +15,38 @@ import {
 
 export function Hero() {
   return (
-    <section className="relative overflow-hidden pt-12 pb-20 md:pt-20 md:pb-32 px-4 sm:px-6 lg:px-8">
+    <section className="relative overflow-hidden pt-8 pb-10 sm:pt-14 sm:pb-20 md:pt-20 md:pb-32 px-4 sm:px-6 lg:px-8">
       {/* Decorative soft 3D clay spheres */}
-      <div className="absolute top-10 left-1/2 -translate-x-[420px] w-64 h-64 rounded-full bg-[#E8E3FF]/50 blur-3xl -z-10 pointer-events-none" />
+      <div className="hidden sm:block absolute top-10 left-1/2 -translate-x-[420px] w-64 h-64 rounded-full bg-[#E8E3FF]/50 blur-3xl -z-10 pointer-events-none" />
       <div className="absolute top-48 right-10 w-72 h-72 rounded-full bg-[#FFD6C2]/40 blur-3xl -z-10 pointer-events-none" />
       <div className="absolute bottom-10 left-10 w-80 h-80 rounded-full bg-[#D7EDE1]/40 blur-3xl -z-10 pointer-events-none" />
 
       <div className="max-w-7xl mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
           {/* Left Column: Value Proposition & CTAs */}
-          <div className="lg:col-span-6 space-y-6 text-center lg:text-left">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full clay-card-sm bg-[#FAF8F5] text-xs font-semibold text-[#6C5BD8]">
+          <div className="lg:col-span-6 space-y-4 sm:space-y-6 text-center lg:text-left">
+            <div className="hidden sm:inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full clay-card-sm bg-[#FAF8F5] text-xs font-semibold text-[#6C5BD8]">
               <Sparkles className="w-4 h-4 text-[#6C5BD8]" />
               <span>ATS-First • 100% Client-Side • No Account Required</span>
             </div>
 
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-[#292735] tracking-tight leading-[1.12]">
+            <h1 className="text-[32px] leading-[1.15] sm:text-5xl lg:text-6xl font-extrabold text-[#292735] tracking-tight sm:leading-[1.12]">
               Your Next Opportunity Starts With a{" "}
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#8B7CF6] via-[#A99CFF] to-[#6C5BD8]">
                 Better CV.
               </span>
             </h1>
 
-            <p className="text-base sm:text-lg text-[#595566] max-w-xl mx-auto lg:mx-0 leading-relaxed">
-              Create a professional, ATS-friendly CV in minutes. No account, no
-              hassle, just your next opportunity.
+            <p className="text-sm sm:text-lg text-[#595566] max-w-md sm:max-w-xl mx-auto lg:mx-0 leading-relaxed">
+              Create a professional, ATS-friendly CV in minutes.
+              <span className="hidden sm:inline">
+                {" "}
+                No account, no hassle, just your next opportunity.
+              </span>
             </p>
 
             {/* CTAs */}
-            <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-2">
+            <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-1 sm:pt-2">
               <Link href="/builder" className="w-full sm:w-auto">
                 <Button
                   variant="primary"
@@ -54,7 +57,7 @@ export function Hero() {
                   <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                 </Button>
               </Link>
-              <a href="#templates" className="w-full sm:w-auto">
+              <a href="#templates" className="hidden sm:inline-block w-full sm:w-auto">
                 <Button
                   variant="secondary"
                   size="lg"
@@ -66,7 +69,7 @@ export function Hero() {
             </div>
 
             {/* Micro guarantees */}
-            <div className="pt-4 flex flex-wrap items-center justify-center lg:justify-start gap-6 text-xs font-medium text-[#595566]">
+            <div className="pt-2 sm:pt-4 flex flex-wrap items-center justify-center lg:justify-start gap-x-4 gap-y-2 sm:gap-6 text-xs font-medium text-[#595566]">
               <div className="flex items-center gap-1.5">
                 <CheckCircle2 className="w-4 h-4 text-[#8B7CF6]" />
                 <span>3 ATS-Optimized Templates</span>
@@ -83,7 +86,7 @@ export function Hero() {
           </div>
 
           {/* Right Column: Hero Visual - Layered Clay Frame with Live Document Preview */}
-          <div className="lg:col-span-6 relative flex justify-center">
+          <div className="hidden lg:flex lg:col-span-6 relative justify-center">
             {/* Clay Frame Container */}
             <div className="clay-hero relative w-full max-w-lg p-5 sm:p-7 bg-[#FAF8F5] border border-[rgba(70,65,90,0.08)] transform hover:scale-[1.01] transition-transform duration-300">
               {/* Floating Clay Accents */}

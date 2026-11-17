@@ -5,8 +5,10 @@ import { useCVStore } from "@/store/cv-store";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectGroupOption } from "@/components/ui/select";
 import { AIPrivacyConsentBanner } from "./AIPrivacyConsentBanner";
 import { AIResultCard } from "./AIResultCard";
+import { HorizontalScrollTabs } from "@/components/ui/horizontal-scroll-tabs";
 import { callWritingAI } from "@/lib/ai/client-api";
 import {
   WritingOperation,
@@ -399,27 +401,28 @@ export function AIWritingWorkspace() {
   const targetMeta = getTargetFieldMeta();
 
   return (
-    <div className="space-y-5 pb-12">
-      <AIPrivacyConsentBanner compact />
-
+    <div className="space-y-4 sm:space-y-5">
       {/* Sub-Navigation Pills */}
       <div className="clay-card p-3 sm:p-4 bg-[#FAF8F5]">
-        <div className="flex items-center justify-between mb-2.5 px-1">
-          <div className="flex items-center gap-2">
-            <Sparkles className="w-4 h-4 text-[#6C5BD8]" />
-            <h2 className="text-sm font-bold text-[#292735]">
+        <div className="flex items-center justify-between gap-2 mb-2 sm:mb-2.5 px-0.5 sm:px-1">
+          <div className="flex items-center gap-2 min-w-0">
+            <Sparkles className="w-4 h-4 text-[#6C5BD8] shrink-0" />
+            <h2 className="text-sm font-bold text-[#292735] truncate">
               AI Writing Assistant
             </h2>
           </div>
-          <span className="text-xs font-semibold text-[#595566]">
-            CV Language:{" "}
+          <span className="text-xs font-semibold text-[#595566] shrink-0">
+            <span className="hidden sm:inline">CV Language: </span>
             <strong className="text-[#6C5BD8]">
-              {cvData.language === "id" ? "Bahasa Indonesia" : "English"}
+              {cvData.language === "id" ? "Indonesia" : "English"}
             </strong>
           </span>
         </div>
 
-        <div className="flex flex-wrap gap-1.5">
+        <HorizontalScrollTabs
+          ariaLabel="AI writing actions"
+          className="sm:flex-wrap gap-1.5 pb-0.5"
+        >
           {WRITING_TABS.map((tab) => {
             const Icon = tab.icon;
             const isSelected = activeTab === tab.id;
@@ -427,9 +430,11 @@ export function AIWritingWorkspace() {
               <button
                 key={tab.id}
                 type="button"
+                role="tab"
+                aria-selected={isSelected}
                 onClick={() => handleTabChange(tab.id)}
                 className={cn(
-                  "min-h-[38px] flex items-center gap-1.5 px-3 py-1.5 rounded-[12px] text-xs font-bold transition-all cursor-pointer",
+                  "min-h-[40px] sm:min-h-[38px] shrink-0 whitespace-nowrap flex items-center gap-1.5 px-3 py-1.5 rounded-[12px] text-xs font-bold transition-all cursor-pointer",
                   isSelected
                     ? "bg-[#6C5BD8] text-white shadow-sm"
                     : "bg-white/85 text-[#595566] hover:text-[#292735] hover:bg-white"
@@ -440,18 +445,21 @@ export function AIWritingWorkspace() {
               </button>
             );
           })}
-        </div>
+        </HorizontalScrollTabs>
       </div>
 
       {/* Operation Form Card */}
-      <div className="clay-card p-5 sm:p-6 space-y-4">
+      <div
+        data-testid="ai-primary-card"
+        className="clay-card p-4 sm:p-6 space-y-3.5 sm:space-y-4"
+      >
         {activeTab === "professional_summary" && (
-          <div className="space-y-4">
+          <div className="space-y-3.5 sm:space-y-4">
             <div>
-              <h3 className="text-base font-bold text-[#292735]">
+              <h3 className="text-sm sm:text-base font-bold text-[#292735]">
                 Professional Summary Generator
               </h3>
-              <p className="text-xs text-[#595566] mt-0.5">
+              <p className="hidden sm:block text-xs text-[#595566] mt-0.5">
                 Generates Short, Professional, and Detailed summaries from your
                 actual CV experience, education, and skills without inventing
                 qualifications or years of experience.
@@ -482,12 +490,12 @@ export function AIWritingWorkspace() {
         )}
 
         {activeTab === "experience_improve" && (
-          <div className="space-y-4">
+          <div className="space-y-3.5 sm:space-y-4">
             <div>
-              <h3 className="text-base font-bold text-[#292735]">
+              <h3 className="text-sm sm:text-base font-bold text-[#292735]">
                 Work Experience Writer
               </h3>
-              <p className="text-xs text-[#595566] mt-0.5">
+              <p className="hidden sm:block text-xs text-[#595566] mt-0.5">
                 Rewrites descriptions into strong action-verb bullet points in
                 Professional, Concise, and Achievement-Oriented styles without
                 fabricating metrics.
@@ -502,42 +510,43 @@ export function AIWritingWorkspace() {
             ) : (
               <>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                  <div>
-                    <label className="block text-xs font-semibold uppercase tracking-wider text-[#595566] mb-1.5">
-                      Select Work Experience Entry
-                    </label>
-                    <select
-                      value={activeExpItem?.id || ""}
-                      onChange={(e) => setSelectedExpId(e.target.value)}
-                      className="clay-input w-full h-11 px-3.5 text-xs font-semibold text-[#292735]"
-                    >
-                      {cvData.experience.map((exp, idx) => (
-                        <option key={exp.id} value={exp.id}>
-                          #{idx + 1}: {exp.position || "Untitled"} at{" "}
-                          {exp.company || "Company"}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
+                  <Select
+                    id="ai-writing-experience-select"
+                    label="Select Work Experience Entry"
+                    value={activeExpItem?.id || ""}
+                    onChange={(val) => setSelectedExpId(val)}
+                    placeholder="Select experience..."
+                    searchable={cvData.experience.length > 5}
+                    searchPlaceholder="Filter roles..."
+                    options={cvData.experience.map((exp, idx) => ({
+                      value: exp.id,
+                      label: `#${idx + 1}: ${exp.position || "Untitled"} at ${exp.company || "Company"}`,
+                    }))}
+                  />
 
-                  <div>
-                    <label className="block text-xs font-semibold uppercase tracking-wider text-[#595566] mb-1.5">
-                      Preferred Writing Style
-                    </label>
-                    <select
-                      value={expStyle}
-                      onChange={(e) =>
-                        setExpStyle(e.target.value as WritingStyle)
-                      }
-                      className="clay-input w-full h-11 px-3.5 text-xs font-semibold text-[#292735]"
-                    >
-                      <option value="professional">1. Professional</option>
-                      <option value="concise">2. Concise</option>
-                      <option value="achievement_oriented">
-                        3. Achievement-Oriented
-                      </option>
-                    </select>
-                  </div>
+                  <Select
+                    id="ai-writing-style-select"
+                    label="Preferred Writing Style"
+                    value={expStyle}
+                    onChange={(val) => setExpStyle(val as WritingStyle)}
+                    options={[
+                      {
+                        value: "professional",
+                        label: "1. Professional",
+                        description: "Balanced leadership & execution impact",
+                      },
+                      {
+                        value: "concise",
+                        label: "2. Concise",
+                        description: "Crisp one-line ATS action bullets",
+                      },
+                      {
+                        value: "achievement_oriented",
+                        label: "3. Achievement-Oriented",
+                        description: "Outcome-first metrics & measurable scope",
+                      },
+                    ]}
+                  />
                 </div>
 
                 {activeExpItem && (
@@ -626,35 +635,33 @@ export function AIWritingWorkspace() {
         )}
 
         {activeTab === "project_description" && (
-          <div className="space-y-4">
+          <div className="space-y-3.5 sm:space-y-4">
             <div>
-              <h3 className="text-base font-bold text-[#292735]">
+              <h3 className="text-sm sm:text-base font-bold text-[#292735]">
                 Project Description Generator
               </h3>
-              <p className="text-xs text-[#595566] mt-0.5">
+              <p className="hidden sm:block text-xs text-[#595566] mt-0.5">
                 Generates Short, Detailed, and Bullet-Point project descriptions
                 from your project details.
               </p>
             </div>
 
             {cvData.projects.length > 0 && (
-              <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-[#595566] mb-1.5">
-                  Target Project Entry
-                </label>
-                <select
-                  value={activeProjItem?.id || ""}
-                  onChange={(e) => setSelectedProjId(e.target.value)}
-                  className="clay-input w-full h-11 px-3.5 text-xs font-semibold text-[#292735]"
-                >
-                  {cvData.projects.map((p, idx) => (
-                    <option key={p.id} value={p.id}>
-                      #{idx + 1}: {p.name || "Untitled Project"} (
-                      {p.technologies || "No tech listed"})
-                    </option>
-                  ))}
-                </select>
-              </div>
+              <Select
+                id="ai-writing-project-select"
+                label="Target Project Entry"
+                value={activeProjItem?.id || ""}
+                onChange={(val) => setSelectedProjId(val)}
+                placeholder="Select project..."
+                searchable={cvData.projects.length > 5}
+                searchPlaceholder="Filter projects..."
+                options={cvData.projects.map((p, idx) => ({
+                  value: p.id,
+                  label: `#${idx + 1}: ${p.name || "Untitled Project"} (${
+                    p.technologies || "No tech listed"
+                  })`,
+                }))}
+              />
             )}
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
@@ -720,14 +727,14 @@ export function AIWritingWorkspace() {
         )}
 
         {(activeTab === "grammar_tone" || activeTab === "translation") && (
-          <div className="space-y-4">
+          <div className="space-y-3.5 sm:space-y-4">
             <div>
-              <h3 className="text-base font-bold text-[#292735]">
+              <h3 className="text-sm sm:text-base font-bold text-[#292735]">
                 {activeTab === "grammar_tone"
                   ? "Grammar, Clarity & Professional Tone Improver"
                   : "Bilingual CV Translator (English ↔ Bahasa Indonesia)"}
               </h3>
-              <p className="text-xs text-[#595566] mt-0.5">
+              <p className="hidden sm:block text-xs text-[#595566] mt-0.5">
                 {activeTab === "grammar_tone"
                   ? "Fixes grammar, removes redundancy, and elevates tone while preserving your exact factual meaning."
                   : "Translates your selected CV section while preserving company names, proper nouns, programming languages, and technical terms."}
@@ -735,49 +742,66 @@ export function AIWritingWorkspace() {
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-              <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-[#595566] mb-1.5">
-                  Select CV Field to Load
-                </label>
-                <select
-                  value={customTextSource}
-                  onChange={(e) => handleLoadSourceText(e.target.value)}
-                  className="clay-input w-full h-11 px-3.5 text-xs font-semibold text-[#292735]"
-                >
-                  <option value="summary">Professional Summary</option>
-                  {cvData.experience.map((e, i) => (
-                    <option key={e.id} value={`exp:${e.id}`}>
-                      Experience #{i + 1}: {e.position || e.company}
-                    </option>
-                  ))}
-                  {cvData.projects.map((p, i) => (
-                    <option key={p.id} value={`proj:${p.id}`}>
-                      Project #{i + 1}: {p.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
+              <Select
+                id="ai-writing-source-field"
+                label="Select CV Field to Load"
+                value={customTextSource}
+                onChange={(val) => handleLoadSourceText(val)}
+                groups={
+                  [
+                    {
+                      label: "Summary",
+                      options: [
+                        { value: "summary", label: "Professional Summary" },
+                      ],
+                    },
+                    ...(cvData.experience.length > 0
+                      ? [
+                          {
+                            label: "Work Experience",
+                            options: cvData.experience.map((e, i) => ({
+                              value: `exp:${e.id}`,
+                              label: `Experience #${i + 1}: ${
+                                e.position || e.company
+                              }`,
+                            })),
+                          },
+                        ]
+                      : []),
+                    ...(cvData.projects.length > 0
+                      ? [
+                          {
+                            label: "Projects",
+                            options: cvData.projects.map((p, i) => ({
+                              value: `proj:${p.id}`,
+                              label: `Project #${i + 1}: ${p.name}`,
+                            })),
+                          },
+                        ]
+                      : []),
+                  ] satisfies SelectGroupOption[]
+                }
+              />
 
               {activeTab === "translation" ? (
-                <div>
-                  <label className="block text-xs font-semibold uppercase tracking-wider text-[#595566] mb-1.5">
-                    Target Translation Language
-                  </label>
-                  <select
-                    value={translationTargetLang}
-                    onChange={(e) =>
-                      setTranslationTargetLang(e.target.value as "en" | "id")
-                    }
-                    className="clay-input w-full h-11 px-3.5 text-xs font-semibold text-[#292735]"
-                  >
-                    <option value="id">
-                      English → Bahasa Indonesia (Formal CV)
-                    </option>
-                    <option value="en">
-                      Bahasa Indonesia → English (Formal CV)
-                    </option>
-                  </select>
-                </div>
+                <Select
+                  id="ai-writing-target-language"
+                  label="Target Translation Language"
+                  value={translationTargetLang}
+                  onChange={(val) =>
+                    setTranslationTargetLang(val as "en" | "id")
+                  }
+                  options={[
+                    {
+                      value: "id",
+                      label: "English -> Bahasa Indonesia (Formal CV)",
+                    },
+                    {
+                      value: "en",
+                      label: "Bahasa Indonesia -> English (Formal CV)",
+                    },
+                  ]}
+                />
               ) : (
                 <Input
                   label="Focus Instructions (Optional)"
@@ -803,7 +827,7 @@ export function AIWritingWorkspace() {
           <span className="text-xs text-[#595566]">
             {!aiConsentAccepted ? (
               <span className="text-[#6C5BD8] font-medium">
-                Please agree to the privacy notice above to use AI writing tools.
+                Please agree to the privacy notice below to use AI writing tools.
               </span>
             ) : isLoading ? (
               activeTabInfo.loadingText
@@ -961,6 +985,9 @@ export function AIWritingWorkspace() {
             ))}
         </div>
       )}
+
+      {/* Privacy disclosure placed at the bottom of workspace content */}
+      <AIPrivacyConsentBanner compact />
     </div>
   );
 }

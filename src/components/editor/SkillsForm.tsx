@@ -75,7 +75,7 @@ export function SkillsForm() {
 
       {/* Skills Pill List */}
       <div>
-        <div className="flex items-center justify-between mb-2.5 gap-2">
+        <div className="flex flex-wrap items-center justify-between mb-2.5 gap-2">
           <label className="block text-xs font-semibold uppercase tracking-wider text-[#595566]">
             Added Skills ({skills.length})
           </label>

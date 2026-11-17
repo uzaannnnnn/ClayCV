@@ -1,6 +1,14 @@
 import assert from "node:assert/strict";
+import fs from "node:fs";
+import path from "node:path";
 import React from "react";
 import { renderToStaticMarkup } from "react-dom/server";
+import {
+  computeScrollIndicator,
+  HorizontalScrollTabs,
+} from "../src/components/ui/horizontal-scroll-tabs";
+import { Hero } from "../src/components/landing/Hero";
+import { Footer } from "../src/components/landing/Footer";
 import {
   DEFAULT_GEMINI_MODEL,
   getGeminiModel,
@@ -51,12 +59,35 @@ import { useCVStore } from "../src/store/cv-store";
 import { callWritingAI } from "../src/lib/ai/client-api";
 import { Sparkles } from "lucide-react";
 import { Button } from "../src/components/ui/button";
-import { AIPrivacyConsentModal } from "../src/components/ai/AIPrivacyConsentBanner";
+import {
+  Select,
+  Combobox,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+  computeDropdownPosition,
+} from "../src/components/ui/select";
+import { MonthYearSelect } from "../src/components/ui/month-year-select";
+import { BuilderHeader } from "../src/components/builder/BuilderHeader";
 import { AIResultCard } from "../src/components/ai/AIResultCard";
 import { AIWritingWorkspace } from "../src/components/ai/AIWritingWorkspace";
 import { JobMatcherWorkspace } from "../src/components/ai/JobMatcherWorkspace";
 import { ATSAnalyzerWorkspace } from "../src/components/ai/ATSAnalyzerWorkspace";
 import { CareerAssistantWorkspace } from "../src/components/ai/CareerAssistantWorkspace";
+import { PlatformManagerWorkspace } from "../src/components/ai/PlatformManagerWorkspace";
+import {
+  AIPrivacyConsentBanner,
+  AIPrivacyConsentModal,
+} from "../src/components/ai/AIPrivacyConsentBanner";
+import {
+  DynamicIslandPreviewToggle,
+  LivePreview,
+} from "../src/components/preview/LivePreview";
+import {
+  MobileWorkspaceTrigger,
+  WorkspaceSidebar,
+} from "../src/components/builder/WorkspaceSidebar";
 
 let passed = 0;
 let failed = 0;
@@ -712,13 +743,20 @@ async function main() {
     assert.equal(hasDisabledAttr(careerDisabledHtml, "Generate with AI"), true);
     assert(careerDisabledHtml.includes("privacy notice"));
 
-    // Verify Consent Modal store state & rendered content
+    // Verify Compact Consent Modal store state & rendered content
     store.openConsentModal();
     assert.equal(useCVStore.getState().isConsentModalOpen, true);
     const consentModalHtml = renderToStaticMarkup(<AIPrivacyConsentModal forceOpen />);
-    assert(consentModalHtml.includes("Your Privacy Matters"));
+    assert(consentModalHtml.includes("AI Privacy Notice"));
+    assert(
+      consentModalHtml.includes(
+        "When you use an AI feature, only the CV information needed for that task is sent to Google Gemini."
+      )
+    );
+    assert(consentModalHtml.includes("Privacy Details"));
     assert(consentModalHtml.includes("Agree &amp; Continue") || consentModalHtml.includes("Agree & Continue"));
     assert(consentModalHtml.includes("Not Now"));
+    assert(!consentModalHtml.includes("Learn more about how your data is handled"));
     store.closeConsentModal();
     assert.equal(useCVStore.getState().isConsentModalOpen, false);
     assert.equal(useCVStore.getState().consentModalDismissed, true);
@@ -889,6 +927,304 @@ async function main() {
     } finally {
       store.setAIConsent(false);
     }
+  });
+
+  await runTest("Dynamic Island preview toggle renders vertically and no-scroll A4 LivePreview + bottom AI disclosures work cleanly", () => {
+    const toggleHtml = renderToStaticMarkup(
+      <DynamicIslandPreviewToggle
+        isOpen={false}
+        isTransitioning={false}
+        onOpen={() => {}}
+      />
+    );
+    assert(toggleHtml.includes("data-testid=\"live-preview-toggle\""));
+    assert(toggleHtml.includes("aria-expanded=\"false\""));
+    assert(toggleHtml.includes("aria-controls=\"claycv-live-preview-overlay\""));
+    assert(toggleHtml.includes("flex-col"));
+    assert(toggleHtml.includes("min-h-[72px]"));
+    assert(toggleHtml.includes("min-w-[56px]"));
+    assert(toggleHtml.includes("Preview"));
+
+    const previewHtml = renderToStaticMarkup(<LivePreview onClose={() => {}} />);
+    assert(previewHtml.includes("data-testid=\"live-preview-stage\""));
+    assert(previewHtml.includes("data-testid=\"live-preview-a4-box\""));
+    assert(previewHtml.includes("aria-label=\"Close Live A4 Preview\""));
+    assert(previewHtml.includes("ATS Modern"));
+    assert(previewHtml.includes("ATS Classic"));
+    assert(previewHtml.includes("ATS Minimal"));
+    assert(previewHtml.includes("overflow-hidden"));
+
+    const disclosureText = "Only necessary CV fields are sent to Google Gemini when you run an AI tool.";
+    const enabledBannerHtml = renderToStaticMarkup(
+      <AIPrivacyConsentBanner compact enabledOverride />
+    );
+    assert(enabledBannerHtml.includes("AI features enabled."));
+    assert(enabledBannerHtml.includes(disclosureText));
+
+    for (const WorkspaceComp of [
+      <AIWritingWorkspace key="w" />,
+      <JobMatcherWorkspace key="m" />,
+      <CareerAssistantWorkspace key="c" />,
+      <PlatformManagerWorkspace key="p" />,
+    ]) {
+      const html = renderToStaticMarkup(WorkspaceComp);
+      const cardIdx = html.indexOf("data-testid=\"ai-primary-card\"");
+      const disclosureIdx = html.indexOf("data-testid=\"ai-privacy-disclosure\"");
+      const matches = html.match(/data-testid="ai-privacy-disclosure"/g) || [];
+      assert(cardIdx !== -1, "Expected primary AI card in workspace");
+      assert(disclosureIdx !== -1, "Expected AI disclosure in workspace");
+      assert(disclosureIdx > cardIdx, "Expected AI disclosure below primary AI card");
+      assert.equal(matches.length, 1, "Expected single AI disclosure per workspace");
+    }
+
+    const atsHtml = renderToStaticMarkup(<ATSAnalyzerWorkspace />);
+    const atsPrimaryIdx = atsHtml.indexOf("data-testid=\"ai-primary-card\"");
+    const atsBreakdownIdx = atsHtml.indexOf("Section &amp; Formatting Breakdown");
+    const atsWorkingWellIdx = atsHtml.indexOf("Working Well");
+    assert(atsPrimaryIdx !== -1, "Missing ai-primary-card in ATSAnalyzerWorkspace");
+    assert(atsBreakdownIdx !== -1, "Missing Section & Formatting Breakdown in ATSAnalyzerWorkspace");
+    assert(atsWorkingWellIdx !== -1, "Missing Working Well in ATSAnalyzerWorkspace");
+
+    const atsSrc = fs.readFileSync(
+      path.join(process.cwd(), "src/components/ai/ATSAnalyzerWorkspace.tsx"),
+      "utf8"
+    );
+    const atsBannerSrcIdx = atsSrc.lastIndexOf("{aiConsentAccepted && <AIPrivacyConsentBanner compact />}");
+    const atsBreakdownSrcIdx = atsSrc.indexOf("Section & Formatting Breakdown");
+    const atsWorkingWellSrcIdx = atsSrc.indexOf("Working Well");
+    assert(atsBannerSrcIdx !== -1, "Missing AIPrivacyConsentBanner in ATSAnalyzerWorkspace");
+    assert(
+      atsBannerSrcIdx > atsBreakdownSrcIdx && atsBannerSrcIdx > atsWorkingWellSrcIdx,
+      "Expected ATS Analyzer privacy disclosure at bottom after Working Well & breakdown"
+    );
+
+    for (const file of [
+      "src/components/ai/ATSAnalyzerWorkspace.tsx",
+      "src/components/ai/AIWritingWorkspace.tsx",
+      "src/components/ai/JobMatcherWorkspace.tsx",
+      "src/components/ai/CareerAssistantWorkspace.tsx",
+      "src/components/ai/PlatformManagerWorkspace.tsx",
+    ]) {
+      const src = fs.readFileSync(path.join(process.cwd(), file), "utf8");
+      assert(!src.includes("space-y-5 pb-12"), `Unexpected pb-12 bottom bloat in ${file}`);
+      const bannerIdx = src.lastIndexOf("<AIPrivacyConsentBanner compact />");
+      assert(bannerIdx !== -1, `Expected AIPrivacyConsentBanner in ${file}`);
+      const errorIdx = src.indexOf("role=\"alert\"");
+      if (errorIdx !== -1 && !file.includes("PlatformManagerWorkspace")) {
+        assert(bannerIdx > errorIdx, `Expected disclosure after error/result sections in ${file}`);
+      }
+    }
+
+    const pageSrc = fs.readFileSync(path.join(process.cwd(), "src/app/builder/page.tsx"), "utf8");
+    assert(pageSrc.includes("min-h-dvh"));
+    assert(pageSrc.includes("lg:pb-6"));
+    assert(pageSrc.includes("safe-area-inset-bottom"));
+    assert(!pageSrc.includes("pb-28"));
+
+    // Verify protected DynamicIslandPreviewToggle attributes remain unchanged
+    assert(toggleHtml.includes("data-testid=\"live-preview-toggle\""));
+    assert(toggleHtml.includes("min-h-[72px]"));
+    assert(toggleHtml.includes("min-w-[56px]"));
+    assert(toggleHtml.includes("Preview"));
+
+    // Verify mobile header simplification renders overflow menu trigger + preserves Download PDF
+    const mobileHeaderHtml = renderToStaticMarkup(<BuilderHeader />);
+    assert(mobileHeaderHtml.includes("data-testid=\"mobile-header-actions-trigger\""));
+    assert(mobileHeaderHtml.includes("aria-haspopup=\"menu\""));
+    assert(mobileHeaderHtml.includes("Download PDF"));
+
+    const sidebarHtml = renderToStaticMarkup(
+      <WorkspaceSidebar
+        activeWorkspace="matcher"
+        onSelectWorkspace={() => {}}
+      />
+    );
+    assert(sidebarHtml.includes("data-testid=\"workspace-nav-brand\""));
+    assert(sidebarHtml.includes("data-testid=\"workspace-section-nav\""));
+    assert(sidebarHtml.includes("flex-col gap-1.5"));
+    for (const label of [
+      "CV Builder",
+      "AI Writing Assistant",
+      "Job Matcher",
+      "CV Analyzer",
+      "Career Assistant",
+      "Profiles &amp; Storage",
+    ]) {
+      assert(sidebarHtml.includes(label), `Sidebar missing label ${label}`);
+    }
+
+    const triggerHtml = renderToStaticMarkup(
+      <MobileWorkspaceTrigger
+        activeWorkspace="analyzer"
+        isOpen={false}
+        onOpen={() => {}}
+      />
+    );
+    assert(triggerHtml.includes("data-testid=\"mobile-sidebar-trigger\""));
+    assert(triggerHtml.includes("CV Analyzer"));
+  });
+
+  await runTest("Global dropdown system: positioning math, Select/Combobox accessibility, and zero native <select> elements", () => {
+    // 1. Downward placement when space below is ample
+    const downward = computeDropdownPosition(
+      { top: 100, bottom: 144, left: 40, right: 280, width: 240, height: 44 },
+      { width: 1440, height: 900 },
+      { minMenuWidth: 210, preferredMaxHeight: 264 }
+    );
+    assert.equal(downward.placement, "bottom");
+    assert.equal(downward.top, 150);
+    assert.equal(downward.left, 40);
+    assert.equal(downward.width, 240);
+
+    // 2. Upward flip when trigger is near viewport bottom
+    const upward = computeDropdownPosition(
+      { top: 760, bottom: 804, left: 40, right: 280, width: 240, height: 44 },
+      { width: 1440, height: 900 }
+    );
+    assert.equal(upward.placement, "top");
+    assert.equal(upward.bottom, 900 - 760 + 6);
+    assert(upward.maxHeight >= 112 && upward.maxHeight <= 264);
+
+    // 3. Narrow mobile viewport horizontal clamping & minMenuWidth containment
+    const mobileClamped = computeDropdownPosition(
+      { top: 200, bottom: 244, left: 250, right: 365, width: 115, height: 44 },
+      { width: 375, height: 812 },
+      { minMenuWidth: 168 }
+    );
+    assert.equal(mobileClamped.width, 168);
+    assert(mobileClamped.left + mobileClamped.width <= 375 - 10);
+
+    // 4. Select & Combobox accessible attributes & states
+    const selectHtml = renderToStaticMarkup(
+      <Select
+        id="test-emp-type"
+        label="Employment Type"
+        value="full_time"
+        onChange={() => {}}
+        description="Choose role classification"
+        options={[
+          { value: "full_time", label: "Full-time" },
+          { value: "contract", label: "Contract", disabled: true },
+        ]}
+      />
+    );
+    assert(selectHtml.includes("aria-haspopup=\"listbox\""));
+    assert(selectHtml.includes("aria-expanded=\"false\""));
+    assert(selectHtml.includes("Full-time"));
+    assert(selectHtml.includes("Choose role classification"));
+    assert(!selectHtml.includes("<select"));
+
+    const errorSelectHtml = renderToStaticMarkup(
+      <Combobox
+        id="test-year-combo"
+        label="Graduation Year"
+        value=""
+        onChange={() => {}}
+        placeholder="Year"
+        error="Please choose graduation year"
+        disabled
+        options={[{ value: "2026", label: "2026" }]}
+      />
+    );
+    assert(errorSelectHtml.includes("aria-invalid=\"true\""));
+    assert(errorSelectHtml.includes("role=\"alert\""));
+    assert(errorSelectHtml.includes("Please choose graduation year"));
+    assert(errorSelectHtml.includes("disabled=\"\""));
+    assert(errorSelectHtml.includes("Year"));
+
+    const composableHtml = renderToStaticMarkup(
+      <Select value="id" onValueChange={() => {}}>
+        <SelectTrigger ariaLabel="Language">
+          <SelectValue placeholder="Pick language" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="en" label="English" />
+          <SelectItem value="id" label="Bahasa Indonesia" />
+        </SelectContent>
+      </Select>
+    );
+    assert(composableHtml.includes("aria-label=\"Language\""));
+    assert(composableHtml.includes("id"));
+
+    // 5. Migrated application controls render cleanly with zero native <select> elements
+    const monthYearHtml = renderToStaticMarkup(
+      <MonthYearSelect
+        label="Start Date"
+        monthValue={3}
+        yearValue={2024}
+        onChangeMonth={() => {}}
+        onChangeYear={() => {}}
+        idPrefix="test-my"
+      />
+    );
+    assert(!monthYearHtml.includes("<select"));
+    assert(monthYearHtml.includes("March"));
+    assert(monthYearHtml.includes("2024"));
+
+    const headerHtml = renderToStaticMarkup(<BuilderHeader />);
+    assert(!headerHtml.includes("<select"));
+    assert(headerHtml.includes("aria-label=\"CV Document Language\""));
+    assert(headerHtml.includes("aria-label=\"ATS Template\""));
+
+    const prevCvData = useCVStore.getState().cvData;
+    try {
+      useCVStore.setState({ cvData: { ...SAMPLE_CV_DATA } });
+      const writingWorkspaceHtml = renderToStaticMarkup(<AIWritingWorkspace />);
+      assert(!writingWorkspaceHtml.includes("<select"));
+      assert(writingWorkspaceHtml.includes("role=\"tablist\""));
+    } finally {
+      useCVStore.setState({ cvData: prevCvData });
+    }
+  });
+
+  await runTest("Mobile UX refinement simplifies mobile Home, computes scroll indicator metrics, and compacts AI Privacy popup", () => {
+    // 1. Horizontal scroll indicator math
+    assert.equal(computeScrollIndicator(0, 320, 320).isOverflowing, false);
+    assert.equal(computeScrollIndicator(0, 321, 320).isOverflowing, false);
+    const startMetric = computeScrollIndicator(0, 600, 300);
+    assert.equal(startMetric.isOverflowing, true);
+    assert.equal(startMetric.thumbWidthPct, 50);
+    assert.equal(startMetric.thumbOffsetPct, 0);
+
+    const midMetric = computeScrollIndicator(150, 600, 300);
+    assert.equal(midMetric.thumbWidthPct, 50);
+    assert.equal(midMetric.thumbOffsetPct, 25);
+
+    const endMetric = computeScrollIndicator(300, 600, 300);
+    assert.equal(endMetric.thumbWidthPct, 50);
+    assert.equal(endMetric.thumbOffsetPct, 50);
+
+    const tabsHtml = renderToStaticMarkup(
+      <HorizontalScrollTabs ariaLabel="Demo tabs">
+        <button type="button" role="tab" aria-selected={true}>Tab A</button>
+        <button type="button" role="tab" aria-selected={false}>Tab B</button>
+      </HorizontalScrollTabs>
+    );
+    assert(tabsHtml.includes("role=\"tablist\""));
+    assert(tabsHtml.includes("Tab A"));
+
+    // 2. Mobile Home simplification (desktop ATS preview preserved at lg+)
+    const heroHtml = renderToStaticMarkup(<Hero />);
+    assert(heroHtml.includes("ATS-Friendly Single Column"));
+    assert(heroHtml.includes("hidden lg:flex lg:col-span-6"));
+    assert(heroHtml.includes("Create My CV"));
+
+    const homePageSrc = fs.readFileSync(
+      path.join(process.cwd(), "src/app/page.tsx"),
+      "utf8"
+    );
+    assert(homePageSrc.includes("overflow-x-hidden"));
+    assert(homePageSrc.includes("hidden md:block"));
+
+    const footerHtml = renderToStaticMarkup(<Footer />);
+    assert(footerHtml.includes("Your CV is stored locally in this browser."));
+    assert(footerHtml.includes("hidden md:block"));
+
+    // 3. Enabled AI disclosure aligns left on mobile to clear bottom-right Preview pill
+    const enabledDisclosure = renderToStaticMarkup(
+      <AIPrivacyConsentBanner compact enabledOverride />
+    );
+    assert(enabledDisclosure.includes("self-start sm:self-center"));
   });
 
   console.log(`\n=== Test Summary: ${passed} passed, ${failed} failed ===`);

@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { AIPrivacyConsentBanner } from "./AIPrivacyConsentBanner";
+import { HorizontalScrollTabs } from "@/components/ui/horizontal-scroll-tabs";
 import { callCareerAI } from "@/lib/ai/client-api";
 import { CareerOperation } from "@/lib/ai/types/ai.types";
 import { CareerResponseData } from "@/lib/ai/schemas/career.schema";
@@ -164,27 +165,28 @@ export function CareerAssistantWorkspace() {
     CAREER_TABS.find((t) => t.id === activeTab) || CAREER_TABS[0];
 
   return (
-    <div className="space-y-5 pb-12">
-      <AIPrivacyConsentBanner compact />
-
+    <div className="space-y-4 sm:space-y-5">
       {/* Sub-Navigation */}
       <div className="clay-card p-3 sm:p-4 bg-[#FAF8F5]">
-        <div className="flex items-center justify-between mb-2.5 px-1">
-          <div className="flex items-center gap-2">
-            <Briefcase className="w-4 h-4 text-[#6C5BD8]" />
-            <h2 className="text-sm font-bold text-[#292735]">
+        <div className="flex items-center justify-between gap-2 mb-2 sm:mb-2.5 px-0.5 sm:px-1">
+          <div className="flex items-center gap-2 min-w-0">
+            <Briefcase className="w-4 h-4 text-[#6C5BD8] shrink-0" />
+            <h2 className="text-sm font-bold text-[#292735] truncate">
               AI Career Assistant
             </h2>
           </div>
-          <span className="text-xs font-semibold text-[#595566]">
-            Language:{" "}
+          <span className="text-xs font-semibold text-[#595566] shrink-0">
+            <span className="hidden sm:inline">Language: </span>
             <strong className="text-[#6C5BD8]">
-              {cvData.language === "id" ? "Bahasa Indonesia" : "English"}
+              {cvData.language === "id" ? "Indonesia" : "English"}
             </strong>
           </span>
         </div>
 
-        <div className="flex flex-wrap gap-1.5">
+        <HorizontalScrollTabs
+          ariaLabel="Career assistant actions"
+          className="sm:flex-wrap gap-1.5 pb-0.5"
+        >
           {CAREER_TABS.map((tab) => {
             const Icon = tab.icon;
             const isSelected = activeTab === tab.id;
@@ -192,13 +194,15 @@ export function CareerAssistantWorkspace() {
               <button
                 key={tab.id}
                 type="button"
+                role="tab"
+                aria-selected={isSelected}
                 onClick={() => {
                   setActiveTab(tab.id);
                   setResult(null);
                   setError(null);
                 }}
                 className={cn(
-                  "min-h-[38px] flex items-center gap-1.5 px-3 py-1.5 rounded-[12px] text-xs font-bold transition-all cursor-pointer",
+                  "min-h-[40px] sm:min-h-[38px] shrink-0 whitespace-nowrap flex items-center gap-1.5 px-3 py-1.5 rounded-[12px] text-xs font-bold transition-all cursor-pointer",
                   isSelected
                     ? "bg-[#6C5BD8] text-white shadow-sm"
                     : "bg-white/85 text-[#595566] hover:text-[#292735] hover:bg-white"
@@ -209,21 +213,24 @@ export function CareerAssistantWorkspace() {
               </button>
             );
           })}
-        </div>
+        </HorizontalScrollTabs>
       </div>
 
       {/* Input Card */}
-      <div className="clay-card p-5 sm:p-6 space-y-4">
+      <div
+        data-testid="ai-primary-card"
+        className="clay-card p-4 sm:p-6 space-y-3.5 sm:space-y-4"
+      >
         {(activeTab === "cover_letter" ||
           activeTab === "interview_questions") && (
           <>
             <div>
-              <h3 className="text-base font-bold text-[#292735]">
+              <h3 className="text-sm sm:text-base font-bold text-[#292735]">
                 {activeTab === "cover_letter"
                   ? "Tailored Cover Letter Generator"
                   : "Role & CV Interview Question Generator"}
               </h3>
-              <p className="text-xs text-[#595566] mt-0.5">
+              <p className="hidden sm:block text-xs text-[#595566] mt-0.5">
                 {activeTab === "cover_letter"
                   ? "Creates an editable cover letter matched to your CV and target role, ready to copy or download as a PDF."
                   : "Generates General, Behavioral, Technical, and Experience-Based questions tailored to your CV."}
@@ -258,10 +265,10 @@ export function CareerAssistantWorkspace() {
         {activeTab === "interview_answer" && (
           <>
             <div>
-              <h3 className="text-base font-bold text-[#292735]">
+              <h3 className="text-sm sm:text-base font-bold text-[#292735]">
                 STAR Interview Answer Coach
               </h3>
-              <p className="text-xs text-[#595566] mt-0.5">
+              <p className="hidden sm:block text-xs text-[#595566] mt-0.5">
                 Structures your real CV experience into Situation, Task, Action,
                 and Result (STAR) format without inventing personal stories.
               </p>
@@ -287,10 +294,10 @@ export function CareerAssistantWorkspace() {
         {activeTab === "linkedin_summary" && (
           <>
             <div>
-              <h3 className="text-base font-bold text-[#292735]">
+              <h3 className="text-sm sm:text-base font-bold text-[#292735]">
                 LinkedIn Headline & About Section Generator
               </h3>
-              <p className="text-xs text-[#595566] mt-0.5">
+              <p className="hidden sm:block text-xs text-[#595566] mt-0.5">
                 Creates 3 professional LinkedIn About & Headline variations in{" "}
                 {cvData.language === "id" ? "Bahasa Indonesia" : "English"}{" "}
                 using your actual CV background.
@@ -308,13 +315,11 @@ export function CareerAssistantWorkspace() {
 
         {activeTab === "job_recommendations" && (
           <div>
-            <h3 className="text-base font-bold text-[#292735]">
+            <h3 className="text-sm sm:text-base font-bold text-[#292735]">
               Career Path & Job Position Recommendations
             </h3>
-            <p className="text-xs text-[#595566] mt-0.5">
-              Analyzes your skills, education, work experience, and projects to
-              recommend matching job titles, explain why they fit, and highlight
-              growth skills.
+            <p className="text-xs text-[#595566] mt-1">
+              Analyzes your CV to suggest fitting roles and growth skills.
             </p>
           </div>
         )}
@@ -323,7 +328,7 @@ export function CareerAssistantWorkspace() {
           <span className="text-xs text-[#595566]">
             {!aiConsentAccepted ? (
               <span className="text-[#6C5BD8] font-medium">
-                Please agree to the privacy notice above to use the Career Assistant.
+                Please agree to the privacy notice below to use the Career Assistant.
               </span>
             ) : isLoading ? (
               activeTabInfo.loadingText
@@ -662,6 +667,9 @@ export function CareerAssistantWorkspace() {
             )}
         </div>
       )}
+
+      {/* Privacy disclosure placed at the bottom of workspace content */}
+      <AIPrivacyConsentBanner compact />
     </div>
   );
 }

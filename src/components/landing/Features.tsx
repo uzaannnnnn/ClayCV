@@ -45,34 +45,36 @@ export function Features() {
   ];
 
   return (
-    <section id="features" className="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-      <div className="text-center max-w-2xl mx-auto mb-16 space-y-3">
-        <h2 className="text-xs font-bold uppercase tracking-widest text-[#6C5BD8]">
+    <section id="features" className="py-8 md:py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+      <div className="text-center max-w-2xl mx-auto mb-6 md:mb-16 space-y-2 md:space-y-3">
+        <h2 className="hidden sm:block text-xs font-bold uppercase tracking-widest text-[#6C5BD8]">
           Engineered for Simplicity & Compliance
         </h2>
-        <p className="text-3xl sm:text-4xl font-extrabold text-[#292735] tracking-tight">
+        <p className="text-2xl sm:text-4xl font-extrabold text-[#292735] tracking-tight">
           Everything You Need for Your Next Role
         </p>
-        <p className="text-sm sm:text-base text-[#595566]">
+        <p className="hidden sm:block text-sm sm:text-base text-[#595566]">
           Built from the ground up to respect your time, privacy, and career goals.
         </p>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
         {features.map((feature, idx) => {
           const Icon = feature.icon;
           return (
             <Card
               key={idx}
               variant="interactive"
-              className="flex flex-col justify-between h-full bg-[#FAF8F5]"
+              className={`flex-col justify-between h-full bg-[#FAF8F5] ${
+                idx === 1 ? "hidden sm:flex" : "flex"
+              }`}
             >
               <div>
-                <div className="flex items-center justify-between mb-5">
+                <div className="flex items-center justify-between mb-3 sm:mb-5">
                   <div
-                    className={`w-12 h-12 rounded-[16px] ${feature.accentBg} ${feature.accentColor} flex items-center justify-center shadow-[-2px_-2px_6px_rgba(255,255,255,0.9),2px_2px_6px_rgba(163,157,147,0.15)]`}
+                    className={`w-10 h-10 sm:w-12 sm:h-12 rounded-[14px] sm:rounded-[16px] ${feature.accentBg} ${feature.accentColor} flex items-center justify-center shadow-[-2px_-2px_6px_rgba(255,255,255,0.9),2px_2px_6px_rgba(163,157,147,0.15)]`}
                   >
-                    <Icon className="w-6 h-6" />
+                    <Icon className="w-5 h-5 sm:w-6 sm:h-6" />
                   </div>
                   <span
                     className={`text-[11px] font-bold px-2.5 py-0.5 rounded-full ${feature.accentBg} ${feature.accentColor}`}
@@ -81,10 +83,10 @@ export function Features() {
                   </span>
                 </div>
 
-                <h3 className="text-lg font-bold text-[#292735] mb-2">
+                <h3 className="text-base sm:text-lg font-bold text-[#292735] mb-1 sm:mb-2">
                   {feature.title}
                 </h3>
-                <p className="text-sm text-[#595566] leading-relaxed">
+                <p className="hidden sm:block text-sm text-[#595566] leading-relaxed">
                   {feature.description}
                 </p>
               </div>

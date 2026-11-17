@@ -125,26 +125,27 @@ export function JobMatcherWorkspace() {
   };
 
   return (
-    <div className="space-y-5 pb-12">
-      <AIPrivacyConsentBanner compact />
-
-      <div className="clay-card p-5 sm:p-6 space-y-4">
+    <div className="space-y-4 sm:space-y-5">
+      <div
+        data-testid="ai-primary-card"
+        className="clay-card p-4 sm:p-6 space-y-3.5 sm:space-y-4"
+      >
         <div className="flex items-start justify-between flex-wrap gap-3">
           <div className="flex items-start gap-2.5 min-w-0 flex-1">
             <div className="w-9 h-9 rounded-[12px] bg-[#EFEAFF] text-[#6C5BD8] flex items-center justify-center shrink-0 mt-0.5">
               <Target className="w-5 h-5" />
             </div>
             <div>
-              <h2 className="text-base font-bold text-[#292735]">
+              <h2 className="text-sm sm:text-base font-bold text-[#292735]">
                 Job Description Matcher
               </h2>
-              <p className="text-xs text-[#595566] leading-relaxed">
+              <p className="hidden sm:block text-xs text-[#595566] leading-relaxed">
                 Compare your active CV ({cvData.title}) against a target role
                 for skills, keywords, and experience fit.
               </p>
             </div>
           </div>
-          <span className="clay-badge-purple px-3 py-1 text-xs font-bold shrink-0">
+          <span className="hidden sm:inline-flex clay-badge-purple px-3 py-1 text-xs font-bold shrink-0">
             Active CV: {cvData.title}
           </span>
         </div>
@@ -176,7 +177,7 @@ export function JobMatcherWorkspace() {
           <span className="text-xs text-[#595566]">
             {!aiConsentAccepted ? (
               <span className="text-[#6C5BD8] font-medium">
-                Please agree to the privacy notice above to analyze job matches.
+                Please agree to the privacy notice below to analyze job matches.
               </span>
             ) : (
               "Keyword match scan + AI role alignment"
@@ -470,6 +471,9 @@ export function JobMatcherWorkspace() {
           )}
         </div>
       )}
+
+      {/* Privacy disclosure placed at the bottom of workspace content */}
+      <AIPrivacyConsentBanner compact />
 
       <Dialog
         isOpen={Boolean(pendingRec)}

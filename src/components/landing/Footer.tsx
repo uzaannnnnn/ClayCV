@@ -15,8 +15,8 @@ export function Footer() {
   }, []);
 
   return (
-    <footer className="border-t border-[rgba(70,65,90,0.08)] bg-[#EAE6DE]/50 py-12 px-4 sm:px-6 lg:px-8 mt-12">
-      <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
+    <footer className="border-t border-[rgba(70,65,90,0.08)] bg-[#EAE6DE]/50 py-7 md:py-12 px-4 sm:px-6 lg:px-8 mt-6 md:mt-12">
+      <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4 md:gap-6">
         {/* Brand */}
         <div className="flex flex-col items-center md:items-start text-center md:text-left">
           <Link href="/" className="flex items-center gap-2.5 mb-2 group">
@@ -33,7 +33,7 @@ export function Footer() {
               Clay<span className="text-[#8B7CF6]">CV</span>
             </span>
           </Link>
-          <p className="text-xs text-[#595566] max-w-sm">
+          <p className="hidden md:block text-xs text-[#595566] max-w-sm">
             A tactile, claymorphism-inspired web resume builder designed for
             frictionless career growth.
           </p>
@@ -53,7 +53,7 @@ export function Footer() {
           <p>
             © <span ref={yearRef}>2026</span> ClayCV. All rights reserved.
           </p>
-          <p className="mt-0.5 text-[11px] text-[#595566]">
+          <p className="hidden md:block mt-0.5 text-[11px] text-[#595566]">
             Client-Side Architecture
           </p>
         </div>

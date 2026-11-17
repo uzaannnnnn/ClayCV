@@ -47,24 +47,24 @@ export function SectionCard({
       <button
         type="button"
         onClick={handleToggle}
-        className="cv-section-trigger w-full px-5 py-4 flex items-center justify-between text-left cursor-pointer select-none"
+        className="cv-section-trigger w-full px-3.5 sm:px-5 py-3 sm:py-4 flex items-center justify-between text-left cursor-pointer select-none"
         aria-expanded={isOpen}
       >
-        <div className="flex items-center gap-3.5 min-w-0">
+        <div className="flex items-center gap-2.5 sm:gap-3.5 min-w-0">
           <div
             className={cn(
-              "w-10 h-10 rounded-[14px] flex items-center justify-center transition-all shrink-0",
+              "w-9 h-9 sm:w-10 sm:h-10 rounded-[12px] sm:rounded-[14px] flex items-center justify-center transition-all shrink-0",
               isOpen
                 ? "bg-gradient-to-br from-[#8372F3] to-[#6C5BD8] text-white shadow-[-2px_-2px_6px_rgba(255,255,255,0.9),2px_3px_8px_rgba(108,91,216,0.3)]"
                 : "bg-[#EFECE6] text-[#595566] shadow-[-2px_-2px_5px_rgba(255,255,255,0.85),2px_2px_5px_rgba(163,157,147,0.18)]"
             )}
           >
-            <Icon className="w-5 h-5" />
+            <Icon className="w-4 h-4 sm:w-5 sm:h-5" />
           </div>
 
           <div className="min-w-0">
             <div className="flex items-center gap-2">
-              <h3 className="text-base font-bold text-[#292735] truncate">
+              <h3 className="text-sm sm:text-base font-bold text-[#292735] truncate">
                 {title}
               </h3>
               {badge !== undefined && badge !== null && (
@@ -73,7 +73,7 @@ export function SectionCard({
                 </span>
               )}
             </div>
-            <p className="text-xs text-[#595566] truncate">{description}</p>
+            <p className="hidden sm:block text-xs text-[#595566] truncate">{description}</p>
           </div>
         </div>
 
@@ -89,7 +89,7 @@ export function SectionCard({
 
       {/* Accordion Content */}
       {isOpen && (
-        <div className="cv-section-content px-5 pb-6 pt-2 animate-in fade-in duration-150">
+        <div className="cv-section-content px-3.5 sm:px-5 pb-4 sm:pb-6 pt-1.5 sm:pt-2 animate-in fade-in duration-150">
           <div className="cv-section-content-inner">
             {children}
           </div>

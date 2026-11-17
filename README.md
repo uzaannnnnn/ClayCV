@@ -1,136 +1,233 @@
-# ClayCV — AI-Powered CV Platform
+# ClayCV (v3.1)
 
-**Build Smarter. Apply Better. Get Noticed.**
-
-ClayCV is a local-first, tactile Claymorphism CV & Career Platform built with **Next.js 16 (App Router)**, **TypeScript**, **Tailwind CSS v4**, **Zustand**, **@react-pdf/renderer**, and powered exclusively by the **Google Gemini API** (`@google/genai`, default model `gemini-3.5-flash`, configurable via `GEMINI_MODEL`).
+ClayCV is a local-first, tactile Claymorphism CV builder and AI career platform built with **Next.js 16 (App Router)**, **React 19**, **TypeScript**, **Tailwind CSS v4**, **Zustand**, **`@react-pdf/renderer`**, and the **Google Gemini API** (`@google/genai`).
 
 ---
 
-## 1. AI Feature Overview
+## 1. Product Overview
 
-ClayCV integrates a complete suite of server-side Google Gemini AI capabilities alongside its existing 3 ATS-friendly A4 resume templates (`ATS Modern`, `ATS Classic`, `ATS Minimal`):
+ClayCV helps job seekers, engineers, and professionals create, audit, tailor, and export ATS-friendly resumes in English and Bahasa Indonesia without requiring an account or cloud database.
 
+Core workflows run locally in the browser by default. Optional server-side Google Gemini AI tools assist with resume writing, job description matching, ATS evaluation, and interview/career preparation once explicit user consent is granted.
+
+---
+
+## 2. Key Features
+
+### CV Creation, Templates & Export
+- **Three ATS-Friendly A4 Templates**: Switch at any time between `ATS Modern`, `ATS Classic`, and `ATS Minimal` single-column layouts.
+- **1:1 Live A4 Preview & Vector PDF Export**: Real-time A4 pagination and vector PDF generation powered by `@react-pdf/renderer`, including clickable contact, portfolio, project, and credential hyperlinks.
+- **Bilingual CV Support (`en` & `id`)**: Full document localization and date formatting in English and Bahasa Indonesia.
+- **Drag-and-Drop Section Reordering**: Reorder core CV sections (`Experience`, `Education`, `Skills`, `Projects`, `Certifications`) via `@dnd-kit` while preserving ATS structure.
+- **Structured Editors & Validation**: Guided forms for Personal Info, Summary, Work Experience, Education (with GPA and thesis formatting), Skills, Projects, and Certifications (with local `PDF`/`PNG`/`JPG` attachment storage).
+
+### Google Gemini AI Workspaces
 1. **AI Writing Assistant (`/api/ai/writing`)**:
-   - **Professional Summary Generator**: Generates Short, Professional, and Detailed summaries grounded strictly in actual user data.
-   - **Work Experience Writer**: Rewrites role descriptions into strong action-verb bullet points across `Professional`, `Concise`, and `Achievement-Oriented` styles without fabricating metrics.
-   - **Achievement Statement Generator**: Formulates impact statements from user-supplied tasks, problems solved, technologies, and actual outcomes.
-   - **Project Description Generator**: Produces Short, Detailed, and Bullet-Point project descriptions.
-   - **Skills Suggestions**: Recommends categorized Technical Skills, Programming Languages, Frameworks, Tools, and Soft Skills (never added automatically).
+   - **Professional Summary Generator**: Generates Short, Professional, and Detailed summaries grounded in the user's actual CV data.
+   - **Work Experience Writer**: Rewrites role descriptions into action-verb bullet points across `Professional`, `Concise`, and `Achievement-Oriented` styles without fabricating metrics.
+   - **Achievement Statement Generator**: Builds structured impact statements from user-supplied tasks, actions, and outcomes.
+   - **Project Description Generator**: Creates Short, Detailed, and Bullet-Point project descriptions.
+   - **Skills Suggestions**: Recommends categorized Technical Skills, Programming Languages, Frameworks, Tools, and Soft Skills for user review.
    - **Grammar & Tone Improver**: Bilingual copyediting in English and Bahasa Indonesia.
-   - **Bilingual AI Translation (`en` ↔ `id`)**: Preserves proper nouns, company names, programming languages, and technical terms.
-2. **AI Job Description Matcher (`/api/ai/matching`)**:
+   - **Bilingual AI Translation (`en` <-> `id`)**: Translates CV text while preserving proper nouns, company names, programming languages, and technical terms.
+2. **Job Matcher (`/api/ai/matching`)**:
    - Compares the active CV against a target Job Description.
-   - Combines **50% Deterministic Keyword & Requirement Coverage**, **30% Gemini Semantic Alignment**, and **20% Experience & Education Fit**.
-   - Distinguishes between **Explicitly Present**, **Reasonably Inferred**, and **Not Found in CV** keywords, with one-click preview & approval for section recommendations.
-3. **AI ATS & CV Analyzer (`/api/ai/analysis`)**:
-   - Evaluates 7–8 core dimensions: Contact Information, Professional Summary, Work Experience, Education, Skills, Projects & Certifications, and ATS Formatting.
-   - Combines deterministic structural checks with Gemini qualitative content evaluation and includes a **"Fix with AI"** approval modal.
-4. **AI Career Assistant (`/api/ai/career`)**:
-   - **Cover Letter Generator**: Generates tailored cover letters with live editing, clipboard copy, and **A4 PDF export**.
+   - Computes a weighted score combining **50% deterministic keyword & requirement coverage**, **30% Gemini semantic alignment**, and **20% experience & education fit**.
+   - Categorizes keywords into **Explicitly Present**, **Reasonably Inferred**, and **Not Found in CV**, with preview-and-apply section recommendations.
+3. **CV Analyzer (`/api/ai/analysis`)**:
+   - Evaluates core ATS and content dimensions: Contact Information, Professional Summary, Work Experience, Education, Skills, Projects & Certifications, and ATS Formatting.
+   - Combines deterministic structural checks (always available offline) with Gemini qualitative review and an interactive **"Fix with AI"** approval flow.
+4. **Career Assistant (`/api/ai/career`)**:
+   - **Cover Letter Generator**: Generates tailored cover letters with live editing, clipboard copy, and standalone **A4 PDF export**.
    - **Interview Question Generator**: Produces General, Behavioral, Technical, and Experience-Based questions with preparation tips.
-   - **STAR Interview Answer Coach**: Helps structure real CV experiences into Situation, Task, Action, and Result format.
-   - **LinkedIn Summary Generator**: Generates 3 Headline & About variants in English or Bahasa Indonesia.
-   - **Job Position Recommendations**: Suggests relevant career roles with fit levels, reasoning, and skill development paths.
-5. **Platform Enhancements (Local-First)**:
-   - **Multiple CV Profiles** & **Duplicate CV**.
-   - **CV Version History** (named snapshots & one-click restore).
-   - **Local JSON Backup & Restore**.
-   - **AI Usage History & Explicit Privacy Consent Manager**.
+   - **STAR Interview Answer Coach**: Structures real CV experiences into Situation, Task, Action, and Result format.
+   - **LinkedIn Summary Generator**: Generates Headline and About variants in English or Bahasa Indonesia.
+   - **Job Position Recommendations**: Suggests matching career roles with fit levels, reasoning, and skill development paths.
+
+### Local-First Profile & Storage Management
+- **Multiple CV Profiles**: Create, switch, rename, duplicate, and delete isolated CV profiles for different target roles.
+- **Version History**: Save named snapshots of any CV and restore previous states in one click.
+- **JSON Backup & Restore**: Export the active CV to a portable `.json` file and validate/import backups across browsers or devices.
 
 ---
 
-## 2. Technology Stack
+## 3. UI & Responsive Experience (v3.1)
 
-- **Framework**: Next.js `16.4.5` (App Router, Server Route Handlers)
-- **UI & Styling**: React `19.3.0`, Tailwind CSS v4 (`@tailwindcss/turbopack`), Custom Claymorphism Design System
-- **AI SDK**: Official Google Gen AI SDK (`@google/genai`)
-- **Default AI Model**: `gemini-3.5-flash` (configurable via `GEMINI_MODEL`)
-- **Validation**: Zod `^4.6.7` (`safeParse` + `z.toJSONSchema` structured outputs)
-- **State & Persistence**: Zustand `^5.0.16` (`localStorage` key `claycv-storage` v3) + IndexedDB (`claycv_attachments_db` for local certificate files)
-- **PDF Generation**: `@react-pdf/renderer` `^4.9.0` (1:1 Live A4 Preview & PDF export parity)
-
----
-
-## 3. Google Gemini API Setup & Environment Variables
-
-### 3.1 Obtain a Gemini API Key
-1. Visit [Google AI Studio](https://aistudio.google.com/).
-2. Create an API key for your project.
-
-### 3.2 Local Environment Setup
-Copy `.env.example` to `.env.local`:
-
-```bash
-cp .env.example .env.local
-```
-
-Configure `.env.local` with your server-side credentials:
-
-```env
-GEMINI_API_KEY=your_actual_gemini_api_key_here
-GEMINI_MODEL=gemini-3.5-flash
-```
-
-> **Security Requirement**: Never prefix `GEMINI_API_KEY` with `NEXT_PUBLIC_`. ClayCV strictly enforces server-side execution and will reject requests if `NEXT_PUBLIC_GEMINI_API_KEY` is detected. `.env.local` is ignored by `.gitignore`.
-
-### 3.3 Vercel Environment Setup & Deployment
-To deploy ClayCV on Vercel:
-1. Push the repository to GitHub/GitLab/Bitbucket and import it into Vercel.
-2. Navigate to **Vercel Dashboard → ClayCV → Settings → Environment Variables**.
-3. Add the following variables for **Production**, **Preview**, and **Development**:
-   - `GEMINI_API_KEY`: Your Google Gemini API key (Sensitive / Server-only).
-   - `GEMINI_MODEL`: `gemini-3.5-flash` (or another supported Gemini model identifier if desired).
-4. Trigger a deployment (`vercel --prod` or via Git push).
+- **Refined Claymorphism Design System**: Soft warm-stone surfaces (`#F4F1EB`, `#FAF8F5`), tactile shadows, violet accents (`#6C5BD8`, `#8B7CF6`), and keyboard-accessible focus states.
+- **Vertical Workspace Navigation**:
+  - **Desktop (`>= 1024px`)**: Persistent left sidebar (`240px-260px`) stacking all 6 workspaces (`CV Builder`, `AI Writing Assistant`, `Job Matcher`, `CV Analyzer`, `Career Assistant`, `Profiles & Storage`).
+  - **Tablet (`768px-1023px`)**: Compact icon-focused vertical rail with accessible labels.
+  - **Mobile (`< 768px`)**: Slide-out navigation drawer with backdrop blur, focus trapping, and `Escape` key dismissal.
+- **Dynamic Island-Style Live Preview**:
+  - Protected vertical floating `Preview` toggle opens a right-side A4 preview overlay with smooth entrance/exit transitions.
+  - Automatic `ResizeObserver` fit-to-viewport scaling fits the full `210mm x 297mm` A4 sheet inside the stage without internal scrollbars.
+- **Standardized Dropdown & Select System**:
+  - Custom `<Select>` and `<Combobox>` components replace all native `<select>` elements across the header, date pickers (`<MonthYearSelect>`), forms, and AI toolbars.
+  - Supports viewport collision flipping, grouped options, search filtering, keyboard navigation (`ArrowUp`/`ArrowDown`, `Home`/`End`, `Enter`/`Space`, `Escape`, `Tab`), and screen-reader combobox semantics.
+- **Mobile-First UX Simplifications**:
+  - Streamlined mobile Home page and Footer focused on core product identity and primary `"Create My CV"` action without desktop promotional clutter.
+  - Proportional horizontal scroll indicator (`<HorizontalScrollTabs>`) below scrollable AI action tabs on compact screens.
+  - Content-driven workspace height with bottom-aligned AI privacy disclosure and a compact, zero-scroll `"AI Privacy Notice"` popup featuring a dedicated `"Privacy Details"` view.
 
 ---
 
-## 4. Privacy, Security & Cost Controls
+## 4. Technology Stack
 
-- **Server-Side Only**: All Gemini calls execute exclusively in Next.js Route Handlers (`/api/ai/writing`, `/api/ai/matching`, `/api/ai/analysis`, `/api/ai/career`).
-- **Explicit Privacy Consent**: No CV data is transmitted to Google Gemini API until the user explicitly grants consent via the Privacy Consent banner. Consent can be revoked at any time.
-- **Google Gemini Data-Handling Policy**: When an AI feature is triggered, minimized CV text is sent to and processed by the Google Gemini API under Google's applicable Gemini API Terms of Service. Under Google's official policy, Free Tier API traffic may be reviewed and used by Google to improve products, whereas Paid Tier API traffic is not used to train Google models.
-- **Data Minimization**: Only the CV fields required for the active operation are sent. IndexedDB certificate attachments (`PDF`/`PNG`/`JPG`) are never transmitted to Gemini.
-- **Prompt Injection Defense**: All user-provided CV text and job descriptions are sanitized and isolated inside `<untrusted_user_data>` boundary tags.
-- **Cost & Quota Controls**:
-  - AI operations are strictly user-triggered (never called on keystrokes or background polling).
-  - Input character limits (`12,000`–`15,000` chars), payload size limits (`65 KB`), output token caps (`4,096`), `30s` request timeouts, duplicate-request deduplication (`3s` window), and rate limiting (`15 req/min`) are enforced.
-  - Gemini API usage may incur costs depending on your Google AI Studio / Vertex billing tier. Free-tier quotas are subject to Google's rate limits.
+| Layer | Technology | Version |
+| :--- | :--- | :--- |
+| Framework | Next.js (App Router, Route Handlers) | `16.4.5` |
+| UI Library | React & React DOM | `19.3.0` |
+| Language | TypeScript | `^5` |
+| Styling | Tailwind CSS v4 (`@tailwindcss/turbopack`), `clsx`, `tailwind-merge` | `^4` |
+| State Management | Zustand (`persist` middleware) | `^5.0.16` |
+| Forms & Validation | React Hook Form, `@hookform/resolvers`, Zod | `^7.91.0`, `^4.6.7` |
+| Drag and Drop | `@dnd-kit/core`, `@dnd-kit/sortable`, `@dnd-kit/utilities` | `^6.3.1`, `^10.0.0` |
+| PDF Engine | `@react-pdf/renderer` | `^4.9.0` |
+| AI SDK | Google Gen AI SDK (`@google/genai`) | `^2.32.0` |
+| Icons | `lucide-react` | `^1.67.0` |
 
 ---
 
-## 5. Development & Testing Instructions
+## 5. Getting Started
 
-Install dependencies and start the development server:
+### Prerequisites
+- **Node.js** `20.x` or later
+- **npm** `10.x` or later
+
+### Installation
 
 ```bash
 npm install
+```
+
+### Development Server
+
+```bash
 npm run dev
 ```
 
-Run the automated Unit, Integration, and Template Regression Test Suite (uses mocked Gemini responses and does not require a live API key):
+Open `http://localhost:3000` in your browser.
+
+### Production Build & Start
+
+```bash
+npm run build
+npm run start
+```
+
+### Testing & Static Verification
+
+Run the automated unit, integration, and regression test suite (`31` test suites using deterministic mocks; does not require a live API key):
 
 ```bash
 npm test
 ```
 
-Run the Live Google Gemini API Verification Suite (requires a valid `GEMINI_API_KEY` in `.env.local`):
+Run TypeScript typechecking and ESLint:
+
+```bash
+npx tsc --noEmit
+npm run lint
+```
+
+Run the optional live Google Gemini verification script (requires a valid `GEMINI_API_KEY` in `.env.local`):
 
 ```bash
 npx tsx scripts/verify-live-gemini.ts
 ```
 
-Run ESLint, TypeScript check, and Next.js production build verification:
+---
+
+## 6. Environment Variables
+
+Copy `.env.example` to `.env.local` for local development:
 
 ```bash
-npx tsc --noEmit
-npm run lint
-npm run build
+cp .env.example .env.local
+```
+
+Configure the following server-side variables in `.env.local`:
+
+```env
+GEMINI_API_KEY=your_gemini_api_key
+GEMINI_MODEL=your_supported_model
+```
+
+- `GEMINI_API_KEY` (**Required for AI features**, server-only): Your Google AI Studio API key.
+- `GEMINI_MODEL` (**Optional**, server-only): Supported Gemini model identifier. Defaults to `gemini-3.5-flash` when unset.
+
+> **Security Requirement**: Never prefix `GEMINI_API_KEY` with `NEXT_PUBLIC_`. ClayCV enforces server-only execution in `src/lib/ai/gemini-config.ts` and throws a security error if `NEXT_PUBLIC_GEMINI_API_KEY` is set. `.env.local` is excluded by `.gitignore`.
+
+### Vercel Deployment Configuration
+When deploying to Vercel, add `GEMINI_API_KEY` and `GEMINI_MODEL` under **Project Settings -> Environment Variables** for Production, Preview, and Development environments.
+
+---
+
+## 7. Privacy, Data Storage & Security
+
+- **Browser-Local Storage by Default**:
+  - CV profiles, document settings, version history snapshots, and AI consent state are persisted in browser `localStorage` (`claycv-storage` v3).
+  - Uploaded certificate files (`PDF`, `PNG`, `JPG`) are stored locally in browser `IndexedDB` (`claycv_attachments_db`).
+- **Explicit Consent & Gemini Data Transmission**:
+  - No CV data is sent to Google Gemini until the user explicitly clicks **Agree & Continue** in the `AI Privacy Notice` dialog or workspace consent banner.
+  - When an AI tool is triggered by the user, only the minimized CV text fields and job context required for that specific operation are sent through Next.js server route handlers (`/api/ai/*`) to the Google Gemini API.
+  - Certificate attachments stored in `IndexedDB` and excluded contact fields are stripped by `minimizeCVData` and are never transmitted to AI endpoints.
+  - Requests are processed by Google under the Google Gemini API Terms of Service (Free Tier and Paid Tier apply different data-retention policies).
+- **User Control & Guardrails**:
+  - Users can inspect full data-handling details via **Privacy Details** and revoke consent at any time via **Withdraw Consent**.
+  - AI responses always appear in a preview card first and never overwrite CV fields without user confirmation.
+  - All user inputs are sanitized and wrapped in `<untrusted_user_data>` tags to mitigate prompt injection, with payload size caps (`65 KB`), request timeouts (`30s`), deduplication (`3s`), and per-process rate limiting (`15 req/min`).
+
+---
+
+## 8. Project Structure
+
+```text
+.
+├── scripts/
+│   ├── test-ai-platform.tsx       # Automated unit, integration, and UI/SSR regression suite
+│   ├── verify-live-gemini.ts      # Live Google Gemini endpoint verification script
+│   └── verify-v3.tsx              # Template and store verification utilities
+├── src/
+│   ├── app/
+│   │   ├── api/ai/                # Server-only Gemini route handlers (writing, matching, analysis, career)
+│   │   ├── builder/page.tsx       # Main multi-workspace CV builder & AI application shell
+│   │   ├── globals.css            # Tailwind v4 & Refined Claymorphism design tokens
+│   │   ├── layout.tsx             # Root metadata and font configuration
+│   │   └── page.tsx               # Responsive landing page
+│   ├── components/
+│   │   ├── ai/                    # AI workspaces, result cards, and compact AI Privacy Notice modal
+│   │   ├── builder/               # BuilderHeader and responsive WorkspaceSidebar / mobile drawer
+│   │   ├── editor/                # Structured CV section forms and drag-and-drop SectionCard
+│   │   ├── landing/               # Hero, Features, HowItWorks, TemplatesSection, FinalCTA, Footer
+│   │   ├── pdf/                   # @react-pdf/renderer A4 document & cover letter templates
+│   │   ├── preview/               # DynamicIslandPreviewToggle & fit-to-viewport LivePreview stage
+│   │   ├── templates/             # HTML/CSS ATS template renderers (Modern, Classic, Minimal)
+│   │   └── ui/                    # Reusable Claymorphism primitives (Select, Combobox, Dialog, HorizontalScrollTabs, etc.)
+│   ├── lib/
+│   │   ├── ai/                    # Gemini client, Zod schemas, prompts, sanitization, rate limiting
+│   │   ├── dates/                 # Bilingual date formatting helpers
+│   │   ├── i18n/                  # English & Indonesian section/document labels
+│   │   ├── pdf/                   # Client-side PDF generation and download helpers
+│   │   ├── storage/               # IndexedDB certificate attachment storage
+│   │   └── validations/           # Form validation schemas
+│   ├── store/
+│   │   └── cv-store.ts            # Zustand store (profiles, snapshots, consent, active workspace)
+│   └── types/
+│       └── cv.ts                  # Core TypeScript interfaces for CV data and profiles
+├── .env.example                   # Safe environment variable template
+└── package.json                   # Scripts and dependency manifest
 ```
 
 ---
 
-## 6. Known Limitations
+## 9. Known Limitations
 
-1. **In-Memory Serverless Rate Limiting**: Default rate limiting and request deduplication in `src/lib/ai/utils/rate-limit.ts` use an in-memory `Map` scoped to a single Node.js process. In serverless deployments (such as Vercel), cold starts and horizontally scaled function instances do not share memory; high-traffic production deployments requiring global rate limiting should integrate a distributed store (e.g., Upstash Redis).
-2. **Gemini Model High-Demand Spikes**: Certain preview or experimental Gemini models can experience upstream `HTTP 503 UNAVAILABLE` ("experiencing high demand") spikes on the Free Tier. ClayCV defaults to `gemini-3.5-flash` (configured centrally via `DEFAULT_GEMINI_MODEL`, verified live with ~1.2s–2.9s structured JSON latency) and allows overriding `GEMINI_MODEL` via environment variables without code changes.
-3. **Browser-Local Storage Scope**: Because ClayCV is intentionally a local-first, zero-database platform, CV profiles, version snapshots, and IndexedDB certificate attachments are stored locally in the user's browser. Users should use the built-in **Export Active CV (`.json`)** feature in the Platform Manager tab to back up or transfer CVs across devices.
+1. **In-Memory Rate Limiting**: `src/lib/ai/utils/rate-limit.ts` uses an in-memory `Map` per Node.js process. Multi-instance serverless deployments requiring shared global rate limits should use a distributed store such as Upstash Redis.
+2. **Browser-Scoped Local Storage**: Because ClayCV operates without a cloud database, clearing browser site data removes local profiles and attachments unless exported via **Export Active CV (`.json`)** in `Profiles & Storage`.
+
+---
+
+## 10. License
+
+This repository is currently configured as `"private": true` in `package.json` with no separate open-source license file declared. All rights reserved by the author unless otherwise specified.

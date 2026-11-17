@@ -369,6 +369,40 @@ body {
   background: rgba(163, 157, 147, 0.6);
 }
 
+/* Shared Refined Claymorphism Dropdown Menu Surface & Motion */
+.clay-select-menu {
+  background-color: #FAF8F5;
+  border: 1px solid rgba(70, 65, 90, 0.12);
+  border-radius: 16px;
+  box-shadow:
+    -6px -6px 16px rgba(255, 255, 255, 0.96),
+    10px 14px 28px rgba(70, 65, 90, 0.2),
+    0 2px 6px rgba(108, 91, 216, 0.08);
+  transform-origin: top center;
+  transition:
+    opacity 180ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 180ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.clay-select-menu[data-placement="top"] {
+  transform-origin: bottom center;
+}
+
+.clay-select-menu[data-state="open"] {
+  opacity: 1;
+  transform: translate3d(0, 0, 0) scale(1);
+}
+
+.clay-select-menu[data-state="closed"][data-placement="bottom"] {
+  opacity: 0;
+  transform: translate3d(0, -6px, 0) scale(0.97);
+}
+
+.clay-select-menu[data-state="closed"][data-placement="top"] {
+  opacity: 0;
+  transform: translate3d(0, 6px, 0) scale(0.97);
+}
+
 @media (prefers-reduced-motion: reduce) {
   *, ::before, ::after {
     animation-duration: 0.01ms !important;
@@ -376,4 +410,14 @@ body {
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
+}
+
+/* Hide scrollbars strictly on intentional mobile horizontal tab strips */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }

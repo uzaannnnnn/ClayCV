@@ -54,7 +54,7 @@ export function CVEditor() {
   const certsCount = certifications.length;
 
   return (
-    <div className="space-y-4 pb-12">
+    <div className="space-y-4">
       {/* 1. Personal Information */}
       <SectionCard
         id="personal-section"

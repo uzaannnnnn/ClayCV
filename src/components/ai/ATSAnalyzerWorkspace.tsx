@@ -137,23 +137,23 @@ export function ATSAnalyzerWorkspace() {
     : deterministicBaseline.score;
 
   return (
-    <div className="space-y-5 pb-12">
-      {/* Compact active consent status bar when agreed */}
-      {aiConsentAccepted && <AIPrivacyConsentBanner compact />}
-
+    <div className="space-y-4 sm:space-y-5">
       {/* Top Analyzer Header + Score Overview */}
-      <section className="clay-card p-5 sm:p-6 space-y-5">
+      <section
+        data-testid="ai-primary-card"
+        className="clay-card p-4 sm:p-6 space-y-4 sm:space-y-5"
+      >
         {/* Header Row */}
-        <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
-          <div className="flex items-start gap-3 min-w-0 flex-1">
-            <div className="w-10 h-10 rounded-[14px] bg-[#EFEAFF] text-[#6C5BD8] flex items-center justify-center shrink-0 mt-0.5 shadow-sm">
+        <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3.5 sm:gap-4">
+          <div className="flex items-start gap-2.5 sm:gap-3 min-w-0 flex-1">
+            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-[12px] sm:rounded-[14px] bg-[#EFEAFF] text-[#6C5BD8] flex items-center justify-center shrink-0 mt-0.5 shadow-sm">
               <ShieldCheck className="w-5 h-5" />
             </div>
             <div className="space-y-1 min-w-0">
-              <h2 className="text-base sm:text-lg font-bold text-[#292735] leading-snug">
+              <h2 className="text-sm sm:text-lg font-bold text-[#292735] leading-snug">
                 ATS & CV Quality Analyzer
               </h2>
-              <p className="text-xs sm:text-sm text-[#595566] leading-relaxed">
+              <p className="hidden sm:block text-xs sm:text-sm text-[#595566] leading-relaxed">
                 Check how clearly your CV reads for hiring systems and
                 recruiters, then run an AI review for writing feedback.
               </p>
@@ -229,17 +229,22 @@ export function ATSAnalyzerWorkspace() {
           </div>
         )}
 
-        {/* 3 Score Cards — Vertical Internal Stack (Zero Collision at Any Width) */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
+        {/* Score Cards: prominent overall score + compact 2-up subscores on mobile */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 sm:gap-3.5">
           {/* Card 1: Overall ATS Score */}
-          <div className="p-4 rounded-[20px] bg-white border border-[#8B7CF6]/30 shadow-xs flex flex-col justify-between gap-2">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-[#6C5BD8]">
-              Overall ATS Score
-            </span>
+          <div className="col-span-2 sm:col-span-1 p-3.5 sm:p-4 rounded-[18px] sm:rounded-[20px] bg-white border border-[#8B7CF6]/30 shadow-xs flex sm:flex-col items-center sm:items-stretch justify-between gap-2">
+            <div className="space-y-0.5 sm:space-y-2">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-[#6C5BD8] block">
+                Overall ATS Score
+              </span>
+              <p className="text-xs text-[#595566] leading-snug sm:hidden">
+                {aiResult ? "Basic + AI review" : "Basic CV checks"}
+              </p>
+            </div>
             <div className="text-2xl sm:text-3xl font-extrabold text-[#292735] tracking-tight">
               {overallScore}/100
             </div>
-            <p className="text-xs text-[#595566] leading-snug">
+            <p className="hidden sm:block text-xs text-[#595566] leading-snug">
               {aiResult
                 ? "Combined basic checks and AI writing review"
                 : "Based on basic CV checks"}
@@ -247,33 +252,33 @@ export function ATSAnalyzerWorkspace() {
           </div>
 
           {/* Card 2: Basic CV Checks */}
-          <div className="p-4 rounded-[20px] bg-[#FAF8F5] border border-[rgba(70,65,90,0.08)] flex flex-col justify-between gap-2">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-[#595566]">
+          <div className="p-3 sm:p-4 rounded-[18px] sm:rounded-[20px] bg-[#FAF8F5] border border-[rgba(70,65,90,0.08)] flex flex-col justify-between gap-1.5 sm:gap-2">
+            <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-[#595566]">
               Basic CV Checks
             </span>
-            <div className="text-2xl sm:text-3xl font-extrabold text-[#292735] tracking-tight">
+            <div className="text-xl sm:text-3xl font-extrabold text-[#292735] tracking-tight">
               {deterministicBaseline.score}/100
             </div>
-            <p className="text-xs text-[#595566] leading-snug">
+            <p className="hidden sm:block text-xs text-[#595566] leading-snug">
               Contact details, dates, sections, and layout
             </p>
           </div>
 
           {/* Card 3: AI Writing Review */}
-          <div className="p-4 rounded-[20px] bg-[#FAF8F5] border border-[rgba(70,65,90,0.08)] flex flex-col justify-between gap-2">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-[#595566]">
+          <div className="p-3 sm:p-4 rounded-[18px] sm:rounded-[20px] bg-[#FAF8F5] border border-[rgba(70,65,90,0.08)] flex flex-col justify-between gap-1.5 sm:gap-2">
+            <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-[#595566]">
               AI Writing Review
             </span>
             <div
               className={
                 aiResult
-                  ? "text-2xl sm:text-3xl font-extrabold text-[#6C5BD8] tracking-tight"
-                  : "text-lg sm:text-xl font-extrabold text-[#595566] tracking-tight"
+                  ? "text-xl sm:text-3xl font-extrabold text-[#6C5BD8] tracking-tight"
+                  : "text-base sm:text-xl font-extrabold text-[#595566] tracking-tight"
               }
             >
               {aiResult ? `${aiResult.ai_quality_score}/100` : "Not run yet"}
             </div>
-            <p className="text-xs text-[#595566] leading-snug">
+            <p className="hidden sm:block text-xs text-[#595566] leading-snug">
               {aiResult
                 ? "Clarity, action verbs, and measurable impact"
                 : aiConsentAccepted
@@ -503,6 +508,9 @@ export function ATSAnalyzerWorkspace() {
           ))}
         </div>
       </section>
+
+      {/* Compact active consent status bar at the bottom of workspace content */}
+      {aiConsentAccepted && <AIPrivacyConsentBanner compact />}
 
       {/* Fix with AI Approval Dialog */}
       <Dialog

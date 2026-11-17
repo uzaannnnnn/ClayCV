@@ -1,11 +1,19 @@
 "use client";
 
-import React, { useState, useEffect, Suspense } from "react";
+import React, { useState, useEffect, useRef, useCallback, Suspense } from "react";
+import { createPortal } from "react-dom";
 import { useSearchParams } from "next/navigation";
 import { useCVStore, WorkspaceTab } from "@/store/cv-store";
 import { BuilderHeader } from "@/components/builder/BuilderHeader";
+import {
+  MobileWorkspaceTrigger,
+  WorkspaceSidebar,
+} from "@/components/builder/WorkspaceSidebar";
 import { CVEditor } from "@/components/editor/CVEditor";
-import { LivePreview } from "@/components/preview/LivePreview";
+import {
+  DynamicIslandPreviewToggle,
+  LivePreview,
+} from "@/components/preview/LivePreview";
 import { AIWritingWorkspace } from "@/components/ai/AIWritingWorkspace";
 import { JobMatcherWorkspace } from "@/components/ai/JobMatcherWorkspace";
 import { ATSAnalyzerWorkspace } from "@/components/ai/ATSAnalyzerWorkspace";
@@ -13,60 +21,12 @@ import { CareerAssistantWorkspace } from "@/components/ai/CareerAssistantWorkspa
 import { PlatformManagerWorkspace } from "@/components/ai/PlatformManagerWorkspace";
 import { AIPrivacyConsentModal } from "@/components/ai/AIPrivacyConsentBanner";
 import { CVLanguage, TemplateType } from "@/types/cv";
-import {
-  Edit3,
-  Eye,
-  Sparkles,
-  Target,
-  ShieldCheck,
-  Briefcase,
-  FolderKanban,
-} from "lucide-react";
 import { cn } from "@/lib/utils";
 
-const WORKSPACE_NAV_ITEMS: Array<{
-  id: WorkspaceTab;
-  label: string;
-  shortLabel: string;
-  icon: React.ElementType;
-}> = [
-  {
-    id: "builder",
-    label: "CV Builder",
-    shortLabel: "Builder",
-    icon: Edit3,
-  },
-  {
-    id: "writing",
-    label: "AI Writing Assistant",
-    shortLabel: "AI Writer",
-    icon: Sparkles,
-  },
-  {
-    id: "matcher",
-    label: "Job Matcher",
-    shortLabel: "Matcher",
-    icon: Target,
-  },
-  {
-    id: "analyzer",
-    label: "CV Analyzer",
-    shortLabel: "Analyzer",
-    icon: ShieldCheck,
-  },
-  {
-    id: "career",
-    label: "Career Assistant",
-    shortLabel: "Career",
-    icon: Briefcase,
-  },
-  {
-    id: "platform",
-    label: "Profiles & Storage",
-    shortLabel: "Profiles",
-    icon: FolderKanban,
-  },
-];
+type OverlayPhase = "closed" | "opening" | "open" | "closing";
+
+const OVERLAY_EXIT_DURATION_MS = 400;
+const DRAWER_EXIT_DURATION_MS = 300;
 
 function BuilderContent() {
   const searchParams = useSearchParams();
@@ -74,15 +34,176 @@ function BuilderContent() {
     hasHydrated,
     aiConsentAccepted,
     consentModalDismissed,
+    isConsentModalOpen,
     openConsentModal,
     setTemplate,
     setLanguage,
     activeWorkspace,
     setActiveWorkspace,
   } = useCVStore();
-  const [activeMobileTab, setActiveMobileTab] = useState<"edit" | "preview">(
-    "edit"
+
+  const [previewPhase, setPreviewPhase] = useState<OverlayPhase>("closed");
+  const toggleButtonRef = useRef<HTMLButtonElement | null>(null);
+  const closeButtonRef = useRef<HTMLButtonElement | null>(null);
+  const animTimerRef = useRef<number | null>(null);
+  const rafRef = useRef<number | null>(null);
+
+  const [drawerPhase, setDrawerPhase] = useState<OverlayPhase>("closed");
+  const mobileMenuTriggerRef = useRef<HTMLButtonElement | null>(null);
+  const mobileDrawerCloseRef = useRef<HTMLButtonElement | null>(null);
+  const drawerTimerRef = useRef<number | null>(null);
+  const drawerRafRef = useRef<number | null>(null);
+
+  const clearTransitionHandles = useCallback(() => {
+    if (animTimerRef.current !== null) {
+      window.clearTimeout(animTimerRef.current);
+      animTimerRef.current = null;
+    }
+    if (rafRef.current !== null) {
+      window.cancelAnimationFrame(rafRef.current);
+      rafRef.current = null;
+    }
+  }, []);
+
+  const clearDrawerHandles = useCallback(() => {
+    if (drawerTimerRef.current !== null) {
+      window.clearTimeout(drawerTimerRef.current);
+      drawerTimerRef.current = null;
+    }
+    if (drawerRafRef.current !== null) {
+      window.cancelAnimationFrame(drawerRafRef.current);
+      drawerRafRef.current = null;
+    }
+  }, []);
+
+  const openPreview = useCallback(() => {
+    if (previewPhase === "open" || previewPhase === "opening") {
+      return;
+    }
+    clearTransitionHandles();
+
+    if (previewPhase === "closing") {
+      setPreviewPhase("open");
+      rafRef.current = window.requestAnimationFrame(() => {
+        closeButtonRef.current?.focus({ preventScroll: true });
+      });
+      return;
+    }
+
+    setPreviewPhase("opening");
+    rafRef.current = window.requestAnimationFrame(() => {
+      rafRef.current = window.requestAnimationFrame(() => {
+        setPreviewPhase("open");
+        closeButtonRef.current?.focus({ preventScroll: true });
+      });
+    });
+  }, [previewPhase, clearTransitionHandles]);
+
+  const closePreview = useCallback(() => {
+    if (previewPhase === "closed" || previewPhase === "closing") {
+      return;
+    }
+    clearTransitionHandles();
+    setPreviewPhase("closing");
+
+    const prefersReducedMotion =
+      typeof window !== "undefined" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const exitMs = prefersReducedMotion ? 20 : OVERLAY_EXIT_DURATION_MS;
+
+    animTimerRef.current = window.setTimeout(() => {
+      animTimerRef.current = null;
+      setPreviewPhase("closed");
+      toggleButtonRef.current?.focus({ preventScroll: true });
+    }, exitMs);
+  }, [previewPhase, clearTransitionHandles]);
+
+  const openDrawer = useCallback(() => {
+    if (drawerPhase === "open" || drawerPhase === "opening") {
+      return;
+    }
+    clearDrawerHandles();
+
+    if (drawerPhase === "closing") {
+      setDrawerPhase("open");
+      drawerRafRef.current = window.requestAnimationFrame(() => {
+        mobileDrawerCloseRef.current?.focus({ preventScroll: true });
+      });
+      return;
+    }
+
+    setDrawerPhase("opening");
+    drawerRafRef.current = window.requestAnimationFrame(() => {
+      drawerRafRef.current = window.requestAnimationFrame(() => {
+        setDrawerPhase("open");
+        mobileDrawerCloseRef.current?.focus({ preventScroll: true });
+      });
+    });
+  }, [drawerPhase, clearDrawerHandles]);
+
+  const closeDrawer = useCallback(() => {
+    if (drawerPhase === "closed" || drawerPhase === "closing") {
+      return;
+    }
+    clearDrawerHandles();
+    setDrawerPhase("closing");
+
+    const prefersReducedMotion =
+      typeof window !== "undefined" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const exitMs = prefersReducedMotion ? 20 : DRAWER_EXIT_DURATION_MS;
+
+    drawerTimerRef.current = window.setTimeout(() => {
+      drawerTimerRef.current = null;
+      setDrawerPhase("closed");
+      mobileMenuTriggerRef.current?.focus({ preventScroll: true });
+    }, exitMs);
+  }, [drawerPhase, clearDrawerHandles]);
+
+  const handleSelectWorkspace = useCallback(
+    (workspace: WorkspaceTab) => {
+      setActiveWorkspace(workspace);
+      if (drawerPhase === "open" || drawerPhase === "opening") {
+        closeDrawer();
+      }
+    },
+    [setActiveWorkspace, drawerPhase, closeDrawer]
   );
+
+  useEffect(() => {
+    return () => {
+      clearTransitionHandles();
+      clearDrawerHandles();
+    };
+  }, [clearTransitionHandles, clearDrawerHandles]);
+
+  useEffect(() => {
+    const isPreviewActive =
+      previewPhase === "open" || previewPhase === "opening";
+    const isDrawerActive =
+      drawerPhase === "open" || drawerPhase === "opening";
+    if (!isPreviewActive && !isDrawerActive) return;
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key !== "Escape" || isConsentModalOpen) return;
+      if (isPreviewActive) {
+        event.preventDefault();
+        closePreview();
+      } else if (isDrawerActive) {
+        event.preventDefault();
+        closeDrawer();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [
+    previewPhase,
+    drawerPhase,
+    isConsentModalOpen,
+    closePreview,
+    closeDrawer,
+  ]);
 
   useEffect(() => {
     if (
@@ -144,105 +265,140 @@ function BuilderContent() {
     }
   };
 
+  const isPreviewRendered = previewPhase !== "closed";
+  const isPreviewTransitioning =
+    previewPhase === "opening" || previewPhase === "closing";
+  const isDrawerRendered = drawerPhase !== "closed";
+
   return (
-    <div className="min-h-screen flex flex-col bg-[#F4F1EB]">
+    <div className="min-h-dvh flex flex-col bg-[#F4F1EB]">
       <BuilderHeader />
       <AIPrivacyConsentModal />
 
-      {/* Integrated ClayCV AI Workspace Navigation Bar */}
-      <nav
-        aria-label="ClayCV Workspace Navigation"
-        className="sticky top-[57px] z-30 bg-[#F4F1EB]/95 backdrop-blur-sm border-b border-[rgba(70,65,90,0.08)] px-4 sm:px-6 py-2.5"
-      >
-        <div className="max-w-[1600px] mx-auto flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-2.5">
-          {/* Primary Workspace Modules */}
-          <div className="flex items-center gap-1.5 overflow-x-auto pb-1 lg:pb-0 no-scrollbar">
-            {WORKSPACE_NAV_ITEMS.map((item) => {
-              const Icon = item.icon;
-              const isSelected = activeWorkspace === item.id;
-              return (
-                <button
-                  key={item.id}
-                  type="button"
-                  onClick={() => {
-                    setActiveWorkspace(item.id);
-                    setActiveMobileTab("edit");
-                  }}
-                  className={cn(
-                    "min-h-[40px] flex items-center gap-1.5 px-3.5 py-2 rounded-[14px] text-xs font-bold whitespace-nowrap transition-all cursor-pointer select-none",
-                    isSelected
-                      ? "bg-white text-[#6C5BD8] shadow-[-2px_-2px_6px_rgba(255,255,255,0.95),2px_2px_6px_rgba(163,157,147,0.22)] border border-[#8B7CF6]/30"
-                      : "text-[#595566] hover:text-[#292735] hover:bg-white/70"
-                  )}
-                >
-                  <Icon className="w-3.5 h-3.5 shrink-0" />
-                  <span className="hidden md:inline">{item.label}</span>
-                  <span className="md:hidden">{item.shortLabel}</span>
-                </button>
-              );
-            })}
-          </div>
+      {/* Main Builder Shell: Persistent Left Vertical Sidebar + Workspace Content */}
+      <div className="flex-1 w-full max-w-[1600px] mx-auto px-3.5 sm:px-6 pt-3 md:pt-6 pb-[calc(5.5rem+env(safe-area-inset-bottom,0px))] lg:pb-6 flex flex-col md:flex-row items-stretch md:items-start gap-3 md:gap-5 lg:gap-7">
+        {/* Persistent Left Vertical Sidebar (Tablet & Desktop) */}
+        <aside
+          data-testid="workspace-sidebar"
+          aria-label="ClayCV Workspace Sidebar"
+          className="hidden md:block w-[184px] lg:w-[248px] shrink-0 sticky top-[116px] lg:top-[84px] z-20"
+        >
+          <WorkspaceSidebar
+            activeWorkspace={activeWorkspace}
+            onSelectWorkspace={handleSelectWorkspace}
+            variant="rail"
+          />
+        </aside>
 
-          {/* Mobile Edit / Live Preview Switcher (< 1024px) */}
-          <div className="lg:hidden shrink-0 grid grid-cols-2 gap-1.5 p-1 bg-[#EAE6DE]/80 rounded-[14px] shadow-inner">
-            <button
-              type="button"
-              onClick={() => setActiveMobileTab("edit")}
+        {/* Mobile Drawer Trigger (< 768px) */}
+        <MobileWorkspaceTrigger
+          activeWorkspace={activeWorkspace}
+          isOpen={isDrawerRendered}
+          onOpen={openDrawer}
+          buttonRef={mobileMenuTriggerRef}
+        />
+
+        {/* Workspace Content Column (reserves right gutter on lg+ for vertical preview toggle) */}
+        <main className="flex-1 min-w-0 flex justify-center lg:pr-20">
+          <div className="w-full max-w-[820px]">{renderActiveWorkspace()}</div>
+        </main>
+      </div>
+
+      {/* Floating Right-Side Vertical Dynamic Island Preview Toggle */}
+      <DynamicIslandPreviewToggle
+        isOpen={isPreviewRendered}
+        isTransitioning={isPreviewTransitioning}
+        onOpen={openPreview}
+        buttonRef={toggleButtonRef}
+      />
+
+      {/* Mobile Left Slide-Out Workspace Drawer Portal (< 768px) */}
+      {isDrawerRendered &&
+        typeof document !== "undefined" &&
+        createPortal(
+          <div
+            id="claycv-mobile-sidebar"
+            data-testid="mobile-sidebar-drawer"
+            data-state={drawerPhase}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Workspace navigation"
+            className="fixed inset-0 z-50 overflow-hidden md:hidden"
+          >
+            <div
+              onClick={closeDrawer}
+              aria-hidden="true"
               className={cn(
-                "min-h-[40px] flex items-center justify-center gap-1.5 py-2 px-3 text-xs font-bold whitespace-nowrap rounded-[10px] transition-all cursor-pointer select-none",
-                activeMobileTab === "edit"
-                  ? "bg-white text-[#6C5BD8] shadow-sm"
-                  : "text-[#595566] hover:text-[#292735]"
+                "absolute inset-0 bg-[#292735]/20 backdrop-blur-[2px] transition-opacity duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]",
+                drawerPhase === "open" ? "opacity-100" : "opacity-0"
               )}
+            />
+            <div
+              data-testid="mobile-sidebar-panel"
+              style={{
+                transform:
+                  drawerPhase === "open"
+                    ? "translate3d(0%, 0, 0)"
+                    : "translate3d(-105%, 0, 0)",
+                opacity: drawerPhase === "open" ? 1 : 0,
+              }}
+              className="absolute inset-y-2 left-2 w-[min(84vw,280px)] clay-panel bg-[#F7F5F0] border border-[rgba(108,91,216,0.2)] shadow-[12px_0_32px_rgba(41,39,53,0.18)] p-4 overflow-y-auto transition-[transform,opacity] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] will-change-[transform,opacity]"
             >
-              <Edit3 className="w-3.5 h-3.5 shrink-0" />
-              <span>Workspace</span>
-            </button>
-            <button
-              type="button"
-              onClick={() => setActiveMobileTab("preview")}
+              <WorkspaceSidebar
+                activeWorkspace={activeWorkspace}
+                onSelectWorkspace={handleSelectWorkspace}
+                variant="drawer"
+                onCloseDrawer={closeDrawer}
+                closeButtonRef={mobileDrawerCloseRef}
+              />
+            </div>
+          </div>,
+          document.body
+        )}
+
+      {/* Top-Layer Dynamic Island Live Preview Portal Overlay */}
+      {isPreviewRendered &&
+        typeof document !== "undefined" &&
+        createPortal(
+          <div
+            id="claycv-live-preview-overlay"
+            data-testid="live-preview-overlay"
+            data-state={previewPhase}
+            role="dialog"
+            aria-modal="false"
+            aria-label="Live A4 CV Preview"
+            className="fixed inset-0 z-50 overflow-hidden pointer-events-auto"
+          >
+            {/* Subtle Backdrop Separation */}
+            <div
+              onClick={closePreview}
+              aria-hidden="true"
               className={cn(
-                "min-h-[40px] flex items-center justify-center gap-1.5 py-2 px-3 text-xs font-bold whitespace-nowrap rounded-[10px] transition-all cursor-pointer select-none",
-                activeMobileTab === "preview"
-                  ? "bg-white text-[#6C5BD8] shadow-sm"
-                  : "text-[#595566] hover:text-[#292735]"
+                "absolute inset-0 bg-[#292735]/20 backdrop-blur-[2px] transition-opacity duration-[400ms] ease-[cubic-bezier(0.22,1,0.36,1)]",
+                previewPhase === "open" ? "opacity-100" : "opacity-0"
               )}
+            />
+
+            {/* Sliding Right-Side Claymorphic Preview Panel */}
+            <div
+              data-testid="live-preview-panel"
+              style={{
+                transform:
+                  previewPhase === "open"
+                    ? "translate3d(0%, 0, 0)"
+                    : "translate3d(105%, 0, 0)",
+                opacity: previewPhase === "open" ? 1 : 0,
+              }}
+              className="absolute inset-2 sm:inset-auto sm:top-3 sm:bottom-3 sm:right-3 sm:w-[min(92vw,700px)] lg:w-[min(56vw,760px)] clay-panel bg-[#F4F1EB] border border-[rgba(108,91,216,0.22)] shadow-[-16px_0_40px_rgba(41,39,53,0.18),-4px_-4px_16px_rgba(255,255,255,0.9)] flex flex-col p-3 sm:p-5 overflow-hidden transition-[transform,opacity] duration-[400ms] ease-[cubic-bezier(0.22,1,0.36,1)] will-change-[transform,opacity]"
             >
-              <Eye className="w-3.5 h-3.5 shrink-0" />
-              <span>Live A4 Preview</span>
-            </button>
-          </div>
-        </div>
-      </nav>
-
-      {/* Main Container */}
-      <main className="flex-1 max-w-[1600px] w-full mx-auto px-4 sm:px-6 py-6 sm:py-8">
-        {/* Desktop Two-Column Layout */}
-        <div className="hidden lg:grid lg:grid-cols-12 gap-7 items-start">
-          {/* Left Column: Active Workspace (CV Editor or AI Modules) */}
-          <div className="lg:col-span-6 2xl:col-span-5">
-            {renderActiveWorkspace()}
-          </div>
-
-          {/* Right Column: Sticky Live A4 Preview */}
-          <div className="lg:col-span-6 2xl:col-span-7 sticky top-28 max-h-[calc(100vh-7.5rem)] overflow-y-auto pl-1">
-            <LivePreview />
-          </div>
-        </div>
-
-        {/* Mobile / Tablet Tabbed View */}
-        <div className="lg:hidden">
-          {activeMobileTab === "edit" ? (
-            <div className="animate-in fade-in duration-150 p-1 sm:p-2">
-              {renderActiveWorkspace()}
+              <LivePreview
+                onClose={closePreview}
+                closeButtonRef={closeButtonRef}
+              />
             </div>
-          ) : (
-            <div className="animate-in fade-in duration-150">
-              <LivePreview />
-            </div>
-          )}
-        </div>
-      </main>
+          </div>,
+          document.body
+        )}
     </div>
   );
 }

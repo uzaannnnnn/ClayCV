@@ -17,12 +17,12 @@ export function EducationForm() {
   return (
     <div className="space-y-5 pt-2">
       {education.length === 0 ? (
-        <div className="text-center py-6 px-4 border border-dashed border-[rgba(70,65,90,0.15)] rounded-[18px] bg-[#FAF8F5]">
-          <GraduationCap className="w-8 h-8 text-[#6D697A] mx-auto mb-2" />
+        <div className="text-center py-5 sm:py-6 px-4 border border-dashed border-[rgba(70,65,90,0.15)] rounded-[18px] bg-[#FAF8F5]">
+          <GraduationCap className="w-7 h-7 sm:w-8 sm:h-8 text-[#6D697A] mx-auto mb-2" />
           <p className="text-sm font-semibold text-[#292735]">
             No education records added
           </p>
-          <p className="text-xs text-[#595566] mt-0.5 mb-4">
+          <p className="hidden sm:block text-xs text-[#595566] mt-0.5 mb-4">
             Add degrees, universities, or academic institutions attended.
           </p>
           <Button
@@ -30,6 +30,7 @@ export function EducationForm() {
             variant="secondary"
             size="sm"
             onClick={() => addEducation()}
+            className="mt-3 sm:mt-0"
           >
             <Plus className="w-4 h-4" />
             <span>Add Education</span>
@@ -49,7 +50,7 @@ export function EducationForm() {
             return (
               <div
                 key={item.id}
-                className="clay-card-sm p-4 sm:p-5 bg-white relative space-y-4 border border-[rgba(70,65,90,0.08)]"
+                className="clay-card-sm p-3.5 sm:p-5 bg-white relative space-y-3.5 sm:space-y-4 border border-[rgba(70,65,90,0.08)]"
               >
                 {/* Item Header */}
                 <div className="flex items-center justify-between pb-2 border-b border-gray-100">
@@ -59,7 +60,7 @@ export function EducationForm() {
                   <button
                     type="button"
                     onClick={() => removeEducation(item.id)}
-                    className="min-h-[36px] text-xs font-medium text-[#B91C1C] hover:text-[#991B1B] flex items-center gap-1 transition-colors px-2.5 py-1 rounded-[10px] hover:bg-red-50 cursor-pointer"
+                    className="min-h-[40px] sm:min-h-[36px] text-xs font-medium text-[#B91C1C] hover:text-[#991B1B] flex items-center gap-1 transition-colors px-2.5 py-1 rounded-[10px] hover:bg-red-50 cursor-pointer"
                     title="Remove this education entry"
                   >
                     <Trash2 className="w-3.5 h-3.5" />

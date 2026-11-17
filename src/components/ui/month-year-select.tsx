@@ -1,9 +1,9 @@
 "use client";
 
-import React from "react";
+import React, { useMemo } from "react";
 import { CVLanguage } from "@/types/cv";
 import { getMonthOptions, YEAR_OPTIONS } from "@/lib/dates/date-utils";
-import { cn } from "@/lib/utils";
+import { Combobox, Select, SelectOption } from "@/components/ui/select";
 
 export interface MonthYearSelectProps {
   label?: string;
@@ -28,7 +28,23 @@ export function MonthYearSelect({
   error,
   idPrefix = "my-select",
 }: MonthYearSelectProps) {
-  const monthOptions = getMonthOptions(language);
+  const monthOptions = useMemo<SelectOption[]>(
+    () =>
+      getMonthOptions(language).map((opt) => ({
+        value: String(opt.value),
+        label: opt.label,
+      })),
+    [language]
+  );
+
+  const yearOptions = useMemo<SelectOption[]>(
+    () =>
+      YEAR_OPTIONS.map((y) => ({
+        value: String(y),
+        label: String(y),
+      })),
+    []
+  );
 
   return (
     <div className="w-full space-y-1.5">
@@ -39,58 +55,46 @@ export function MonthYearSelect({
       )}
 
       <div className="grid grid-cols-2 gap-2">
-        {/* Month Dropdown */}
-        <div>
-          <select
-            id={`${idPrefix}-month`}
-            disabled={disabled}
-            value={monthValue ?? ""}
-            onChange={(e) => {
-              const val = e.target.value ? parseInt(e.target.value, 10) : null;
-              onChangeMonth(val);
-            }}
-            aria-label={`${label || "Date"} month`}
-            className={cn(
-              "clay-input w-full px-3 py-2 text-xs sm:text-sm font-medium cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed",
-              error && "border-red-400"
-            )}
-          >
-            <option value="">Month</option>
-            {monthOptions.map((opt) => (
-              <option key={opt.value} value={opt.value}>
-                {opt.label}
-              </option>
-            ))}
-          </select>
-        </div>
+        <Select
+          id={`${idPrefix}-month`}
+          value={monthValue !== null ? String(monthValue) : ""}
+          onChange={(val) => {
+            onChangeMonth(val ? parseInt(val, 10) : null);
+          }}
+          options={monthOptions}
+          placeholder="Month"
+          clearable
+          clearLabel="Clear month"
+          disabled={disabled}
+          ariaLabel={`${label || "Date"} month`}
+          minMenuWidth={168}
+          hasError={Boolean(error)}
+        />
 
-        {/* Year Dropdown */}
-        <div>
-          <select
-            id={`${idPrefix}-year`}
-            disabled={disabled}
-            value={yearValue ?? ""}
-            onChange={(e) => {
-              const val = e.target.value ? parseInt(e.target.value, 10) : null;
-              onChangeYear(val);
-            }}
-            aria-label={`${label || "Date"} year`}
-            className={cn(
-              "clay-input w-full px-3 py-2 text-xs sm:text-sm font-medium cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed",
-              error && "border-red-400"
-            )}
-          >
-            <option value="">Year</option>
-            {YEAR_OPTIONS.map((y) => (
-              <option key={y} value={y}>
-                {y}
-              </option>
-            ))}
-          </select>
-        </div>
+        <Combobox
+          id={`${idPrefix}-year`}
+          value={yearValue !== null ? String(yearValue) : ""}
+          onChange={(val) => {
+            onChangeYear(val ? parseInt(val, 10) : null);
+          }}
+          options={yearOptions}
+          placeholder="Year"
+          searchPlaceholder="Filter year..."
+          emptyText="No matching year"
+          clearable
+          clearLabel="Clear year"
+          disabled={disabled}
+          ariaLabel={`${label || "Date"} year`}
+          minMenuWidth={156}
+          hasError={Boolean(error)}
+        />
       </div>
 
-      {error && <p className="text-xs text-red-500 font-medium">{error}</p>}
+      {error && (
+        <p role="alert" className="text-xs text-[#B91C1C] font-medium">
+          {error}
+        </p>
+      )}
     </div>
   );
 }

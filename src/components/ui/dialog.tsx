@@ -71,7 +71,7 @@ export function Dialog({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 pb-[max(1rem,env(safe-area-inset-bottom,0px))] sm:p-6">
       {/* Backdrop */}
       <div
         className="fixed inset-0 bg-[#292735]/45 backdrop-blur-xs transition-opacity"
@@ -88,7 +88,7 @@ export function Dialog({
         aria-labelledby={titleId}
         aria-describedby={description ? descriptionId : undefined}
         className={cn(
-          "clay-panel relative z-10 w-full max-h-[90dvh] overflow-y-auto p-6 sm:p-7 focus:outline-none",
+          "clay-panel relative z-10 w-full max-w-[calc(100vw-2rem)] max-h-[85dvh] sm:max-h-[90dvh] overflow-y-auto p-5 sm:p-6 focus:outline-none",
           maxWidthClassName
         )}
       >
